@@ -1,7 +1,11 @@
-require("dotenv").config();
-const express = require("express");
+import dotenv from 'dotenv'
+dotenv.config()
+
+ import express from 'express'
 const app = express();
 
+import sequelize from "./config/database.js";
+sequelize.sync()
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
