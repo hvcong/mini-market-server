@@ -11,7 +11,6 @@
     "type": "git",
     "url": "git+https://github.com/hvcong/mini-market-server.git"
   },
-  "type": "module",
   "author": "",
   "license": "ISC",
   "bugs": {

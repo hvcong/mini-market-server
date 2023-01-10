@@ -1,5 +1,5 @@
-import sequelize from "../config/database.js";
-import { DataTypes, Model } from "sequelize";
+const sequelize = require ("../config/database");
+const { DataTypes } = require ("sequelize");
 
 const Salary = sequelize.define("Salary", {
   id: {

@@ -1,5 +1,5 @@
-import sequelize from "../config/database.js";
-import { DataTypes } from "sequelize";
+const sequelize = require ("../config/database");
+const { DataTypes } = require ("sequelize");
 
 const Voucher = sequelize.define("Voucher", {
   id: {

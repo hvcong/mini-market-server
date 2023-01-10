@@ -1,4 +1,4 @@
-import { Sequelize } from "sequelize";
+const { Sequelize } = require ("sequelize");
 const sequelize = new Sequelize(
     'minimarket',
     'root',
@@ -13,4 +13,6 @@ const sequelize = new Sequelize(
         }
     }
 )
-export default sequelize
+
+
+module.exports = sequelize
