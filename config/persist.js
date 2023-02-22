@@ -1,20 +1,20 @@
-const Account = require("../model/Account.js");
-const Address = require("../model/Address.js");
-const Bill = require("../model/Bill.js");
-const BillDetail = require("../model/BillDetail.js");
-const CartDetail = require("../model/CartDetail.js");
-const Customer = require("../model/Customer.js");
-const DiscountMoney = require("../model/DiscountMoney.js");
-const DiscountPercent = require("../model/DiscountPercent.js");
-const Employee = require("../model/Employee.js");
-const GiftByCost = require("../model/GiftByCost.js");
-const GiftByProduct = require("../model/GiftByProduct.js");
-const GiftProduct = require("../model/GiftProduct.js");
-const Price = require("../model/Price.js");
-const Product = require("../model/Product.js");
-const Salary = require("../model/Salary.js");
-const ShoppingCart = require("../model/ShoppingCart.js");
-const Voucher = require("../model/Voucher.js");
+const Account = require("../models/Account.js");
+const Address = require("../models/Address.js");
+const Bill = require("../models/Bill.js");
+const BillDetail = require("../models/BillDetail.js");
+const CartDetail = require("../models/CartDetail.js");
+const Customer = require("../models/Customer.js");
+const DiscountMoney = require("../models/DiscountMoney.js");
+const DiscountPercent = require("../models/DiscountPercent.js");
+const Employee = require("../models/Employee.js");
+const GiftByCost = require("../models/GiftByCost.js");
+const GiftByProduct = require("../models/GiftByProduct.js");
+const GiftProduct = require("../models/GiftProduct.js");
+const Price = require("../models/Price.js");
+const Product = require("../models/Product.js");
+const Salary = require("../models/Salary.js");
+const ShoppingCart = require("../models/ShoppingCart.js");
+const Voucher = require("../models/Voucher.js");
 
 // customer
 Customer.hasOne(Address);
