@@ -1,12 +1,16 @@
 const sequelize = require ("../config/database");
 const { DataTypes } = require ("sequelize");
 
-const DiscountMoney = sequelize.define("DiscountMoney", {
+const PromotionResult = sequelize.define("PromotionResult", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
-  DiscountMoney: DataTypes.DOUBLE,
+  isSuccess: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+  },
+  
 });
-module.exports = DiscountMoney;
+module.exports = PromotionResult;

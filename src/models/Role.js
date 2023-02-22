@@ -1,14 +1,16 @@
 const sequelize = require ("../config/database");
 const { DataTypes } = require ("sequelize");
 
-const Salary = sequelize.define("Salary", {
+const Role = sequelize.define("Role", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
-  startDate: DataTypes.DATE,
-  endDate: DataTypes.DATE,
-  salary: DataTypes.DOUBLE,
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 });
-module.exports = Salary;
+
+module.exports = Role;

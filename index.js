@@ -1,9 +1,22 @@
-const express = require ("express");
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+// file
+const sequelize = require("./src/config/database.js");
+// routes
+const AuthRoutes = require("./src/routes/AuthRoutes");
+const UserRoutes = require("./src/routes/UserRoutes");
+const ProudctRoutes = require("./src/routes/ProductRoutes");
+
 const app = express();
-require('dotenv').config()
-const sequelize = require ("./config/database.js");
-const  {Entity} = require ("./config/persist.js");
-console.log(Entity)
+
+app.use(cors());
+app.use(bodyParser.json({ limit: "50mb" }));
+
+app.use("/auth", AuthRoutes);
+app.use("/user", UserRoutes);
+app.use("/product", ProudctRoutes);
 
 try {
   sequelize.authenticate();
@@ -12,18 +25,9 @@ try {
   console.error("Unable to connect to the database:", error);
 }
 
-sequelize
-  .sync()
-  .then((result) => {
-    console.log(result);
-  })
-  .catch((error) => console.log(error));
-
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+require("./src/config/persist");
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`Server is listening on port ${port}`);
 });
