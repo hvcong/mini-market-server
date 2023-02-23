@@ -21,7 +21,7 @@ try {
   console.error("Unable to connect to the database:", error);
 }
 
-require("./src/config/persist");
+// require("./src/config/persist");
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

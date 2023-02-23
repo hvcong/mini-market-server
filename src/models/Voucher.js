@@ -1,5 +1,5 @@
-const sequelize = require ("../config/database");
-const { DataTypes } = require ("sequelize");
+const sequelize = require("../config/database");
+const { DataTypes } = require("sequelize");
 
 const Voucher = sequelize.define("Voucher", {
   id: {
@@ -19,7 +19,26 @@ const Voucher = sequelize.define("Voucher", {
     type: DataTypes.DATE,
     allowNull: false,
   },
-  status: DataTypes.BOOLEAN,
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true,
+  },
+  isUsed: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  disCountMoney: {
+    type: DataTypes.DOUBLE,
+    defaultValue: 0,
+  },
+  disCountPercent: {
+    type: DataTypes.FLOAT,
+    defaultValue: 0,
+  },
+  maxDiscountMoney: {
+    type: DataTypes.DOUBLE,
+    defaultValue: 0,
+  },
 });
 
 module.exports = Voucher;
