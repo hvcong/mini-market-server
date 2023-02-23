@@ -1,5 +1,6 @@
 const db = require("../config/persist");
 const Product = db.Product;
+const {addNewCategory} = require('./CategoryController')
 
 const ProductController = {
   addNewProduct: async (req, res) => {
@@ -53,9 +54,9 @@ const ProductController = {
       const product = Product.findOne({ where: { id: productId } });
       if (product) {
         await product.destroy();
-        return res.status(200).json({ result: "deleted product" });
+        return res.status(200).json({ message: "deleted product sucessful",result: true });
       } else {
-        return res.status(404).json({ result: "product not found" });
+        return res.status(404).json({message: 'something goes wrong', result: false });
       }
     } catch (error) {
       console.log(error);
@@ -85,7 +86,7 @@ const ProductController = {
       if (products) {
         return res.status(200).json(products);
       } else {
-        return res.status(200).json({ result: "khong co san pham nao" });
+        return res.status(200).json({ message: "khong co san pham nao",result: true });
       }
     } catch (error) {
       console.log(error);
@@ -101,7 +102,7 @@ const ProductController = {
       if (product) {
         return res.status(200).json(product);
       } else {
-        return res.status(200).json({ result: "khong co san pham nao" });
+        return res.status(200).json({ message: "khong co san pham nao", result: true });
       }
     } catch (error) {
       console.log(error);
