@@ -1,8 +1,8 @@
 const AuthControllers = require("../controllers/AuthController");
-const routes = require("express").Router();
+const AuthRoutes = require("express").Router();
 
-routes.post("/register", AuthControllers.register);
-routes.post("/login", AuthControllers.logIn);
-routes.post("/logout", AuthControllers.verifyToken, AuthControllers.logOut);
+AuthRoutes.post("/register", AuthControllers.register);
+AuthRoutes.post("/login", AuthControllers.logIn);
+AuthRoutes.post("/logout", AuthControllers.verifyToken, AuthControllers.logOut);
 
-module.exports = routes;
+module.exports = AuthRoutes;
