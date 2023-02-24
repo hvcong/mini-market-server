@@ -1,16 +1,17 @@
 const db = require("..//config/persist");
 const { Op } = require("sequelize");
+const {createCategory} = require('../services/CategoryServices')
 const Category = db.Category;
 
 const CategoryController = {
   addNewCategory: async (req, res) => {
     try {
       const newCategoryName = req.body.name;
-      const check = await Category.findOne({
-        where: { name: newCategoryName },
-      });
+      const check = createCategory(newCategoryName)
       if (check) {
-        return res.status(406).json({ message: "this category already exists",result:false });
+        return res
+          .status(406)
+          .json({ message: "this category already exists", result: false });
       } else {
         return res.status(200).json({
           result: "add new category successful",
@@ -56,4 +57,4 @@ const CategoryController = {
   },
 };
 
-module.exports = CategoryController
+module.exports = CategoryController;
