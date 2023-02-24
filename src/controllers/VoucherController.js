@@ -4,7 +4,19 @@ const VoucherController = {
   add: async (req, res) => {
     let result = await voucherService.create(req.body);
 
-    return res.status(result.errCode).json(result);
+    if (!result.isSuccess) {
+      return res.status(300).json(result);
+    }
+    return res.status(200).json(result);
+  },
+
+  delete: async (req, res) => {
+    let result = await voucherService.delete(req.params.id);
+    if (!result.isSuccess) {
+      return res.status(300).json(result);
+    }
+
+    return res.status(200).json(result);
   },
 };
 
