@@ -10,6 +10,7 @@ const Voucher = sequelize.define("Voucher", {
   code: {
     type: DataTypes.STRING,
     allowNull: false,
+    unique: true,
   },
   startDate: {
     type: DataTypes.DATE,
@@ -23,9 +24,9 @@ const Voucher = sequelize.define("Voucher", {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
   },
-  isUsed: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
+  remainingUsage: {
+    type: DataTypes.INTEGER,
+    defaultValue: 1,
   },
   disCountMoney: {
     type: DataTypes.DOUBLE,
