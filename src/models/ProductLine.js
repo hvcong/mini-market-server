@@ -1,19 +1,20 @@
 const sequelize = require("../config/database");
 const { DataTypes } = require("sequelize");
 
-const Product = sequelize.define("Product", {
+const ProductLine = sequelize.define("ProductLine", {
   id: {
     type: DataTypes.STRING,
     primaryKey: true,
     // autoIncrement: true,
   },
-  name: {
-    type: DataTypes.STRING,
+  dateOfManufature: {
+    type: DataTypes.DATE,
     allowNull: false,
+    defaultValue: DataTypes.NOW,
   },
-  description: {
-    type: DataTypes.STRING,
+  expirationDate: {
+    type: DataTypes.DATE,
     allowNull: true,
   },
 });
-module.exports = Product;
+module.exports = ProductLine;

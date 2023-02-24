@@ -10,13 +10,8 @@ const swaggerJsDoc = require('swagger-jsdoc')
 
 // file
 const sequelize = require("./src/config/database.js");
-// routes
-const AuthRoutes = require("./src/routes/AuthRoutes");
-const UserRoutes = require("./src/routes/UserRoutes");
-const ProudctRoutes = require("./src/routes/ProductRoutes");
+const routerHandle = require("./src/routes/index.js");
 
-
-//
 const options = {
   definition: {
     openapi: '3.0.0',
@@ -42,9 +37,8 @@ app.use(cors());
 app.use(bodyParser.json({ limit: "50mb" }));
 
 app.use('/api-docs',swaggerUi.serve,swaggerUi.setup(specs))
-app.use("/auth", AuthRoutes);
-app.use("/user", UserRoutes);
-app.use("/product", ProudctRoutes);
+// handle router
+routerHandle(app);
 
 try {
   sequelize.authenticate();
