@@ -10,7 +10,8 @@ const GiftByCost = require("../models/GiftByCost.js");
 const GiftByProduct = require("../models/GiftByProduct.js");
 const GiftProduct = require("../models/GiftProduct.js");
 const Price = require("../models/Price.js");
-const Product = require("../models/Product.js");
+const Product =require('../models/Product')
+const ProductLine = require("../models/ProductLine.js");
 const ShoppingCart = require("../models/ShoppingCart.js");
 const Voucher = require("../models/Voucher.js");
 const TypeUser = require("../models/TypeUser");
@@ -20,6 +21,7 @@ const Street = require("../models/Street");
 const Category = require("../models/Category");
 const UnitType = require("../models/UnitType");
 const Role = require("../models/Role.js");
+const CategoryProduct = require('../models/CategoryProduct')
 
 // account
 Account.belongsTo(User);
@@ -39,17 +41,23 @@ User.belongsTo(TypeUser);
 TypeUser.hasMany(User);
 
 //category
-Category.hasMany(Product);
+Category.belongsToMany(Product, { through: CategoryProduct });
 
-// product
-Product.belongsTo(Category);
-Product.hasMany(Price);
+//product
+Product.hasMany(ProductLine)
+Product.belongsToMany(Category, { through: CategoryProduct });
+
+// productLine
+ProductLine.hasMany(Price);
+ProductLine.belongsTo(Product)
+
+
 
 // UnitType
 UnitType.hasMany(Price);
 
 //Price
-Price.belongsTo(Product);
+Price.belongsTo(ProductLine);
 Price.belongsTo(UnitType);
 Price.hasOne(CartDetail);
 Price.hasOne(BillDetail);
@@ -110,6 +118,7 @@ module.exports = {
   GiftProduct,
   Price,
   Product,
+  ProductLine,
   ShoppingCart,
   Voucher,
   City,
