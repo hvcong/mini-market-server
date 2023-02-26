@@ -56,7 +56,7 @@ ProductRoutes.post("/addNewProduct", ProductController.addNewProduct);
  *          500:
  *           description: something goes wrong
  */
-ProductRoutes.put("/updateProduct", ProductController.updateProduct);
+ProductRoutes.put("/updateProduct/:id", ProductController.updateProduct);
 ProductRoutes.delete("/deleteProduct/:id", ProductController.deleteProduct);
 ProductRoutes.get("/getAllProducts", ProductController.getAllProducts);
 ProductRoutes.get("/getProductById/:id", ProductController.getProductById);

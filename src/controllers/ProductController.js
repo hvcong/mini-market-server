@@ -1,23 +1,26 @@
 const db = require("../config/persist");
 const Product = db.Product;
-const {addNewCategory} = require('./CategoryController')
+const { getCategoryByName } = require("../services/CategoryServices");
 
 const ProductController = {
   addNewProduct: async (req, res) => {
     try {
-      const body = req.body;
+      const data = req.body;
+      const categoryName = data.category;
+      const { id, name, description } = data;
       const check = await Product.findOne({ where: { id: req.body.id } });
       if (check) {
         return res
           .status(403)
           .json({ message: "this product already exists", result: false });
       } else {
-        const product = await Product.create({
-          id: body.id,
-          name: body.name,
-          quantity: body.quantity,
-        });
-        await product.createCategory({ name: body.category });
+        const product = await Product.create({ id, name, description });
+        const cate = await getCategoryByName(categoryName);
+        if (cate) {
+          await product.setCategories([cate]);
+        } else {
+          await product.createCategory({ name: categoryName });
+        }
         return res.status(200).json(product);
       }
     } catch (error) {
@@ -31,7 +34,7 @@ const ProductController = {
     try {
       const productID = req.params.id;
       const newData = req.body;
-      const product = Product.findOne({ where: { id: productID } });
+      const product = await Product.findOne({ where: { id: productID } });
       if (!product) {
         return res
           .status(404)
@@ -54,9 +57,13 @@ const ProductController = {
       const product = Product.findOne({ where: { id: productId } });
       if (product) {
         await product.destroy();
-        return res.status(200).json({ message: "deleted product sucessful",result: true });
+        return res
+          .status(200)
+          .json({ message: "deleted product sucessful", result: true });
       } else {
-        return res.status(404).json({message: 'something goes wrong', result: false });
+        return res
+          .status(404)
+          .json({ message: "something goes wrong", result: false });
       }
     } catch (error) {
       console.log(error);
@@ -67,7 +74,7 @@ const ProductController = {
   },
   getAllProducts: async (req, res) => {
     try {
-      const products = Product.findAll({ limit: 20 });
+      const products = await Product.findAll({ limit: 20 });
       return res.status(200).json(products);
     } catch (error) {
       console.log(error);
@@ -79,14 +86,17 @@ const ProductController = {
   getProductByname: async (req, res) => {
     try {
       const productName = req.body.name;
-      const products = Product.findAll({
+      productName.trim()
+      const products = await Product.findAll({
         where: { name: productName },
         limit: 20,
       });
-      if (products) {
+      if (products.length) {
         return res.status(200).json(products);
       } else {
-        return res.status(200).json({ message: "khong co san pham nao",result: true });
+        return res
+          .status(200)
+          .json({ message: "khong co san pham nao", result: true });
       }
     } catch (error) {
       console.log(error);
@@ -98,11 +108,13 @@ const ProductController = {
   getProductById: async (req, res) => {
     try {
       const productId = req.params.id;
-      const product = Product.findOne({ where: { id: productId } });
+      const product = await Product.findOne({ where: { id: productId } });
       if (product) {
         return res.status(200).json(product);
       } else {
-        return res.status(200).json({ message: "khong co san pham nao", result: true });
+        return res
+          .status(200)
+          .json({ message: " no product found ", result: true });
       }
     } catch (error) {
       console.log(error);
@@ -111,7 +123,6 @@ const ProductController = {
         .json({ message: "something goes wrong", result: fasle });
     }
   },
-  getProductByCategory: async (req, res) => {},
 };
 
 module.exports = ProductController;

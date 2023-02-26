@@ -21,6 +21,7 @@ const Street = require("../models/Street");
 const Category = require("../models/Category");
 const UnitType = require("../models/UnitType");
 const Role = require("../models/Role.js");
+const CategoryProduct = require('../models/CategoryProduct')
 
 // account
 Account.belongsTo(User);
@@ -40,13 +41,13 @@ User.belongsTo(TypeUser);
 TypeUser.hasMany(User);
 
 //category
-Category.hasMany(ProductLine);
+Category.belongsToMany(Product, { through: CategoryProduct });
 
 //product
 Product.hasMany(ProductLine)
+Product.belongsToMany(Category, { through: CategoryProduct });
 
 // productLine
-ProductLine.belongsTo(Category);
 ProductLine.hasMany(Price);
 ProductLine.belongsTo(Product)
 
@@ -116,6 +117,7 @@ module.exports = {
   GiftByProduct,
   GiftProduct,
   Price,
+  Product,
   ProductLine,
   ShoppingCart,
   Voucher,
