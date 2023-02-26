@@ -42,9 +42,9 @@ const AuthControllers = {
         where: { phonenumber: phonenumber },
       });
       if (account) {
-        res
+        return res
           .status(403)
-          .json({ message: "account already exists", result: false });
+          .json({ message: "account already exists", isSuccess: false });
       } else {
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(req.body.password, salt);
@@ -56,11 +56,16 @@ const AuthControllers = {
           phonenumber: req.body.phonenumber,
           password: hash,
         });
-        return res.status(200).json(user);
+        return res.status(200).json({
+          isSuccess: true,
+          user,
+        });
       }
     } catch (error) {
       console.log(error);
-      return res.status(500).json({ result: false });
+      return res
+        .status(500)
+        .json({ isSuccess: false, message: "Internal server error" });
     }
   },
   logIn: async (req, res) => {
@@ -76,16 +81,20 @@ const AuthControllers = {
         ],
       });
       if (!account) {
-        return res.status(404).json("user not found");
+        return res.status(404).json({
+          isSuccess: false,
+          message: "user not found",
+        });
       }
       const validatePassword = bcrypt.compare(
         req.body.password,
         account.password
       );
       if (!validatePassword) {
-        return res
-          .status(404)
-          .json("password is not correct, please try it again");
+        return res.status(404).json({
+          isSuccess: false,
+          message: "password is not correct, please try it again",
+        });
       }
       if (account && validatePassword) {
         const accestoken = AuthControllers.generateAccessToken(account);
@@ -98,11 +107,20 @@ const AuthControllers = {
           sameSite: "strict",
         });
         const { password, UserId, ...others } = account.dataValues;
-        return res.status(200).json({ ...others, accestoken, refreshToken });
+        return res.status(200).json({
+          isSuccess: true,
+          account: {
+            ...others,
+            accestoken,
+            refreshToken,
+          },
+        });
       }
     } catch (error) {
       console.log(error);
-      res.status(500).json({ result: false });
+      res
+        .status(500)
+        .json({ isSuccess: false, message: "Internal server error" });
     }
   },
   logOut: async (req, res) => {
@@ -110,7 +128,10 @@ const AuthControllers = {
     refreshTokens = refreshTokens.filter(
       (token) => token !== req.cookies.refreshToken
     );
-    return res.status(200).json("logOut completely done");
+    return res.status(200).json({
+      isSuccess: true,
+      message: "logOut completely done",
+    });
   },
   verifyToken: (req, res, next) => {
     const token = req.headers.token;
@@ -121,14 +142,20 @@ const AuthControllers = {
         process.env.ACCESSTOKEN,
         async (error, account) => {
           if (error) {
-            return res.status(404).json("token is not valid");
+            return res.status(404).json({
+              isSuccess: false,
+              message: "token is not valid",
+            });
           }
           req.account = account;
           next();
         }
       );
     } else {
-      return res.status(404).json("you have not authenticated yet");
+      return res.status(404).json({
+        isSuccess: false,
+        message: "you have not authenticated yet",
+      });
     }
   },
 };

@@ -19,6 +19,7 @@ const VoucherController = {
     return res.status(200).json(result);
   },
   getByCode: async (req, res) => {
+    console.log("get voucher by code route");
     let result = await voucherService.getByCode(req.params.code);
     if (!result.isSuccess) {
       return res.status(300).json(result);
