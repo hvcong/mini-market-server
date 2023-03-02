@@ -61,5 +61,6 @@ ProductRoutes.delete("/deleteProduct/:id", ProductController.deleteProduct);
 ProductRoutes.get("/getAllProducts", ProductController.getAllProducts);
 ProductRoutes.get("/getProductById/:id", ProductController.getProductById);
 ProductRoutes.get("/getProductByName", ProductController.getProductByname);
+ProductRoutes.get("/getProductByCategory", ProductController.getProductByCate);
 
 module.exports = ProductRoutes;

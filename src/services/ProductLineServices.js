@@ -48,7 +48,7 @@ const ProductLineServices = {
   },
   updateProductLine: async (id, data) => {
     try {
-      const proLine = await this.getProductLineById(id);
+      const proLine = await getProductById(id);
       if (!proLine) {
         return false;
       }
@@ -62,7 +62,7 @@ const ProductLineServices = {
   },
   deleteProductLine: async (id) => {
     try {
-      const proLine = await this.getProductById(id);
+      const proLine = await getProductLineById(id);
       if (!proLine) {
         return false;
       }

@@ -1,11 +1,11 @@
 const sequelize = require ("../config/database");
 const { DataTypes } = require ("sequelize");
 
-const GiftByProduct = sequelize.define("GiftByProduct", {
+const ProductPromotion = sequelize.define("ProductPromotion", {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     primaryKey: true,
-    autoIncrement: true,
+    // autoIncrement: true,
   },
   startDate: {
     type: DataTypes.DATE,
@@ -19,6 +19,6 @@ const GiftByProduct = sequelize.define("GiftByProduct", {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  status: DataTypes.BOOLEAN,
+  state: DataTypes.BOOLEAN,
 });
-module.exports = GiftByProduct;
+module.exports = ProductPromotion;

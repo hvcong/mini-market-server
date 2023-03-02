@@ -1,128 +1,79 @@
 const db = require("../config/persist");
 const Product = db.Product;
 const { getCategoryByName } = require("../services/CategoryServices");
+const services = require("../services/ProductServices");
 
 const ProductController = {
   addNewProduct: async (req, res) => {
-    try {
-      const data = req.body;
-      const categoryName = data.category;
-      const { id, name, description } = data;
-      const check = await Product.findOne({ where: { id: req.body.id } });
-      if (check) {
-        return res
-          .status(403)
-          .json({ message: "this product already exists", result: false });
-      } else {
-        const product = await Product.create({ id, name, description });
-        const cate = await getCategoryByName(categoryName);
-        if (cate) {
-          await product.setCategories([cate]);
-        } else {
-          await product.createCategory({ name: categoryName });
-        }
-        return res.status(200).json(product);
-      }
-    } catch (error) {
-      console.log(error);
-      return res
-        .status(500)
-        .json({ message: "something goes wrong", result: false });
+    const data = req.body;
+    const result = await services.addProduct(data);
+    if (result) {
+      return res.status(200).json(result);
+    } else {
+      const { message, isSuccess, status } = result;
+      return res.status(status).json({ message, isSuccess });
     }
   },
   updateProduct: async (req, res) => {
-    try {
-      const productID = req.params.id;
-      const newData = req.body;
-      const product = await Product.findOne({ where: { id: productID } });
-      if (!product) {
-        return res
-          .status(404)
-          .json({ message: "product not found", result: fasle });
-      } else {
-        await product.update(newData);
-        await product.save();
-        return res.status(200).json({ resutl: "updated successfully" });
-      }
-    } catch (error) {
-      console.log(error);
-      return res
-        .status(500)
-        .json({ message: "somthing goes wrong", result: false });
-    }
+    const productID = req.params.id;
+    const newData = req.body;
+    const result = await services.updateProduct(productID, newData);
+    const { message, isSuccess, status } = result;
+    return res.status(status).json({ message, isSuccess });
   },
   deleteProduct: async (req, res) => {
-    try {
-      const productId = req.params.id;
-      const product = Product.findOne({ where: { id: productId } });
-      if (product) {
-        await product.destroy();
-        return res
-          .status(200)
-          .json({ message: "deleted product sucessful", result: true });
-      } else {
-        return res
-          .status(404)
-          .json({ message: "something goes wrong", result: false });
-      }
-    } catch (error) {
-      console.log(error);
-      return res
-        .status(500)
-        .json({ message: "something goes wrong", result: false });
-    }
+    const productId = req.params.id;
+    const result = await services.deleteProduct(productId);
+    const { message, isSuccess, status } = result;
+    return res.status(status).json({ message, isSuccess });
   },
   getAllProducts: async (req, res) => {
-    try {
-      const products = await Product.findAll({ limit: 20 });
-      return res.status(200).json(products);
-    } catch (error) {
-      console.log(error);
-      return res
-        .status(500)
-        .json({ message: "something goes wrong", result: false });
+    const result = await services.getAllProducts();
+    const { isSuccess } = result;
+    if (isSuccess) {
+      const { products, status } = result;
+      return res.status(status).json(products);
+    } else {
+      const { message, status } = result;
+      return res.status(status).json({ message, isSuccess });
     }
   },
   getProductByname: async (req, res) => {
-    try {
-      const productName = req.body.name;
-      productName.trim()
-      const products = await Product.findAll({
-        where: { name: productName },
-        limit: 20,
-      });
-      if (products.length) {
-        return res.status(200).json(products);
-      } else {
-        return res
-          .status(200)
-          .json({ message: "khong co san pham nao", result: true });
-      }
-    } catch (error) {
-      console.log(error);
-      return res
-        .status(500)
-        .json({ message: "something goes wrong", result: false });
+    const productName = req.body.name;
+    productName.trim();
+    const result = await services.getProductByName(productName);
+    const { isSuccess, status } = result;
+    if (isSuccess) {
+      const { products } = result;
+      return res.status(status).json({isSuccess, products});
+    } else {
+      const { message } = result;
+      return res.status(status).json({message, isSuccess});
     }
   },
   getProductById: async (req, res) => {
-    try {
-      const productId = req.params.id;
-      const product = await Product.findOne({ where: { id: productId } });
-      if (product) {
-        return res.status(200).json(product);
-      } else {
-        return res
-          .status(200)
-          .json({ message: " no product found ", result: true });
-      }
-    } catch (error) {
-      console.log(error);
-      return res
-        .status(500)
-        .json({ message: "something goes wrong", result: fasle });
+    const productId = req.params.id;
+    const result = await services.getProductById(productId);
+    const { isSuccess, status } = result;
+    if (isSuccess) {
+      const { product } = result;
+      return res.status(status).json({isSuccess, product});
+    } else {
+      const { message } = result;
+      return res.status(status).json({message, isSuccess});
     }
   },
+  getProductByCate: async(req,res) =>{
+    const cate = req.body
+    const result = await services.getProductByCategory(cate)
+    const {isSuccess,status}  = result
+    if(isSuccess){
+      const {products} = result
+      return res.status(status).json({isSuccess,products})
+    }
+    const {message} = result
+    return res.status(status).json({message,isSuccess}) 
+  }
 };
 
 module.exports = ProductController;
