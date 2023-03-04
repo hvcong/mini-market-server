@@ -46,5 +46,4 @@ const Voucher = sequelize.define(
     timestamps: false,
   }
 );
-
 module.exports = Voucher;
