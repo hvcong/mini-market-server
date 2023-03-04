@@ -3,11 +3,12 @@ const { Price, Product, UnitType } = require("../config/persist");
 const PriceServices = {
   addPrice: async (data) => {
     try {
-      const { productId, unitTypeId, endDate, price, state } = data;
+      const { id, productId, unitTypeId, endDate, price, state } = data;
       const product = await Product.findOne({ where: { id: productId } });
       const unit = await UnitType.findOne({ where: { id: unitTypeId } });
       if (product && unit) {
         const prodPrice = await Price.create({
+          id,
           endDate,
           price,
           state,

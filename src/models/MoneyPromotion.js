@@ -10,13 +10,14 @@ const MoneyPromotion = sequelize.define("MoneyPromotion", {
   startDate: {
     type: DataTypes.DATE,
     allowNull: false,
+    defaultValue: DataTypes.NOW
   },
   endDate: {
     type: DataTypes.DATE,
     allowNull: false,
   },
   minCost: {
-    type: DataTypes.DATE,
+    type: DataTypes.DOUBLE,
     allowNull: false,
   },
   state: DataTypes.BOOLEAN,
@@ -30,7 +31,7 @@ const MoneyPromotion = sequelize.define("MoneyPromotion", {
   },
   maxMoneyDiscount: {
     type: DataTypes.DOUBLE,
-    allowNull: false,
+    allowNull: true,
   }
 });
 module.exports = MoneyPromotion;

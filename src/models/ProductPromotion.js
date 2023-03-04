@@ -10,6 +10,7 @@ const ProductPromotion = sequelize.define("ProductPromotion", {
   startDate: {
     type: DataTypes.DATE,
     allowNull: false,
+    defaultValue: DataTypes.NOW,
   },
   endDate: {
     type: DataTypes.DATE,
