@@ -1,4 +1,4 @@
-const {Product,Category} = require("../config/persist");
+const { Product, Category, Price } = require("../config/persist");
 const { getCategoryByName, createCategory } = require("./CategoryServices");
 
 const ProductServices = {
@@ -97,9 +97,9 @@ const ProductServices = {
           {
             model: Category,
             where: cateName,
-            through:{
-              attributes: []
-            }
+            through: {
+              attributes: [],
+            },
           },
         ],
       });
@@ -112,9 +112,19 @@ const ProductServices = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  getAllProducts: async () => {
+  getAllProducts: async (query) => {
     try {
-      const products = await Product.findAll({ limit: 20 });
+      let page = (query._page && Number(query._page)) || 1;
+      let limit = (query._limit && Number(query._limit)) || 12;
+      let offset = (page - 1) * limit;
+      const products = await Product.findAndCountAll({
+        limit: limit,
+        offset: offset,
+        include: [
+          { model: Category, through: { attributes: [] } },
+          { model: Price },
+        ],
+      });
       return { products, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);

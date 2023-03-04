@@ -1,6 +1,6 @@
 const AuthRoutes = require("./AuthRoutes");
 const ProductRoutes = require("./ProductRoutes");
-const UserRoutes = require("./UserRoutes");
+const CustomerRoutes = require("./CustomerRoutes");
 const VoucherRoutes = require("./VoucherRoutes");
 const UnitTypeRoutes = require('../routes/UnitTypeRoutes')
 const PriceRoutes = require('./PriceRoutes')
@@ -12,7 +12,7 @@ const GiftProductRoutes = require('./GiftProductRoutes')
 
 const routerHandle = (app) => {
   app.use("/auth", AuthRoutes);
-  app.use("/user", UserRoutes);
+  app.use("/user", CustomerRoutes);
   app.use("/product", ProductRoutes);
   app.use("/voucher", VoucherRoutes);
   app.use('/unitType',UnitTypeRoutes);

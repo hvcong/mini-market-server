@@ -1,5 +1,3 @@
-const db = require("../config/persist");
-const Product = db.Product;
 const { getCategoryByName } = require("../services/CategoryServices");
 const services = require("../services/ProductServices");
 
@@ -28,7 +26,8 @@ const ProductController = {
     return res.status(status).json({ message, isSuccess });
   },
   getAllProducts: async (req, res) => {
-    const result = await services.getAllProducts();
+    const query = req.query
+    const result = await services.getAllProducts(query);
     const { isSuccess } = result;
     if (isSuccess) {
       const { products, status } = result;

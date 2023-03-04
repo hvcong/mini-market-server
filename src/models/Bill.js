@@ -16,5 +16,5 @@ const Bill = sequelize.define("Bill", {
     type: DataTypes.DOUBLE,
     allowNull: true,
   },
-});
+},{ timestamps: false});
 module.exports = Bill;

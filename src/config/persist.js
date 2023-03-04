@@ -131,6 +131,7 @@ sequelize
 module.exports = {
   Account,
   Customer,
+  Employee,
   Role,
   HomeAddress,
   Bill,

@@ -58,7 +58,7 @@ ProductRoutes.post("/add", ProductController.addNewProduct);
  */
 ProductRoutes.put("/update/:id", ProductController.updateProduct);
 ProductRoutes.delete("/delete/:id", ProductController.deleteProduct);
-ProductRoutes.get("/get", ProductController.getAllProducts);
+ProductRoutes.get("/query", ProductController.getAllProducts);
 ProductRoutes.get("/get/:id", ProductController.getProductById);
 ProductRoutes.get("/get", ProductController.getProductByname);
 ProductRoutes.get("/get", ProductController.getProductByCate);
