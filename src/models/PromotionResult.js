@@ -1,16 +1,21 @@
-const sequelize = require ("../config/database");
-const { DataTypes } = require ("sequelize");
+const sequelize = require("../config/database");
+const { DataTypes } = require("sequelize");
 
-const PromotionResult = sequelize.define("PromotionResult", {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
+const PromotionResult = sequelize.define(
+  "PromotionResult",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    isSuccess: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
   },
-  isSuccess: {
-    type: DataTypes.BOOLEAN,
-    allowNull: false,
-  },
-  
-});
+  {
+    timestamps: false,
+  }
+);
 module.exports = PromotionResult;
