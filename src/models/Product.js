@@ -1,6 +1,5 @@
 const sequelize = require("../config/database");
 const { DataTypes } = require("sequelize");
-
 const Product = sequelize.define(
   "Product",
   {
@@ -13,10 +12,6 @@ const Product = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    image: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
     description: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -25,6 +20,9 @@ const Product = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    state:{
+      type: DataTypes.BOOLEAN,
+    }
   },
   {
     timestamps: false,

@@ -58,9 +58,9 @@ ProductRoutes.post("/add", ProductController.addNewProduct);
  */
 ProductRoutes.put("/update/:id", ProductController.updateProduct);
 ProductRoutes.delete("/delete/:id", ProductController.deleteProduct);
-ProductRoutes.get("/query", ProductController.getAllProducts);
-ProductRoutes.get("/get/:id", ProductController.getProductById);
-ProductRoutes.get("/get", ProductController.getProductByname);
-ProductRoutes.get("/get", ProductController.getProductByCate);
+ProductRoutes.get("/get", ProductController.getAllProducts);
+ProductRoutes.get("/getId", ProductController.getProductById);
+ProductRoutes.get("/getName", ProductController.getProductByname);
+ProductRoutes.get("/getSub", ProductController.getProductByCate);
 
 module.exports = ProductRoutes;

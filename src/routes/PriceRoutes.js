@@ -3,6 +3,6 @@ const controller = require("../controllers/PriceController");
 
 routes.post("/add", controller.addPrice);
 routes.put("/update", controller.updatePrice);
-routes.delete("/delete/:pid/:uid", controller.deletePrice);
+routes.delete("/delete", controller.deletePrice);
 routes.get('/get',controller.getProductLine)
 module.exports = routes;

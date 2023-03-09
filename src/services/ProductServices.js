@@ -1,6 +1,7 @@
-const { Product, Category, Price } = require("../config/persist");
-const { getCategoryByName, createCategory } = require("./CategoryServices");
-
+const { Product, SubCategory, Price, } = require("../config/persist");
+const {getById} = require('../services/SubCategoryServices')
+const {getUnitByIds} = require('../services/UnitTypeServices')
+const {create} = require('../services/ImageServices')
 const ProductServices = {
   getProductById: async (id) => {
     try {
@@ -20,7 +21,6 @@ const ProductServices = {
       const products = await Product.findAll({
         limit: 20,
         where: { name: proName },
-        // include: { model: db.Category },
       });
       if (products) {
         return { products, isSuccess: true, status: 200 };
@@ -33,29 +33,24 @@ const ProductServices = {
   },
   addProduct: async (data) => {
     try {
-      const { id, name, image, description, quantity } = data;
-      const categoryName = data.category;
+      const { id, name, images, description, quantity,subCategoryId,unitTypeIds } = data;
       const check = await Product.findOne({ where: { id: id } });
       if (check) {
-        const newQty = check.quantity + quantity;
-        await check.update({ quantity: newQty });
-        await check.save();
-        return check;
+        return {message: 'product already exists',isSuccess: false, status: 403}
       } else {
         const product = await Product.create({
           id,
           name,
-          image,
           description,
           quantity,
         });
-        const cate = await getCategoryByName(categoryName);
-        if (cate) {
-          await product.setCategories([cate]);
-        } else {
-          await product.createCategory({ name: categoryName });
+        const sub = await getById(subCategoryId);
+        if (sub) {
+          await product.setSubCategory(sub);
         }
-        return product;
+        const uris = await create(images)
+        await product.setImages(uris)
+        return {product,isSuccess: true, status: 200};
       }
     } catch (error) {
       console.log(error);
@@ -89,17 +84,15 @@ const ProductServices = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  getProductByCategory: async (cateName) => {
+  getProductByCategory: async (id) => {
     try {
       const products = await Product.findAll({
         limit: 20,
         include: [
           {
-            model: Category,
-            where: cateName,
-            through: {
-              attributes: [],
-            },
+            model: SubCategory,
+            where: {id: id},
+            attributes: ['id','name','CategoryId']
           },
         ],
       });
@@ -114,6 +107,8 @@ const ProductServices = {
   },
   getAllProducts: async (query) => {
     try {
+      const x = Object.keys(query).map(key => ({[key]: query[key]}))
+      console.log(x)
       let page = (query._page && Number(query._page)) || 1;
       let limit = (query._limit && Number(query._limit)) || 12;
       let offset = (page - 1) * limit;
@@ -121,7 +116,7 @@ const ProductServices = {
         limit: limit,
         offset: offset,
         include: [
-          { model: Category, through: { attributes: [] } },
+          { model: SubCategory, },
           { model: Price },
         ],
       });

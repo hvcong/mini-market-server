@@ -5,13 +5,13 @@ const Employee = sequelize.define(
   "Employee",
   {
     id: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       primaryKey: true,
-      // autoIncrement: true,
+      autoIncrement: true,
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     phonenumber: {
       type: DataTypes.STRING,

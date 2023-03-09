@@ -8,6 +8,11 @@ const PromotionRoutes = require('./PromotonHeaderRoutes')
 const ProductPromotionRoutes = require('./ProductPromotionRoutes')
 const MoneyPromotionRoutes = require('./MoneyPromotionRoutes')
 const GiftProductRoutes = require('./GiftProductRoutes')
+const SubCategoryRoutes = require('./SubCategoryRoutes')
+const CategoryRoutes = require('./CategoryRoutes')
+const DiscountRateProductRoutes = require('./DiscountRateProductRoutes')
+const BillRoutes = require('./BillRoutes')
+const EmployeeRoutes = require('./EmployeeRoutes')
 
 
 const routerHandle = (app) => {
@@ -21,6 +26,11 @@ const routerHandle = (app) => {
   app.use('/productPromotion',ProductPromotionRoutes)
   app.use('/moneyPromotion',MoneyPromotionRoutes)
   app.use('/giftProduct',GiftProductRoutes)
+  app.use('/subCategory',SubCategoryRoutes)
+  app.use('/category',CategoryRoutes)
+  app.use('/discount',DiscountRateProductRoutes)
+  app.use('/bill',BillRoutes)
+  app.use('/employee',EmployeeRoutes)
 };
 
 module.exports = routerHandle;
