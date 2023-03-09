@@ -6,28 +6,29 @@ const PriceController = {
     const result = await services.addPrice(data);
     const { isSuccess, status } = result;
     if (isSuccess) {
-      const { prodPrice } = result;
-      return res.status(status).json({ isSuccess, prodPrice });
+      const { productPrice } = result;
+      return res.status(status).json({ isSuccess, productPrice });
     } else {
       const { message } = result;
       return res.status(status).json({ message, isSuccess });
     }
   },
   updatePrice: async (req, res) => {
+    const id = req.query.id
     const data = req.body;
-    const result = await services.updatePrice(data);
+    const result = await services.updatePrice(id,data);
     const { message, isSuccess, status } = result;
     return res.status(status).json({ message, isSuccess });
   },
   deletePrice: async (req, res) => {
-    const pid = req.params.pid
-    const uid = req.params.uid
-    const result = await services.deletePrice(pid,uid)
+    const id = req.query.id
+    const result = await services.deletePrice(id)
     const {message,isSuccess,status} = result
     return res.status(status).json({message,isSuccess})
   },
   getProductLine: async (req,res) =>{
-    const result = await services.getProductLine()
+    const query = req.query
+    const result = await services.getProductLine(query)
     const {isSuccess,status} = result
     if(isSuccess){
         const {productLines} = result

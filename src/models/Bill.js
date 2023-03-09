@@ -5,10 +5,10 @@ const Bill = sequelize.define("Bill", {
   id: {
     type: DataTypes.UUID,
     primaryKey: true,
-    // autoIncrement: true,
+    defaultValue: DataTypes.UUIDV4
   },
   orderDate: {
-    type: DataTypes.STRING,
+    type: DataTypes.DATE,
     allowNull: false,
     defaultValue:DataTypes.NOW
   },

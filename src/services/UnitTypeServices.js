@@ -1,3 +1,4 @@
+const e = require("express");
 const { UnitType } = require("../config/persist");
 
 const UnitTypeServices = {
@@ -48,6 +49,21 @@ const UnitTypeServices = {
       } else {
         return { message: "unitType not found", isSuccess: false, status: 400 };
       }
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getUnitByIds: async (ids) => {
+    try {
+      var units = [];
+      for (ele of ids) {
+        const unit = await UnitType.findOne({ where: { id: ele } });
+        if (unit) {
+          units.push(unit);
+        }
+      }
+      return units;
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };

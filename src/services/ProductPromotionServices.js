@@ -3,20 +3,31 @@ const { ProductPromotion, PromotionHeader } = require("../config/persist");
 const Services = {
   add: async (data) => {
     try {
-      const { id, endDate, minQuantity, state, promotionHeaderId } = data;
+      const { id, startDate, endDate, minQuantity, state, promotionHeaderId } = data;
       var promotion = await ProductPromotion.findOne({ where: { id: id } });
-      const promotionHeader = await PromotionHeader.findOne({where: {id: promotionHeaderId}})
-      if (promotion ) {
+      const promotionHeader = await PromotionHeader.findOne({
+        where: { id: promotionHeaderId },
+      });
+      if (promotion) {
         return {
           message: "this Product promotion already exists",
           isSuccess: false,
           status: 400,
         };
-      } 
-      if(promotionHeader ) {
-        promotion = await ProductPromotion.create({id,endDate,minQuantity,state});
-        await promotion.setPromotionHeader(promotionHeader)
+      }
+      if (promotionHeader) {
+        promotion = await ProductPromotion.create({
+          id,
+          startDate,
+          endDate,
+          minQuantity,
+          state,
+        });
+        await promotion.setPromotionHeader(promotionHeader);
         return { promotion, isSuccess: true, status: 200 };
+      }
+      else{
+        return {message: 'promotion header not found',isSuccess: false, status: 400}
       }
     } catch (error) {
       console.log(error);

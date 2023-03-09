@@ -51,18 +51,30 @@ const PromotionHeaderServices = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  getAll : async() =>{
+  getAll: async () => {
     try {
-        const promotions = await PromotionHeader.findAll({ limit: 20});
-        if (promotions) {
-          return { promotions, isSuccess: true, status: 200 };
-        }
-        return { message: "promotion not found", isSuccess: false, status: 404 };
-      } catch (error) {
-        console.log(error);
-        return { message: "something went wrong", isSuccess: false, status: 500 };
+      const promotions = await PromotionHeader.findAll({ limit: 20 });
+      if (promotions) {
+        return { promotions, isSuccess: true, status: 200 };
       }
-  }
+      return { message: "promotion not found", isSuccess: false, status: 404 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getById: async (id) => {
+    try {
+      const promotion = await PromotionHeader.findOne({ where: { id: id } });
+      if (promotion) {
+        return { promotion, isSuccess: true, status: 200 };
+      }
+      return { message: "promotion not found", isSuccess: false, status: 404 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
 };
 
-module.exports = PromotionHeaderServices
+module.exports = PromotionHeaderServices;

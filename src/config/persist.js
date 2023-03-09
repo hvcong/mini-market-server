@@ -22,8 +22,10 @@ const Street = require("../models/Street");
 const Category = require("../models/Category");
 const UnitType = require("../models/UnitType");
 const Role = require("../models/Role.js");
-const CategoryProduct = require("../models/CategoryProduct");
+const SubCategory = require("../models/SubCategory");
 const Employee = require('../models/Employee')
+const Image = require('../models/Image');
+const DiscountRateProduct = require('../models/DiscountRateProduct')
 
 // account
 Account.belongsTo(Customer);
@@ -44,12 +46,18 @@ Customer.belongsTo(TypeCustomer);
 TypeCustomer.hasMany(Customer);
 
 //category
-Category.belongsToMany(Product, { through: CategoryProduct });
+Category.hasMany(SubCategory);
+
+// SubCategory
+SubCategory.belongsTo(Category)
+SubCategory.hasMany(Product)
 
 //product
-Product.belongsToMany(Category, { through: CategoryProduct });
-Product.belongsToMany(UnitType, { through: Price });
-UnitType.belongsToMany(Product, { through: Price });
+Product.belongsTo(SubCategory)
+// Product.belongsToMany(UnitType, { through: Price });
+Product.hasMany(Image)
+Image.belongsTo(Product)
+// UnitType.belongsToMany(Product, { through: Price });
 Product.hasMany(Price);
 
 // UnitType
@@ -61,6 +69,7 @@ Price.belongsTo(Product);
 Price.hasOne(CartDetail);
 Price.hasOne(BillDetail);
 Price.hasOne(GiftProduct)
+Price.belongsTo(DiscountRateProduct)
 
 // Employee
 Employee.hasMany(Bill)
@@ -79,6 +88,7 @@ BillDetail.belongsTo(Price);
 
 // voucher
 Voucher.hasOne(Bill);
+Voucher.belongsTo(PromotionHeader)
 
 // City
 City.hasMany(Ward);
@@ -107,6 +117,8 @@ CartDetail.belongsTo(Price);
 // PromotionHeader
 PromotionHeader.hasMany(ProductPromotion)
 PromotionHeader.hasMany(MoneyPromotion)
+PromotionHeader.hasMany(Voucher)
+PromotionHeader.hasMany(DiscountRateProduct)
 
 // ProductPromotion
 ProductPromotion.belongsTo(PromotionHeader)
@@ -115,6 +127,10 @@ ProductPromotion.hasMany(GiftProduct)
 // MoneyPromotion
 MoneyPromotion.belongsTo(PromotionHeader)
 MoneyPromotion.hasMany(GiftProduct)
+
+//DiscountRateProduct
+DiscountRateProduct.belongsTo(PromotionHeader)
+DiscountRateProduct.hasMany(Price)
 
 // GiftProduct
 GiftProduct.belongsTo(ProductPromotion)
@@ -150,4 +166,7 @@ module.exports = {
   Ward,
   Street,
   UnitType,
+  Image,
+  SubCategory,
+  DiscountRateProduct
 };

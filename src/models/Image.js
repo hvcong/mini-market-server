@@ -1,20 +1,22 @@
 const sequelize = require("../config/database");
 const { DataTypes } = require("sequelize");
 
-const BillDetail = sequelize.define(
-  "BillDetail",
+const Image = sequelize.define(
+  "Image",
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    quantity: {
-      type: DataTypes.INTEGER,
-      defaultValue: 1
+    uri: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
   },
-  { timestamps: false }
+  {
+    timestamps: false,
+  }
 );
 
-module.exports = BillDetail;
+module.exports = Image;

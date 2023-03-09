@@ -7,7 +7,7 @@ const PriceServices = {
       const product = await Product.findOne({ where: { id: productId } });
       const unit = await UnitType.findOne({ where: { id: unitTypeId } });
       if (product && unit) {
-        const prodPrice = await Price.create({
+        const productPrice = await Price.create({
           id,
           endDate,
           price,
@@ -15,9 +15,9 @@ const PriceServices = {
           ProductId: productId,
           UnitTypeId: unitTypeId,
         });
-        await prodPrice.setProduct(product);
-        await prodPrice.setUnitType(unit);
-        return { prodPrice, isSuccess: true, status: 200 };
+        await productPrice.setProduct(product);
+        await productPrice.setUnitType(unit);
+        return { productPrice, isSuccess: true, status: 200 };
       } else {
         return {
           message: "no product or no unitType, price could not be created",
@@ -30,14 +30,14 @@ const PriceServices = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  updatePrice: async (data) => {
+  updatePrice: async (id, data) => {
     try {
-      const { productId, unitTypeId, ...newData } = data;
       const price = await Price.findOne({
-        where: { ProductId: productId, UnitTypeId: unitTypeId },
+        where: { id: id },
       });
       if (price) {
-        const result = await price.update(newData);
+        await price.update(data);
+        await price.save();
         return { message: "updated succesful", isSuccess: true, status: 200 };
       } else {
         return { message: "price not found", isSuccess: false, status: 404 };
@@ -47,10 +47,11 @@ const PriceServices = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  deletePrice: async (pid, uid) => {
+  deletePrice: async (id) => {
     try {
       const price = await Price.findOne({
-        where: { ProductId: pid, UnitTypeId: uid },
+        // where: { ProductId: pid, UnitTypeId: uid },
+        where: { id: id },
       });
       if (price) {
         await price.destroy();
@@ -63,10 +64,14 @@ const PriceServices = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  getProductLine: async () => {
+  getProductLine: async (query) => {
     try {
+      const page = (query._page && Number(query._page)) || 1;
+      const limit = (query._limit && Number(query._limit)) || 20;
+      var offset = (page - 1) * limit;
       const productLines = await Price.findAll({
-        limit: 20,
+        limit: limit,
+        offset: offset,
         include: [
           {
             model: Product,
@@ -75,8 +80,9 @@ const PriceServices = {
             model: UnitType,
           },
         ],
+        attributes: { exclude: ["ProductId","UnitTypeId"]}
       });
-      return {productLines,isSuccess: true, status: 200 }
+      return { productLines, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };

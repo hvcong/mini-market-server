@@ -5,10 +5,10 @@ const ProductController = {
   addNewProduct: async (req, res) => {
     const data = req.body;
     const result = await services.addProduct(data);
-    if (result) {
-      return res.status(200).json(result);
+    const {isSuccess,message,status,product} = result
+    if (isSuccess) {
+      return res.status(status).json(product);
     } else {
-      const { message, isSuccess, status } = result;
       return res.status(status).json({ message, isSuccess });
     }
   },
@@ -20,7 +20,7 @@ const ProductController = {
     return res.status(status).json({ message, isSuccess });
   },
   deleteProduct: async (req, res) => {
-    const productId = req.params.id;
+    const productId = req.query.id;
     const result = await services.deleteProduct(productId);
     const { message, isSuccess, status } = result;
     return res.status(status).json({ message, isSuccess });
@@ -38,7 +38,7 @@ const ProductController = {
     }
   },
   getProductByname: async (req, res) => {
-    const productName = req.body.name;
+    const productName = req.query.name;
     productName.trim();
     const result = await services.getProductByName(productName);
     const { isSuccess, status } = result;
@@ -51,7 +51,7 @@ const ProductController = {
     }
   },
   getProductById: async (req, res) => {
-    const productId = req.params.id;
+    const productId = req.query.id;
     const result = await services.getProductById(productId);
     const { isSuccess, status } = result;
     if (isSuccess) {
@@ -63,7 +63,7 @@ const ProductController = {
     }
   },
   getProductByCate: async(req,res) =>{
-    const cate = req.body
+    const cate = req.query.subId
     const result = await services.getProductByCategory(cate)
     const {isSuccess,status}  = result
     if(isSuccess){
