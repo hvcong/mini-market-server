@@ -1,9 +1,9 @@
 const bcrypt = require("bcrypt");
 const { config } = require("dotenv");
 const jwt = require("jsonwebtoken");
-const db = require("../config/persist");
-const User = db.User;
-const Account = db.Account;
+const { Account } = require("../config/persist");
+const { create } = require("../services/AccountServices");
+
 var refreshTokens = [];
 
 const AuthControllers = {
@@ -33,58 +33,22 @@ const AuthControllers = {
       { expiresIn: "365d" }
     );
   },
-  // register
-  register: async (req, res) => {
-    try {
-      const phonenumber = req.body.phonenumber;
-      console.log(phonenumber);
-      const account = await Account.findOne({
-        where: { phonenumber: phonenumber },
-      });
-      if (account) {
-        return res
-          .status(403)
-          .json({ message: "account already exists", isSuccess: false });
-      } else {
-        const salt = await bcrypt.genSalt(10);
-        const hash = await bcrypt.hash(req.body.password, salt);
-        const user = await User.create({
-          firstName: req.body.firstName,
-          lastName: req.body.lastName,
-        });
-        await user.createAccount({
-          phonenumber: req.body.phonenumber,
-          password: hash,
-        });
-        return res.status(200).json({
-          isSuccess: true,
-          user,
-        });
-      }
-    } catch (error) {
-      console.log(error);
-      return res
-        .status(500)
-        .json({ isSuccess: false, message: "Internal server error" });
+  create: async (req, res) => {
+    const data = req.body;
+    const result = await create(data);
+    const { isSuccess, status, message, account } = result;
+    if (isSuccess) {
+      return res.status(status).json({ isSuccess, account });
     }
+    return res.status(status).json({ isSuccess, message });
   },
   logIn: async (req, res) => {
     try {
-      const account = await db.Account.findOne({
+      const account = await Account.findOne({
         where: { phonenumber: req.body.phonenumber },
-        include: [
-          {
-            model: User,
-            // as: 'user',
-            //where : { a: 'b'}
-          },
-        ],
       });
       if (!account) {
-        return res.status(404).json({
-          isSuccess: false,
-          message: "user not found",
-        });
+        return res.status(404).json("account not found");
       }
       const validatePassword = bcrypt.compare(
         req.body.password,

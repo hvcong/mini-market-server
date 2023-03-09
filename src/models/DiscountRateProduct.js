@@ -1,30 +1,30 @@
 const sequelize = require("../config/database");
 const { DataTypes } = require("sequelize");
 
-const ProductLine = sequelize.define(
-  "ProductLine",
+const DiscountRateProduct = sequelize.define(
+  "DiscountRateProduct",
   {
     id: {
       type: DataTypes.STRING,
       primaryKey: true,
-      // autoIncrement: true,
     },
-    dateOfManufature: {
+    startDate: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
     },
-    expirationDate: {
+    endDate: {
       type: DataTypes.DATE,
-      allowNull: true,
-    },
-    quantity: {
-      type: DataTypes.INTEGER,
       allowNull: false,
     },
+    discountRate: {
+      type: DataTypes.DOUBLE,
+      allowNull: false,
+    },
+    state: DataTypes.BOOLEAN,
   },
   {
     timestamps: false,
   }
 );
-module.exports = ProductLine;
+module.exports = DiscountRateProduct;

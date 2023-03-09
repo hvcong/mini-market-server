@@ -36,7 +36,7 @@ const ProductRoutes = require("express").Router();
  *          500:
  *           description: something goes wrong
  */
-ProductRoutes.post("/addNewProduct", ProductController.addNewProduct);
+ProductRoutes.post("/add", ProductController.addNewProduct);
 /**
  * @swagger
  *  /updateProduct:
@@ -56,10 +56,11 @@ ProductRoutes.post("/addNewProduct", ProductController.addNewProduct);
  *          500:
  *           description: something goes wrong
  */
-ProductRoutes.put("/updateProduct/:id", ProductController.updateProduct);
-ProductRoutes.delete("/deleteProduct/:id", ProductController.deleteProduct);
-ProductRoutes.get("/getAllProducts", ProductController.getAllProducts);
-ProductRoutes.get("/getProductById/:id", ProductController.getProductById);
-ProductRoutes.get("/getProductByName", ProductController.getProductByname);
+ProductRoutes.put("/update/:id", ProductController.updateProduct);
+ProductRoutes.delete("/delete/:id", ProductController.deleteProduct);
+ProductRoutes.get("/get", ProductController.getAllProducts);
+ProductRoutes.get("/getId", ProductController.getProductById);
+ProductRoutes.get("/getName", ProductController.getProductByname);
+ProductRoutes.get("/getSub", ProductController.getProductByCate);
 
 module.exports = ProductRoutes;

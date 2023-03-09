@@ -1,24 +1,33 @@
-const sequelize = require ("../config/database");
-const { DataTypes } = require ("sequelize");
+const sequelize = require("../config/database");
+const { DataTypes } = require("sequelize");
 
-const PromotionHeader = sequelize.define("PromotionHeader", {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
+const PromotionHeader = sequelize.define(
+  "PromotionHeader",
+  {
+    id: {
+      type: DataTypes.STRING,
+      primaryKey: true,
+    },
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    startDate: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    },
+    endDate: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    budget: {
+      type: DataTypes.DOUBLE,
+      allowNull: false,
+    },
+    state: DataTypes.BOOLEAN,
   },
-  startDate: {
-    type: DataTypes.DATE,
-    allowNull: false,
-  },
-  endDate: {
-    type: DataTypes.DATE,
-    allowNull: false,
-  },
-  budget: {
-    type: DataTypes.DOUBLE,
-    allowNull: false,
-  },
-  status: DataTypes.BOOLEAN,
-});
+  {
+    timestamps: false,
+  }
+);
 module.exports = PromotionHeader;

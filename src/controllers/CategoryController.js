@@ -1,59 +1,32 @@
-const db = require("..//config/persist");
-const { Op } = require("sequelize");
-const {createCategory} = require('../services/CategoryServices')
-const Category = db.Category;
+const services = require("../services/CategoryServices");
 
 const CategoryController = {
-  addNewCategory: async (req, res) => {
-    try {
-      const newCategoryName = req.body.name;
-      const check = createCategory(newCategoryName)
-      if (check) {
-        return res
-          .status(406)
-          .json({ message: "this category already exists", result: false });
-      } else {
-        return res.status(200).json({
-          result: "add new category successful",
-          name: newCategoryName,
-        });
-      }
-    } catch (error) {
-      console.log(error);
-      return res
-        .status(500)
-        .json({ message: "something goes wrong", result: false });
+  add: async (req, res) => {
+    const data = req.body;
+    const result = await services.add(data);
+    const { isSuccess, status, cate, message } = result;
+    if (isSuccess) {
+      return res.status(status).json({ isSuccess, cate });
     }
+    return res.status(status).json({ isSuccess, message });
   },
-  updateCategory: async (req, res) => {
-    try {
-      const categoryName = req.body.name;
-      const category = await Category.findOne({
-        where: { [Op.like]: categoryName },
-      });
-    } catch (error) {
-      console.log(error);
-      return res
-        .status(500)
-        .json({ message: "something goes wrong", result: false });
-    }
+  update: async (req, res) => {
+    const id = req.query.id;
+    const data = req.body;
+    const result = await services.update(id, data);
+    const { isSuccess, status, message } = result;
+    return res.status(status).json({ isSuccess, message });
   },
-  deleteCategory: async (req, res) => {
-    try {
-      const id = req.params.id;
-      const category = Category.findOne({ where: { id: id } });
-      if (category) {
-        category.destroy();
-        return res.status(200).json({ result: "deleted successful" });
-      } else {
-        return res.status(403).json({ result: "category not found" });
-      }
-    } catch (error) {
-      console.log(error);
-      return res
-        .status(500)
-        .json({ message: "something goes wrong", result: false });
+  delete: async (req, res) => {
+  },
+  get: async (req, res) => {
+    const query = req.query;
+    const result = await services.get(query);
+    const { isSuccess, status, cates, message } = result;
+    if (isSuccess) {
+      return res.status(status).json({ isSuccess, cates });
     }
+    return res.status(status).json({ isSuccess, message });
   },
 };
 

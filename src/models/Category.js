@@ -3,14 +3,19 @@ const { DataTypes } = require("sequelize");
 
 const Category = sequelize.define("Category", {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     primaryKey: true,
-    autoIncrement: true,
   },
   name: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-});
+  image: {
+    type: DataTypes.STRING,
+  },
+  state:{
+    type: DataTypes.BOOLEAN
+  }
+}, {timestamps: false});
 
 module.exports = Category;

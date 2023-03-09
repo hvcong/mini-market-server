@@ -5,67 +5,82 @@ const HomeAddress = require("../models/HomeAddress.js");
 const Bill = require("../models/Bill.js");
 const BillDetail = require("../models/BillDetail.js");
 const CartDetail = require("../models/CartDetail.js");
-const User = require("../models/User.js");
-const GiftByCost = require("../models/GiftByCost.js");
-const GiftByProduct = require("../models/GiftByProduct.js");
+const Customer = require("../models/Customer.js");
+const PromotionHeader = require("../models/PromotionHeader.js");
+const MoneyPromotion = require("../models/MoneyPromotion.js");
+const ProductPromotion = require("../models/ProductPromotion.js");
 const GiftProduct = require("../models/GiftProduct.js");
 const Price = require("../models/Price.js");
-const Product =require('../models/Product')
-const ProductLine = require("../models/ProductLine.js");
+const Product = require("../models/Product");
+// const ProductLine = require("../models/ProductLine.js");
 const ShoppingCart = require("../models/ShoppingCart.js");
 const Voucher = require("../models/Voucher.js");
-const TypeUser = require("../models/TypeUser");
+const TypeCustomer = require("../models/TypeCustomer");
 const City = require("../models/City");
 const Ward = require("../models/Ward");
 const Street = require("../models/Street");
 const Category = require("../models/Category");
 const UnitType = require("../models/UnitType");
 const Role = require("../models/Role.js");
-const CategoryProduct = require('../models/CategoryProduct')
+const SubCategory = require("../models/SubCategory");
+const Employee = require('../models/Employee')
+const Image = require('../models/Image');
+const DiscountRateProduct = require('../models/DiscountRateProduct')
 
 // account
-Account.belongsTo(User);
+Account.belongsTo(Customer);
+Account.belongsTo(Employee)
 Account.hasMany(Role);
 
 //role
 Role.belongsTo(Account);
 
 // customer
-User.belongsTo(HomeAddress);
-User.hasOne(Account);
-User.hasOne(ShoppingCart);
-User.hasMany(Bill);
-User.belongsTo(TypeUser);
+Customer.belongsTo(HomeAddress);
+Customer.hasOne(Account);
+Customer.hasOne(ShoppingCart);
+Customer.hasMany(Bill);
+Customer.belongsTo(TypeCustomer);
 
 // typeuser
-TypeUser.hasMany(User);
+TypeCustomer.hasMany(Customer);
 
 //category
-Category.belongsToMany(Product, { through: CategoryProduct });
+Category.hasMany(SubCategory);
+
+// SubCategory
+SubCategory.belongsTo(Category)
+SubCategory.hasMany(Product)
 
 //product
-Product.hasMany(ProductLine)
-Product.belongsToMany(Category, { through: CategoryProduct });
-
-// productLine
-ProductLine.hasMany(Price);
-ProductLine.belongsTo(Product)
-
-
+Product.belongsTo(SubCategory)
+// Product.belongsToMany(UnitType, { through: Price });
+Product.hasMany(Image)
+Image.belongsTo(Product)
+// UnitType.belongsToMany(Product, { through: Price });
+Product.hasMany(Price);
 
 // UnitType
 UnitType.hasMany(Price);
 
 //Price
-Price.belongsTo(ProductLine);
 Price.belongsTo(UnitType);
+Price.belongsTo(Product);
 Price.hasOne(CartDetail);
 Price.hasOne(BillDetail);
+Price.hasOne(GiftProduct)
+Price.belongsTo(DiscountRateProduct)
 
-// // bill
+// Employee
+Employee.hasMany(Bill)
+Employee.hasOne(Account)
+Employee.belongsTo(HomeAddress)
+
+// Bill
 Bill.hasMany(BillDetail);
 Bill.belongsTo(Voucher);
-Bill.belongsTo(User);
+Bill.belongsTo(Customer);
+Bill.belongsTo(Employee)
 
 // BillDetail
 BillDetail.belongsTo(Bill);
@@ -73,6 +88,7 @@ BillDetail.belongsTo(Price);
 
 // voucher
 Voucher.hasOne(Bill);
+Voucher.belongsTo(PromotionHeader)
 
 // City
 City.hasMany(Ward);
@@ -86,16 +102,40 @@ Street.belongsTo(Ward);
 Street.hasMany(HomeAddress);
 
 // HomeAdress
-HomeAddress.hasOne(User);
+HomeAddress.hasOne(Customer);
+HomeAddress.hasOne(Employee)
 HomeAddress.belongsTo(Street);
 
 // shoppingCart
-ShoppingCart.belongsTo(User);
+ShoppingCart.belongsTo(Customer);
 ShoppingCart.hasMany(CartDetail);
 
 // CartDetail
 CartDetail.belongsTo(ShoppingCart);
 CartDetail.belongsTo(Price);
+
+// PromotionHeader
+PromotionHeader.hasMany(ProductPromotion)
+PromotionHeader.hasMany(MoneyPromotion)
+PromotionHeader.hasMany(Voucher)
+PromotionHeader.hasMany(DiscountRateProduct)
+
+// ProductPromotion
+ProductPromotion.belongsTo(PromotionHeader)
+ProductPromotion.hasMany(GiftProduct)
+
+// MoneyPromotion
+MoneyPromotion.belongsTo(PromotionHeader)
+MoneyPromotion.hasMany(GiftProduct)
+
+//DiscountRateProduct
+DiscountRateProduct.belongsTo(PromotionHeader)
+DiscountRateProduct.hasMany(Price)
+
+// GiftProduct
+GiftProduct.belongsTo(ProductPromotion)
+GiftProduct.belongsTo(MoneyPromotion)
+GiftProduct.belongsTo(Price)
 
 sequelize
   .sync({ alter: true })
@@ -106,23 +146,27 @@ sequelize
 
 module.exports = {
   Account,
-  User,
+  Customer,
+  Employee,
   Role,
   HomeAddress,
   Bill,
   BillDetail,
   CartDetail,
   Category,
-  GiftByCost,
-  GiftByProduct,
+  MoneyPromotion,
+  ProductPromotion,
+  PromotionHeader,
   GiftProduct,
   Price,
   Product,
-  ProductLine,
   ShoppingCart,
   Voucher,
   City,
   Ward,
   Street,
   UnitType,
+  Image,
+  SubCategory,
+  DiscountRateProduct
 };

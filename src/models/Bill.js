@@ -3,17 +3,18 @@ const { DataTypes } = require ("sequelize");
 
 const Bill = sequelize.define("Bill", {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     primaryKey: true,
-    autoIncrement: true,
+    defaultValue: DataTypes.UUIDV4
   },
   orderDate: {
-    type: DataTypes.STRING,
+    type: DataTypes.DATE,
     allowNull: false,
+    defaultValue:DataTypes.NOW
   },
   cost: {
     type: DataTypes.DOUBLE,
-    allowNull: false,
+    allowNull: true,
   },
-});
+},{ timestamps: false});
 module.exports = Bill;

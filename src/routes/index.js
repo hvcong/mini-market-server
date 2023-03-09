@@ -1,15 +1,36 @@
 const AuthRoutes = require("./AuthRoutes");
 const ProductRoutes = require("./ProductRoutes");
-const UserRoutes = require("./UserRoutes");
+const CustomerRoutes = require("./CustomerRoutes");
 const VoucherRoutes = require("./VoucherRoutes");
-const ProductLineRoutes = require('./ProductLineRoutes')
+const UnitTypeRoutes = require('../routes/UnitTypeRoutes')
+const PriceRoutes = require('./PriceRoutes')
+const PromotionRoutes = require('./PromotonHeaderRoutes')
+const ProductPromotionRoutes = require('./ProductPromotionRoutes')
+const MoneyPromotionRoutes = require('./MoneyPromotionRoutes')
+const GiftProductRoutes = require('./GiftProductRoutes')
+const SubCategoryRoutes = require('./SubCategoryRoutes')
+const CategoryRoutes = require('./CategoryRoutes')
+const DiscountRateProductRoutes = require('./DiscountRateProductRoutes')
+const BillRoutes = require('./BillRoutes')
+const EmployeeRoutes = require('./EmployeeRoutes')
+
 
 const routerHandle = (app) => {
   app.use("/auth", AuthRoutes);
-  app.use("/user", UserRoutes);
+  app.use("/user", CustomerRoutes);
   app.use("/product", ProductRoutes);
   app.use("/voucher", VoucherRoutes);
-  app.use('/productLine',ProductLineRoutes)
+  app.use('/unitType',UnitTypeRoutes);
+  app.use('/price',PriceRoutes)
+  app.use('/promotion',PromotionRoutes)
+  app.use('/productPromotion',ProductPromotionRoutes)
+  app.use('/moneyPromotion',MoneyPromotionRoutes)
+  app.use('/giftProduct',GiftProductRoutes)
+  app.use('/subCategory',SubCategoryRoutes)
+  app.use('/category',CategoryRoutes)
+  app.use('/discount',DiscountRateProductRoutes)
+  app.use('/bill',BillRoutes)
+  app.use('/employee',EmployeeRoutes)
 };
 
 module.exports = routerHandle;
