@@ -5,9 +5,9 @@ const Ward = sequelize.define(
   "Ward",
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       primaryKey: true,
-      autoIncrement: true,
+      // autoIncrement: true,
     },
     name: {
       type: DataTypes.STRING,

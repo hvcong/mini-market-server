@@ -1,6 +1,18 @@
+<<<<<<< HEAD
 const { Product, SubCategory, Price } = require("../config/persist");
 const { getById } = require("../services/SubCategoryServices");
 const { getUnitByIds } = require("../services/UnitTypeServices");
+=======
+const {
+  Product,
+  SubCategory,
+  Price,
+  UnitType,
+  Image,
+} = require("../config/persist");
+const { getById } = require("../services/SubCategoryServices");
+const { getPriceByProductId } = require("../services/PriceServices");
+>>>>>>> f64fbd2f374c0b64e31bd050bc48593d1f08971e
 const { create } = require("../services/ImageServices");
 const ProductServices = {
   getProductById: async (id) => {
@@ -119,8 +131,11 @@ const ProductServices = {
   },
   getAllProducts: async (query) => {
     try {
+<<<<<<< HEAD
       const x = Object.keys(query).map((key) => ({ [key]: query[key] }));
       console.log(x);
+=======
+>>>>>>> f64fbd2f374c0b64e31bd050bc48593d1f08971e
       let page = (query._page && Number(query._page)) || 1;
       let limit = (query._limit && Number(query._limit)) || 12;
       let offset = (page - 1) * limit;
@@ -128,6 +143,7 @@ const ProductServices = {
         limit: limit,
         offset: offset,
         include: [
+<<<<<<< HEAD
           { model: SubCategory },
           {
             model: Price,
@@ -135,8 +151,34 @@ const ProductServices = {
               include: [],
             },
           },
+=======
+          {
+            model: SubCategory,
+          },
+          {
+            model: Image,
+            as: "images",
+            attributes: ["uri"],
+          },
+          // {
+          //    model: Price,
+          //    as: 'prices',
+          //    attributes: ['price'],
+          //    include: [{
+          //     model: UnitType,
+          //     attributes: ['name'],
+          //     where: {convertionQuantity: 1}
+          //   }],
+          // },
+>>>>>>> f64fbd2f374c0b64e31bd050bc48593d1f08971e
         ],
+        // attributes: {exclude: ['startDate','endDate','ProductId','UnitTypeId']}
       });
+      const { rows } = products;
+      for(const e of rows){
+        const {price} = await getPriceByProductId(e.dataValues.id)
+        e.dataValues.price = price.price
+      }   
       return { products, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);

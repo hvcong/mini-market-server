@@ -13,7 +13,9 @@ const CategoryRoutes = require('./CategoryRoutes')
 const DiscountRateProductRoutes = require('./DiscountRateProductRoutes')
 const BillRoutes = require('./BillRoutes')
 const EmployeeRoutes = require('./EmployeeRoutes')
-
+const CityRoutes = require('./CityRoutes')
+const DistrictRoutes  = require('./DistrictRoutes')
+const WardRoutes = require('./WardRoutes')
 
 const routerHandle = (app) => {
   app.use("/auth", AuthRoutes);
@@ -31,6 +33,9 @@ const routerHandle = (app) => {
   app.use('/discount',DiscountRateProductRoutes)
   app.use('/bill',BillRoutes)
   app.use('/employee',EmployeeRoutes)
+  app.use('/city',CityRoutes)
+  app.use('/district',DistrictRoutes)
+  app.use('/ward',WardRoutes)
 };
 
 module.exports = routerHandle;
