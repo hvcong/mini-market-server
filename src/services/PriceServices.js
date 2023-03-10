@@ -80,7 +80,7 @@ const PriceServices = {
             model: UnitType,
           },
         ],
-        attributes: { exclude: ["ProductId","UnitTypeId"]}
+        attributes: { exclude: ["ProductId", "UnitTypeId"] },
       });
       return { productLines, isSuccess: true, status: 200 };
     } catch (error) {

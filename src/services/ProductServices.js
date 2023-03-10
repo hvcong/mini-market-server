@@ -1,7 +1,7 @@
-const { Product, SubCategory, Price, } = require("../config/persist");
-const {getById} = require('../services/SubCategoryServices')
-const {getUnitByIds} = require('../services/UnitTypeServices')
-const {create} = require('../services/ImageServices')
+const { Product, SubCategory, Price } = require("../config/persist");
+const { getById } = require("../services/SubCategoryServices");
+const { getUnitByIds } = require("../services/UnitTypeServices");
+const { create } = require("../services/ImageServices");
 const ProductServices = {
   getProductById: async (id) => {
     try {
@@ -33,10 +33,22 @@ const ProductServices = {
   },
   addProduct: async (data) => {
     try {
-      const { id, name, images, description, quantity,subCategoryId,unitTypeIds } = data;
+      const {
+        id,
+        name,
+        images,
+        description,
+        quantity,
+        subCategoryId,
+        unitTypeIds,
+      } = data;
       const check = await Product.findOne({ where: { id: id } });
       if (check) {
-        return {message: 'product already exists',isSuccess: false, status: 403}
+        return {
+          message: "product already exists",
+          isSuccess: false,
+          status: 403,
+        };
       } else {
         const product = await Product.create({
           id,
@@ -48,9 +60,9 @@ const ProductServices = {
         if (sub) {
           await product.setSubCategory(sub);
         }
-        const uris = await create(images)
-        await product.setImages(uris)
-        return {product,isSuccess: true, status: 200};
+        const uris = await create(images);
+        await product.setImages(uris);
+        return { product, isSuccess: true, status: 200 };
       }
     } catch (error) {
       console.log(error);
@@ -91,8 +103,8 @@ const ProductServices = {
         include: [
           {
             model: SubCategory,
-            where: {id: id},
-            attributes: ['id','name','CategoryId']
+            where: { id: id },
+            attributes: ["id", "name", "CategoryId"],
           },
         ],
       });
@@ -107,8 +119,8 @@ const ProductServices = {
   },
   getAllProducts: async (query) => {
     try {
-      const x = Object.keys(query).map(key => ({[key]: query[key]}))
-      console.log(x)
+      const x = Object.keys(query).map((key) => ({ [key]: query[key] }));
+      console.log(x);
       let page = (query._page && Number(query._page)) || 1;
       let limit = (query._limit && Number(query._limit)) || 12;
       let offset = (page - 1) * limit;
@@ -116,8 +128,13 @@ const ProductServices = {
         limit: limit,
         offset: offset,
         include: [
-          { model: SubCategory, },
-          { model: Price },
+          { model: SubCategory },
+          {
+            model: Price,
+            attributes: {
+              include: [],
+            },
+          },
         ],
       });
       return { products, isSuccess: true, status: 200 };

@@ -20,9 +20,10 @@ const Product = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    state:{
+    state: {
       type: DataTypes.BOOLEAN,
-    }
+      defaultValue: true,
+    },
   },
   {
     timestamps: false,
