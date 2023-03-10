@@ -1,13 +1,13 @@
 const sequelize = require("../config/database");
 const { DataTypes } = require("sequelize");
 
-const Street = sequelize.define(
-  "Street",
+const District = sequelize.define(
+  "District",
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       primaryKey: true,
-      autoIncrement: true,
+      // autoIncrement: true,
     },
     name: {
       type: DataTypes.STRING,
@@ -19,4 +19,4 @@ const Street = sequelize.define(
   }
 );
 
-module.exports = Street;
+module.exports = District;

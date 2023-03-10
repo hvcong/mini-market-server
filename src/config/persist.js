@@ -12,13 +12,11 @@ const ProductPromotion = require("../models/ProductPromotion.js");
 const GiftProduct = require("../models/GiftProduct.js");
 const Price = require("../models/Price.js");
 const Product = require("../models/Product");
-// const ProductLine = require("../models/ProductLine.js");
-const ShoppingCart = require("../models/ShoppingCart.js");
 const Voucher = require("../models/Voucher.js");
 const TypeCustomer = require("../models/TypeCustomer");
 const City = require("../models/City");
 const Ward = require("../models/Ward");
-const Street = require("../models/Street");
+const District = require("../models/District");
 const Category = require("../models/Category");
 const UnitType = require("../models/UnitType");
 const Role = require("../models/Role.js");
@@ -38,7 +36,6 @@ Role.belongsTo(Account);
 // customer
 Customer.belongsTo(HomeAddress);
 Customer.hasOne(Account);
-Customer.hasOne(ShoppingCart);
 Customer.hasMany(Bill);
 Customer.belongsTo(TypeCustomer);
 
@@ -54,11 +51,9 @@ SubCategory.hasMany(Product)
 
 //product
 Product.belongsTo(SubCategory)
-// Product.belongsToMany(UnitType, { through: Price });
-Product.hasMany(Image)
+Product.hasMany(Image, {as: 'images'})
 Image.belongsTo(Product)
-// UnitType.belongsToMany(Product, { through: Price });
-Product.hasMany(Price);
+Product.hasMany(Price, {as: 'prices'});
 
 // UnitType
 UnitType.hasMany(Price);
@@ -91,27 +86,25 @@ Voucher.hasOne(Bill);
 Voucher.belongsTo(PromotionHeader)
 
 // City
-City.hasMany(Ward);
+City.hasMany(District);
+
+//District
+District.belongsTo(City);
+District.hasMany(Ward);
 
 // Ward
-Ward.belongsTo(City);
-Ward.hasMany(Street);
+Ward.belongsTo(District);
+Ward.hasMany(HomeAddress);
 
-//Street
-Street.belongsTo(Ward);
-Street.hasMany(HomeAddress);
 
 // HomeAdress
 HomeAddress.hasOne(Customer);
 HomeAddress.hasOne(Employee)
-HomeAddress.belongsTo(Street);
+HomeAddress.belongsTo(Ward);
 
-// shoppingCart
-ShoppingCart.belongsTo(Customer);
-ShoppingCart.hasMany(CartDetail);
+
 
 // CartDetail
-CartDetail.belongsTo(ShoppingCart);
 CartDetail.belongsTo(Price);
 
 // PromotionHeader
@@ -138,7 +131,7 @@ GiftProduct.belongsTo(MoneyPromotion)
 GiftProduct.belongsTo(Price)
 
 sequelize
-  .sync({ alter: true })
+  .sync({ alter: true})
   .then((result) => {
     console.log("has been done");
   })
@@ -160,11 +153,10 @@ module.exports = {
   GiftProduct,
   Price,
   Product,
-  ShoppingCart,
   Voucher,
   City,
   Ward,
-  Street,
+  District,
   UnitType,
   Image,
   SubCategory,

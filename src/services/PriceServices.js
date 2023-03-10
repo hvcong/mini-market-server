@@ -80,9 +80,30 @@ const PriceServices = {
             model: UnitType,
           },
         ],
-        attributes: { exclude: ["ProductId","UnitTypeId"]}
+        attributes: { exclude: ["ProductId", "UnitTypeId"] },
       });
       return { productLines, isSuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getPriceByProductId: async (id) => {
+    try {
+      const price = await Price.findOne({
+        where: { 
+          ProductId: id, 
+          state: true,
+        },
+        include: {
+          model: UnitType,
+          where: {
+            convertionQuantity: 1,
+          },
+          attributes: ['name']
+        }
+      });
+      return { price, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };
