@@ -114,36 +114,37 @@ const priceData = new Array(20).fill(null).map((item, index) => {
 module.exports = async function generateData() {
   //category
   //------
-  // await Category.destroy({
-  //   where: {},
-  // });
-  // await Category.bulkCreate(cateData);
+  await Category.destroy({
+    where: {},
+  });
+  await Category.bulkCreate(cateData);
   //sub category
   //------
-  // await SubCategory.destroy({
-  //   where: {},
-  // });
-  // subCateData.map((item) => {
-  //   subServices.add(item);
-  // });
+  await SubCategory.destroy({
+    where: {},
+  });
+  for (let obj of subCateData) {
+    await subServices.add(obj);
+  }
   // // unit-type
   //------
-  // await UnitType.destroy({
-  //   where: {},
-  // });
-  // await UnitType.bulkCreate(unitTypeData);
-  // await Product.destroy({
-  //   where: {},
-  // });
+  await UnitType.destroy({
+    where: {},
+  });
+  await UnitType.bulkCreate(unitTypeData);
   //------
-  // productData.map(async (item) => {
-  //   await ProductServices.addProduct(item);
-  // });
+  await Product.destroy({
+    where: {},
+  });
+  for (let obj of productData) {
+    await ProductServices.addProduct(obj);
+  }
+
   //------
-  // await Price.destroy({
-  //   where: {},
-  // });
-  // priceData.map(async (item) => {
-  //   await priceService.addPrice(item);
-  // });
+  await Price.destroy({
+    where: {},
+  });
+  for (let obj of priceData) {
+    await priceService.addPrice(obj);
+  }
 };
