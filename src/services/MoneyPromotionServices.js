@@ -3,7 +3,7 @@ const { MoneyPromotion, PromotionHeader } = require("../config/persist");
 const Services = {
   add: async (data) => {
     try {
-      const { id,minCost, endDate, state,discountMoney,discountRate, maxDiscountMoney, promotionHeaderId } = data;
+      const { id,minCost, startDate, endDate, state,discountMoney,discountRate, maxDiscountMoney, promotionHeaderId } = data;
       var promotion = await MoneyPromotion.findOne({ where: { id: id } });
       const promotionHeader = await PromotionHeader.findOne({where: {id: promotionHeaderId}})
       if (promotion ) {
@@ -12,12 +12,11 @@ const Services = {
           isSuccess: false,
           status: 400,
         };
-      } 
-      if(promotionHeader ) {
-        promotion = await MoneyPromotion.create({id,endDate,minCost,state,discountMoney,discountRate,maxDiscountMoney});
+      }
+        promotion = await MoneyPromotion.create({id,startDate ,endDate,minCost,state,discountMoney,discountRate,maxDiscountMoney});
         await promotion.setPromotionHeader(promotionHeader)
         return { promotion, isSuccess: true, status: 200 };
-      }
+      
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };

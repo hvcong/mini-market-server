@@ -22,6 +22,9 @@ const Product = sequelize.define(
     },
     state:{
       type: DataTypes.BOOLEAN,
+    },
+    baseUnit: {
+      type: DataTypes.STRING,
     }
   },
   {

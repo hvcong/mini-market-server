@@ -1,13 +1,12 @@
 const {
   Product,
   SubCategory,
-  Price,
-  UnitType,
   Image,
 } = require("../config/persist");
 const { getById } = require("../services/SubCategoryServices");
 const { getPriceByProductId } = require("../services/PriceServices");
 const { create } = require("../services/ImageServices");
+const {createManyUnit} = require('../services/UnitTypeServices')
 const ProductServices = {
   getProductById: async (id) => {
     try {
@@ -46,7 +45,8 @@ const ProductServices = {
         description,
         quantity,
         subCategoryId,
-        unitTypeIds,
+        state,
+        unitTypes,
       } = data;
       const check = await Product.findOne({ where: { id: id } });
       if (check) {
@@ -61,13 +61,16 @@ const ProductServices = {
           name,
           description,
           quantity,
+          state,
         });
         const sub = await getById(subCategoryId);
         if (sub) {
           await product.setSubCategory(sub);
         }
-        const uris = await create(images);
+        const uris = await create(images);        
         await product.setImages(uris);
+        const {units} = await createManyUnit(unitTypes)
+        await product.setUnitTypes(units)
         return { product, isSuccess: true, status: 200 };
       }
     } catch (error) {
@@ -151,7 +154,6 @@ const ProductServices = {
           //   }],
           // },
         ],
-        // attributes: {exclude: ['startDate','endDate','ProductId','UnitTypeId']}
       });
       const { rows } = products;
       for(const e of rows){
