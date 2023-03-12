@@ -6,7 +6,6 @@ const Product = sequelize.define(
     id: {
       type: DataTypes.STRING,
       primaryKey: true,
-      // autoIncrement: true,
     },
     name: {
       type: DataTypes.STRING,
@@ -20,12 +19,13 @@ const Product = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    state:{
+    state: {
       type: DataTypes.BOOLEAN,
+      defaultValue: true,
     },
     baseUnit: {
       type: DataTypes.STRING,
-    }
+    },
   },
   {
     timestamps: false,

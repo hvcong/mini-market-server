@@ -156,10 +156,10 @@ const ProductServices = {
         ],
       });
       const { rows } = products;
-      for(const e of rows){
-        const {price} = await getPriceByProductId(e.dataValues.id)
-        e.dataValues.price = price.price
-      }   
+      for (const e of rows) {
+        const { price } = await getPriceByProductId(e.dataValues.id);
+        e.dataValues.price = price.price;
+      }
       return { products, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
