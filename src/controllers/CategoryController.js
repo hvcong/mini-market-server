@@ -28,6 +28,14 @@ const CategoryController = {
     }
     return res.status(status).json({ isSuccess, message });
   },
+  getByid: async (req,res) =>{
+    const id = req.query.id
+    const {isSuccess,status,category,message} = await services.getById(id)
+    if(isSuccess){
+      return res.status(status).json({isSuccess,category})
+    }
+    return res.status(status).json({isSuccess,message})
+  }
 };
 
 module.exports = CategoryController;

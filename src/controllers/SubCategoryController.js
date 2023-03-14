@@ -25,5 +25,13 @@ const controller = {
         }
         return res.status(status).json({isSuccess, message})
     },
+    getById: async (req,res) =>{
+        const id = req.query.id
+        const {status,isSuccess,message,subCategory} = await services.getById(id)
+        if(isSuccess){
+            return res.status(status).json({isSuccess,subCategory})
+        }
+        return res.status(status).json({isSuccess,message})
+    }
 }
 module.exports = controller

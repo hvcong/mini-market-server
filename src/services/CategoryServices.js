@@ -56,7 +56,19 @@ const services = {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
-  }
+  },
+  getById: async (id) =>{
+    try {
+      const category = await Category.findByPk(id)
+      if(!category){
+        return {message: 'category not found', isSuccess: false, status: 404}
+      }
+      return {category, isSuccess: true, status: 200}
+    } catch (error) {
+      console.log(error)
+      return {message: 'something went wrong', isSuccess: false, status: 500}
+    }
+  },
 };
 
 module.exports = services;
