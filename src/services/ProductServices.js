@@ -140,24 +140,10 @@ const ProductServices = {
             as: "images",
             attributes: ["uri"],
           },
-          // {
-          //    model: Price,
-          //    as: 'prices',
-          //    attributes: ['price'],
-          //    include: [{
-          //     model: UnitType,
-          //     attributes: ['name'],
-          //     where: {convertionQuantity: 1}
-          //   }],
-          // },
         ],
-        // attributes: {exclude: ['startDate','endDate','ProductId','UnitTypeId']}
+        distinct: true,
       });
-      const { rows } = products;
-      for (const e of rows) {
-        const { price } = await getPriceByProductId(e.dataValues.id);
-        e.dataValues.price = price.price;
-      }
+
       return { products, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);

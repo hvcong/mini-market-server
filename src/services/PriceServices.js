@@ -91,8 +91,8 @@ const PriceServices = {
   getPriceByProductId: async (id) => {
     try {
       const price = await Price.findOne({
-        where: { 
-          ProductId: id, 
+        where: {
+          ProductId: "P0",
           state: true,
         },
         include: {
@@ -100,9 +100,10 @@ const PriceServices = {
           where: {
             convertionQuantity: 1,
           },
-          attributes: ['name']
-        }
+          attributes: ["name"],
+        },
       });
+
       return { price, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
