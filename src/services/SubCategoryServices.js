@@ -53,9 +53,11 @@ const services = {
   },
   getById: async (id) =>{
     try {
-      const sub = await SubCategory.findOne({ where: {id: id}});
-      if(sub)
-      return sub
+      const subCategory = await SubCategory.findOne({ where: {id: id}});
+      if(subCategory){
+        return {subCategory,isSuccess: true,status: 200}
+      }
+      return {message: 'subCategory not found',isSuccess: false, status: 404}
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };
