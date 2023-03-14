@@ -5,4 +5,5 @@ routes.post("/add", controller.addPrice);
 routes.put("/update", controller.updatePrice);
 routes.delete("/delete", controller.deletePrice);
 routes.get('/get',controller.getProductLine)
+routes.get('/getProductId',controller.getPriceByProductId)
 module.exports = routes;

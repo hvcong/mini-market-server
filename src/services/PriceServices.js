@@ -1,27 +1,24 @@
-const { Price, Product, UnitType } = require("../config/persist");
+const { Price, UnitType,ProductUnitType } = require("../config/persist");
 
 const PriceServices = {
   addPrice: async (data) => {
     try {
-      const { id, productId, unitTypeId, endDate, price, state,headerId } = data;
-      const product = await Product.findOne({ where: { id: productId } });
-      const unit = await UnitType.findOne({ where: { id: unitTypeId } });
-      if (product && unit) {
+      const { id,startDate, endDate, price, state,headerId,productUnitTypeId } = data;
+      const productUnitType = await ProductUnitType.findByPk(productUnitTypeId)
+      if (productUnitType) {
         const productPrice = await Price.create({
           id,
+          startDate,
           endDate,
           price,
           state,
-          ProductId: productId,
-          UnitTypeId: unitTypeId,
-          ListPricesHeaderId: headerId
+          ListPricesHeaderId: headerId,
         });
-        await productPrice.setProduct(product);
-        await productPrice.setUnitType(unit);
+        await productPrice.setProductUnitType(productUnitType)
         return { productPrice, isSuccess: true, status: 200 };
       } else {
         return {
-          message: "no product or no unitType, price could not be created",
+          message: "product and unitType could not be create",
           isSuccess: false,
           status: 400,
         };
@@ -73,15 +70,9 @@ const PriceServices = {
       const productLines = await Price.findAll({
         limit: limit,
         offset: offset,
-        include: [
-          {
-            model: Product,
-          },
-          {
-            model: UnitType,
-          },
-        ],
-        attributes: { exclude: ["ProductId", "UnitTypeId"] },
+        include: {
+          model: ProductUnitType
+        }
       });
       return { productLines, isSuccess: true, status: 200 };
     } catch (error) {
@@ -91,18 +82,17 @@ const PriceServices = {
   },
   getPriceByProductId: async (id) => {
     try {
-      const price = await Price.findOne({
+      const price = await Price.findAll({
         where: { 
-          ProductId: id, 
           state: true,
         },
-        include: {
-          model: UnitType,
-          where: {
-            convertionQuantity: 1,
-          },
-          attributes: ['name']
-        }
+        include: [{
+          model: ProductUnitType,
+          where: {ProductId: id},
+          include:[{
+            model: UnitType,
+          }],
+        }]
       });
       return { price, isSuccess: true, status: 200 };
     } catch (error) {

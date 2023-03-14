@@ -4,6 +4,11 @@ const Product = require("../models/Product");
 const UnitType = require("../models/UnitType");
 
 const ProductUnitType = sequelize.define("ProductUnitType", {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
   ProductId: {
     type: DataTypes.STRING,
     references: {

@@ -60,24 +60,9 @@ Product.hasMany(StoreTransaction)
 Product.hasMany(Image, {as: 'images'})
 Image.belongsTo(Product)
 Product.belongsToMany(UnitType, {through: ProductUnitType })
-Product.hasMany(ProductUnitType)
-
-//storeTransaction
-StoreTransaction.belongsTo(Product)
-StoreTransaction.belongsTo(Employee)
-
-
-// UnitType
 UnitType.belongsToMany(Product,{through: ProductUnitType})
-UnitType.hasMany(ProductUnitType)
 
-//ProductUnitype
-ProductUnitType.belongsTo(Product)
-ProductUnitType.belongsTo(UnitType)
-ProductUnitType.hasMany(Price)
-
-//ListPricesHeader
-ListPricesHeader.hasMany(Price)
+Product.hasMany(ProductUnitType)
 
 //Price
 Price.belongsTo(ListPricesHeader)
@@ -86,6 +71,24 @@ Price.hasOne(BillDetail);
 Price.hasOne(GiftProduct)
 Price.belongsTo(DiscountRateProduct)
 Price.belongsTo(ProductUnitType)
+
+// UnitType
+UnitType.hasMany(ProductUnitType)
+
+//ProductUnitype
+ProductUnitType.belongsTo(Product)
+ProductUnitType.belongsTo(UnitType)
+ProductUnitType.hasMany(Price)
+
+//storeTransaction
+StoreTransaction.belongsTo(Product)
+StoreTransaction.belongsTo(Employee)
+
+
+
+//ListPricesHeader
+ListPricesHeader.hasMany(Price)
+
 
 // Employee
 Employee.hasMany(Bill)
