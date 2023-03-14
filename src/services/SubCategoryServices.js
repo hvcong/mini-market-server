@@ -43,8 +43,10 @@ const services = {
   },
   get: async (query) => {
     try {
+      const page = query._page && Number(query._page) || 1
       const limit = (query._limit && Number(query._limit)) || 20;
-      const subs = await SubCategory.findAll({ limit: limit });
+      const offset = (page -1 ) * limit
+      const subs = await SubCategory.findAndCountAll({ limit: limit,offset: offset });
       return { subs, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
