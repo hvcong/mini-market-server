@@ -16,6 +16,9 @@ const EmployeeRoutes = require('./EmployeeRoutes')
 const CityRoutes = require('./CityRoutes')
 const DistrictRoutes  = require('./DistrictRoutes')
 const WardRoutes = require('./WardRoutes')
+const ListPricesHeaderRoutes = require('./ListPricesHeaderRoutes')
+const StoreRoutes = require('./StoreRoutes')
+const RetrieveRoutes = require('./RetrieveRoutes')
 
 const routerHandle = (app) => {
   app.use("/auth", AuthRoutes);
@@ -36,6 +39,9 @@ const routerHandle = (app) => {
   app.use('/city',CityRoutes)
   app.use('/district',DistrictRoutes)
   app.use('/ward',WardRoutes)
+  app.use('/priceHeader',ListPricesHeaderRoutes)
+  app.use('/store',StoreRoutes)
+  app.use('/retrieve',RetrieveRoutes)
 };
 
 module.exports = routerHandle;

@@ -69,6 +69,15 @@ const UnitTypeServices = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
+  createManyUnit: async( data) =>{
+    try {
+      const units = await UnitType.bulkCreate(data)
+      return {units,isSuccess: true,status: 200}
+    } catch (error) {
+      console.log(error)
+      return {message: 'something went wrong',isSuccess: false, status: 500}
+    }
+  }
 };
 
 module.exports = UnitTypeServices;

@@ -60,6 +60,15 @@ const services = {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
+  },
+  createBulkSub: async(data) =>{
+    try {
+      const subCategories = await SubCategory.bulkCreate(data)
+      return subCategories
+    } catch (error) {
+      console.log(error)
+      return false
+    }
   }
 };
 

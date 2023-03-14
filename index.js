@@ -47,7 +47,7 @@ try {
   console.error("Unable to connect to the database:", error);
 }
 
-generateData();
+// generateData();
 // require("./src/config/persist");
 
 const port = process.env.PORT || 3000;

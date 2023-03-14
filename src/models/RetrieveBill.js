@@ -1,30 +1,20 @@
 const sequelize = require("../config/database");
 const { DataTypes, UUIDV4 } = require("sequelize");
 
-const StoreTransaction = sequelize.define(
-  "StoreTransaction",
+const RetrieveBill = sequelize.define(
+  "RetrieveBill",
   {
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
       defaultValue: UUIDV4
     },
-    quantity: {
-      type: DataTypes.INTEGER,      
-    },
-    remainingQty: {
-      type: DataTypes.INTEGER,
-    },
     createAt: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
     },    
-    priceIn: {
-      type: DataTypes.DOUBLE,
-      allowNull: true,
-    },
-    type: {
+    note: {
       type: DataTypes.STRING
     }
   },
@@ -32,4 +22,4 @@ const StoreTransaction = sequelize.define(
     timestamps: false,
   }
 );
-module.exports = StoreTransaction;
+module.exports = RetrieveBill;

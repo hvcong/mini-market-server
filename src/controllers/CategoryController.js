@@ -11,9 +11,9 @@ const CategoryController = {
     return res.status(status).json({ isSuccess, message });
   },
   update: async (req, res) => {
-    const id = req.query.id;
     const data = req.body;
-    const result = await services.update(id, data);
+    const {id,...newData} =data
+    const result = await services.update(id, newData);
     const { isSuccess, status, message } = result;
     return res.status(status).json({ isSuccess, message });
   },

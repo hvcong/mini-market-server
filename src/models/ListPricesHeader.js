@@ -1,34 +1,32 @@
 const sequelize = require("../config/database");
 const { DataTypes } = require("sequelize");
-const Product = sequelize.define(
-  "Product",
+
+const ListPricesHeader = sequelize.define(
+  "ListPricesHeader",
   {
     id: {
       type: DataTypes.STRING,
       primaryKey: true,
-    },
-    name: {
-      type: DataTypes.STRING,
       allowNull: false,
     },
-    description: {
-      type: DataTypes.STRING,
-      allowNull: true,
+    title: {
+        type: DataTypes.STRING
     },
-    quantity: {
-      type: DataTypes.INTEGER,
+    startDate: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    },
+    endDate: {
+      type: DataTypes.DATE,
       allowNull: false,
     },
     state: {
       type: DataTypes.BOOLEAN,
-      defaultValue: true,
-    },
-    baseUnit: {
-      type: DataTypes.STRING,
+      allowNull: true,
     },
   },
   {
     timestamps: false,
   }
 );
-module.exports = Product;
+module.exports = ListPricesHeader;

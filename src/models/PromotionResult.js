@@ -13,6 +13,10 @@ const PromotionResult = sequelize.define(
       type: DataTypes.BOOLEAN,
       allowNull: false,
     },
+    note: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    }
   },
   {
     timestamps: false,

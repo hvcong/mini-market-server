@@ -1,10 +1,11 @@
 const {Category,SubCategory} = require("../config/persist");
+const {createBulkSub,update,add} = require('../services/SubCategoryServices')
 
 
 const services = {
   add: async (data) => {
     try {
-      const { id } = data;
+      const { id,name,image,state,subCategories } = data;
       var cate = await Category.findOne({ where: { id: id } });
       if (cate) {
         return {
@@ -13,7 +14,11 @@ const services = {
           status: 403,
         };
       } else {
-        cate = await Category.create(data);
+        cate = await Category.create({id,name,image,state});
+        const result = await createBulkSub(subCategories)
+        if(result){
+          cate.setSubCategories(result)
+        }
         return { cate, isSuccess: true, status: 200 };
       }
     } catch (error) {
@@ -21,13 +26,19 @@ const services = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  update: async (id, data) => {
+  update: async (CateId, data) => {
     try {
-      const cate = await Category.findOne({ where: { id: id } });
+      const cate = await Category.findOne({ where: { id: CateId } });
+      const {name,image,state,subCategories} = data
       if (!cate) {
         return { message: "category not found", isSuccess: false, status: 404 };
       } else {
-        await cate.update(data);
+        await cate.update({name,image,state});
+        for(const e of subCategories){
+          const {id,...others} = e
+          await add({...e,categoryId: CateId})
+          await update(id,others)
+        }
         await cate.save();
         return { message: "updated successful", isSuccess: true, status: 200 };
       }
