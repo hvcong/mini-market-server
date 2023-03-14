@@ -1,5 +1,5 @@
 const {Category,SubCategory} = require("../config/persist");
-const {createBulkSub,update} = require('../services/SubCategoryServices')
+const {createBulkSub,update,add} = require('../services/SubCategoryServices')
 
 
 const services = {
@@ -26,9 +26,9 @@ const services = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  update: async (id, data) => {
+  update: async (CateId, data) => {
     try {
-      const cate = await Category.findOne({ where: { id: id } });
+      const cate = await Category.findOne({ where: { id: CateId } });
       const {name,image,state,subCategories} = data
       if (!cate) {
         return { message: "category not found", isSuccess: false, status: 404 };
@@ -36,6 +36,7 @@ const services = {
         await cate.update({name,image,state});
         for(const e of subCategories){
           const {id,...others} = e
+          await add({...e,categoryId: CateId})
           await update(id,others)
         }
         await cate.save();
