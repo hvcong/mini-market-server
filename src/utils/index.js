@@ -79,6 +79,7 @@ const productData = new Array(20).fill(null).map((item, index) => {
     quantity: 100,
     state: index % 2 == 0,
     subCategoryId: "ct-ngk1",
+    unitTypes: [{name: "lon",convertionQuantity: 1}, {name:"loc6",convertionQuantity: 6}]
   };
 });
 
@@ -133,6 +134,7 @@ module.exports = async function generateData() {
   });
   await UnitType.bulkCreate(unitTypeData);
   //------
+
   await Product.destroy({
     where: {},
   });

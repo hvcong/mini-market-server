@@ -2,7 +2,7 @@ const AuthRoutes = require("./AuthRoutes");
 const ProductRoutes = require("./ProductRoutes");
 const CustomerRoutes = require("./CustomerRoutes");
 const VoucherRoutes = require("./VoucherRoutes");
-const UnitTypeRoutes = require('../routes/UnitTypeRoutes')
+const UnitTypeRoutes = require('./UnitTypeRoutes')
 const PriceRoutes = require('./PriceRoutes')
 const PromotionRoutes = require('./PromotonHeaderRoutes')
 const ProductPromotionRoutes = require('./ProductPromotionRoutes')
@@ -19,6 +19,7 @@ const WardRoutes = require('./WardRoutes')
 const ListPricesHeaderRoutes = require('./ListPricesHeaderRoutes')
 const StoreRoutes = require('./StoreRoutes')
 const RetrieveRoutes = require('./RetrieveRoutes')
+const S3Routes = require('./S3Routes')
 
 const routerHandle = (app) => {
   app.use("/auth", AuthRoutes);
@@ -42,6 +43,7 @@ const routerHandle = (app) => {
   app.use('/priceHeader',ListPricesHeaderRoutes)
   app.use('/store',StoreRoutes)
   app.use('/retrieve',RetrieveRoutes)
+  app.use('/images',S3Routes)
 };
 
 module.exports = routerHandle;
