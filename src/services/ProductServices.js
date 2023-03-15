@@ -60,8 +60,8 @@ const ProductServices = {
           state,
         });
         const sub = await getById(subCategoryId);
-        if (sub) {
-          await product.setSubCategory(sub);
+        if (sub.isSuccess) {
+          await product.setSubCategory(sub.subCategory);
         }
         const uris = await create(images);
         await product.setImages(uris);
