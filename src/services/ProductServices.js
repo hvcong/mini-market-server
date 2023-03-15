@@ -65,7 +65,6 @@ const ProductServices = {
           state,
         });
         const {subCategory} = await getById(subCategoryId);
-        console.log(subCategory)
         if (subCategory) {
           await product.setSubCategory(subCategory);
         }
