@@ -13,7 +13,8 @@ const ProductController = {
     }
   },
   updateProduct: async (req, res) => {
-    const productID = req.params.id;
+    const {query} = req
+    const productID = query.id;
     const newData = req.body;
     const result = await services.updateProduct(productID, newData);
     const { message, isSuccess, status } = result;
@@ -72,6 +73,14 @@ const ProductController = {
     }
     const {message} = result
     return res.status(status).json({message,isSuccess}) 
+  },
+  getProductByState: async (req,res) =>{
+    const {query} = req
+    const {isSuccess,status,message,products} = await services.getProductByState(query)
+    if(isSuccess){
+      return res.status(status).json({isSuccess,products})
+    }
+    return res.status(status).json({isSuccess,message})
   }
 };
 

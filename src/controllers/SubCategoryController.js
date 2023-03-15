@@ -32,6 +32,30 @@ const controller = {
             return res.status(status).json({isSuccess,subCategory})
         }
         return res.status(status).json({isSuccess,message})
+    },
+    getByName: async (req,res) =>{
+        const {query} = req
+        const {isSuccess,status,message,subCategories} = await services.getByName(query)
+        if(isSuccess){
+            return res.status(status).json({isSuccess,subCategories})
+        }
+        return res.status(status).json({isSuccess,message})
+    },
+    getByState: async (req,res) =>{
+        const {query} = req
+        const {isSuccess,status,message,subCategories} = await services.getByState(query)
+        if(isSuccess){
+            return res.status(status).json({isSuccess,subCategories})
+        }
+        return res.status(status).json({isSuccess,message})
+    },
+    getByCateId: async (req,res) =>{
+        const {query} = req
+        const {isSuccess,status,message,subCategories} = await services.getByCateId(query)
+        if(isSuccess){
+            return res.status(status).json({isSuccess,subCategories})
+        }
+        return res.status(status).json({isSuccess,message})
     }
 }
 module.exports = controller

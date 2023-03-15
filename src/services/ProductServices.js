@@ -1,4 +1,5 @@
-const { Product, SubCategory, Image, UnitType } = require("../config/persist");
+const { Product, SubCategory, Image } = require("../config/persist");
+const { Op } = require("sequelize");
 const { getById } = require("../services/SubCategoryServices");
 const { getPriceByProductId } = require("../services/PriceServices");
 const { create } = require("../services/ImageServices");
@@ -6,7 +7,19 @@ const { createManyUnit } = require("../services/UnitTypeServices");
 const ProductServices = {
   getProductById: async (id) => {
     try {
-      const product = await Product.findOne({ where: { id: id } });
+      const product = await Product.findOne({
+        where: { id: { [Op.like]: `%${id}%` } },
+        include: [
+          {
+            model: SubCategory,
+          },
+          {
+            model: Image,
+            as: "images",
+            attributes: ["uri"],
+          },
+        ],
+      });
       if (product) {
         return { product, isSuccess: true, status: 200 };
       } else {
@@ -21,7 +34,17 @@ const ProductServices = {
     try {
       const products = await Product.findAll({
         limit: 20,
-        where: { name: proName },
+        where: { name: { [Op.like]: `%${proName}%` } },
+        include: [
+          {
+            model: SubCategory,
+          },
+          {
+            model: Image,
+            as: "images",
+            attributes: ["uri"],
+          },
+        ],
       });
       if (products) {
         return { products, isSuccess: true, status: 200 };
@@ -32,6 +55,35 @@ const ProductServices = {
       return { message: "something goes wrong", isSuccess: false, status: 500 };
     }
   },
+  getProductByState: async (query) => {
+    try {
+      let page = (query._page && Number(query._page)) || 1;
+      let limit = (query._limit && Number(query._limit)) || 12;
+      let offset = (page - 1) * limit;
+      const state = query.state;
+      console.log(state);
+      const products = await Product.findAndCountAll({
+        limit: limit,
+        offset: offset,
+        where: { state: state },
+        include: [
+          {
+            model: SubCategory,
+          },
+          {
+            model: Image,
+            as: "images",
+            attributes: ["uri"],
+          },
+        ],
+        distinct: true,
+      });
+      return { products, isSuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
   addProduct: async (data) => {
     try {
       const {
@@ -40,6 +92,7 @@ const ProductServices = {
         images,
         description,
         quantity,
+        baseUnit,
         subCategoryId,
         state,
         unitTypes,
@@ -58,6 +111,7 @@ const ProductServices = {
           description,
           quantity,
           state,
+          baseUnit,
         });
         const { subCategory } = await getById(subCategoryId);
         if (subCategory) {

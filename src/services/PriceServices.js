@@ -1,5 +1,10 @@
-const { Price, UnitType, ProductUnitType } = require("../config/persist");
-
+const {
+  Price,
+  UnitType,
+  ProductUnitType,
+  ListPricesHeader,
+} = require("../config/persist");
+const { Op } = require("sequelize");
 const PriceServices = {
   addPrice: async (data) => {
     try {
@@ -108,6 +113,26 @@ const PriceServices = {
       });
 
       return { price, isSuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getByPriceHeaderId: async (query) => {
+    const page = (query._page && Number(query._page)) || 1;
+    const limit = (query._limit && Number(query._limit)) || 20;
+    var offset = (page - 1) * limit;
+    const priceHeaderId = query.priceHeaderId;
+    try {
+      const listPrices = await Price.findAndCountAll({
+        limit: limit,
+        offset: offset,
+        include: {
+          model: ListPricesHeader,
+          where: { id: { [Op.like]: `%${priceHeaderId}%` } },
+        },
+      });
+      return { listPrices, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };

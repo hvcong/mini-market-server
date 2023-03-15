@@ -56,11 +56,12 @@ ProductRoutes.post("/add", ProductController.addNewProduct);
  *          500:
  *           description: something goes wrong
  */
-ProductRoutes.put("/update/:id", ProductController.updateProduct);
-ProductRoutes.delete("/delete/:id", ProductController.deleteProduct);
+ProductRoutes.put("/update", ProductController.updateProduct);
+ProductRoutes.delete("/delete", ProductController.deleteProduct);
 ProductRoutes.get("/get", ProductController.getAllProducts);
 ProductRoutes.get("/getId", ProductController.getProductById);
 ProductRoutes.get("/getName", ProductController.getProductByname);
 ProductRoutes.get("/getSub", ProductController.getProductByCate);
+ProductRoutes.get('/getState',ProductController.getProductByState)
 
 module.exports = ProductRoutes;
