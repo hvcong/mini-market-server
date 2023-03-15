@@ -14,17 +14,25 @@ const UnitTypeController = {
         }
     },
     updateUnit: async (req,res) =>{
-        const id = req.params.id
+        const id = req.query.id
         const data = req.body
         const result = await services.updateUnit(id,data)
         const {message,isSuccess,status} = result
         return res.status(status).json({ message,isSuccess})
     },
     deleteUnit: async (req,res) =>{
-        const id = req.params.id
+        const id = req.query.id
         const result = await services.deleteUit(id)
         const {message,isSuccess,status} = result
         return res.status(status).json({message,isSuccess})
+    },
+    getById: async (req,res) =>{
+        const id = req.query.id
+        const {status,isSuccess,message,unitType} = await services.getUnitById(id)
+        if(isSuccess){
+            return res.status(status).json({isSuccess,unitType})
+        }
+        return res.status(status).json({isSuccess,message})
     }
 }
 module.exports = UnitTypeController

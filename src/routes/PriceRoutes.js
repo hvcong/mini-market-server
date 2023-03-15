@@ -6,4 +6,5 @@ routes.put("/update", controller.updatePrice);
 routes.delete("/delete", controller.deletePrice);
 routes.get('/get',controller.getProductLine)
 routes.get('/getProductId',controller.getPriceByProductId)
+routes.get('/getPriceHeader',controller.getByPriceHeader)
 module.exports = routes;

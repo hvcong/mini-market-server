@@ -1,10 +1,18 @@
-const { Price, UnitType,ProductUnitType } = require("../config/persist");
-
+const { Price, UnitType, ProductUnitType,ListPricesHeader } = require("../config/persist");
+const {Op} = require('sequelize')
 const PriceServices = {
   addPrice: async (data) => {
     try {
-      const { id,startDate, endDate, price, state,headerId,productUnitTypeId } = data;
-      const productUnitType = await ProductUnitType.findByPk(productUnitTypeId)
+      const {
+        id,
+        startDate,
+        endDate,
+        price,
+        state,
+        headerId,
+        productUnitTypeId,
+      } = data;
+      const productUnitType = await ProductUnitType.findByPk(productUnitTypeId);
       if (productUnitType) {
         const productPrice = await Price.create({
           id,
@@ -14,7 +22,7 @@ const PriceServices = {
           state,
           ListPricesHeaderId: headerId,
         });
-        await productPrice.setProductUnitType(productUnitType)
+        await productPrice.setProductUnitType(productUnitType);
         return { productPrice, isSuccess: true, status: 200 };
       } else {
         return {
@@ -71,8 +79,8 @@ const PriceServices = {
         limit: limit,
         offset: offset,
         include: {
-          model: ProductUnitType
-        }
+          model: ProductUnitType,
+        },
       });
       return { productLines, isSuccess: true, status: 200 };
     } catch (error) {
@@ -83,18 +91,42 @@ const PriceServices = {
   getPriceByProductId: async (id) => {
     try {
       const price = await Price.findAll({
-        where: { 
+        where: {
           state: true,
         },
-        include: [{
-          model: ProductUnitType,
-          where: {ProductId: id},
-          include:[{
-            model: UnitType,
-          }],
-        }]
+        include: [
+          {
+            model: ProductUnitType,
+            where: { ProductId: id },
+            include: [
+              {
+                model: UnitType,
+              },
+            ],
+          },
+        ],
       });
       return { price, isSuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getByPriceHeaderId: async (query) => {
+    const page = (query._page && Number(query._page)) || 1;
+    const limit = (query._limit && Number(query._limit)) || 20;
+    var offset = (page - 1) * limit;
+    const priceHeaderId = query.priceHeaderId;
+    try {
+      const listPrices = await Price.findAndCountAll({
+        limit: limit,
+        offset: offset,
+        include:{
+          model: ListPricesHeader,
+          where: {id: {[Op.like]: `%${priceHeaderId}%`} },
+        }
+      });
+      return {listPrices, isSuccess: true, status: 200}
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };

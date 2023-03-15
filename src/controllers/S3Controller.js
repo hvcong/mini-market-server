@@ -3,10 +3,13 @@ const services = require('../aws/S3')
 const controller = {
     upload: async (req,res) =>{
         const file = req.file
-        console.log(file)
-        const result = await services.uploadFile(file)
-        console.log(result)
-        return res.send('ok')
+        try {
+            const result = await services.uploadFile(file)
+            return res.send({uri: result})            
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json({isSuccess: false, message: 'something went wrong'})
+        }
     }
 }
 

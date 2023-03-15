@@ -1,5 +1,5 @@
 const { SubCategory, Category } = require("../config/persist");
-
+const { Op } = require("sequelize");
 const services = {
   add: async (data) => {
     try {
@@ -32,8 +32,8 @@ const services = {
           status: 404,
         };
       } else {
-        await sub.update(data)
-        await sub.save()
+        await sub.update(data);
+        await sub.save();
         return { message: "updated successful", isSuccess: true, status: 200 };
       }
     } catch (error) {
@@ -43,37 +43,121 @@ const services = {
   },
   get: async (query) => {
     try {
-      const page = query._page && Number(query._page) || 1
+      const page = (query._page && Number(query._page)) || 1;
       const limit = (query._limit && Number(query._limit)) || 20;
-      const offset = (page -1 ) * limit
-      const subs = await SubCategory.findAndCountAll({ limit: limit,offset: offset });
+      const offset = (page - 1) * limit;
+      const subs = await SubCategory.findAndCountAll({
+        limit: limit,
+        offset: offset,
+      });
       return { subs, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  getById: async (id) =>{
+  getById: async (id) => {
     try {
-      const subCategory = await SubCategory.findOne({ where: {id: id}});
-      if(subCategory){
-        return {subCategory,isSuccess: true,status: 200}
+      const subCategory = await SubCategory.findOne({
+        where: { id: id },
+      });
+      if (subCategory) {
+        return { subCategory, isSuccess: true, status: 200 };
       }
-      return {message: 'subCategory not found',isSuccess: false, status: 404}
+      return {
+        message: "subCategory not found",
+        isSuccess: false,
+        status: 404,
+      };
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  createBulkSub: async(data) =>{
+  createBulkSub: async (data) => {
     try {
-      const subCategories = await SubCategory.bulkCreate(data)
-      return subCategories
+      const subCategories = await SubCategory.bulkCreate(data);
+      return subCategories;
     } catch (error) {
-      console.log(error)
-      return false
+      console.log(error);
+      return false;
     }
-  }
+  },
+  getByName : async (query) =>{
+    const page = (query._page && Number(query._page)) || 1;
+    const limit = (query._limit && Number(query._limit)) || 20;
+    const offset = (page - 1) * limit;
+    const name = query.name;
+    try {
+      const subCategories = await SubCategory.findAndCountAll({
+        limit: limit,
+        offset: offset,
+        where: { name: { [Op.like ]: `%${name}%`} },
+      });
+      if (subCategories) {
+        return { subCategories, isSuccess: true, status: 200 };
+      }
+      return {
+        message: "subCategory not found",
+        isSuccess: false,
+        status: 404,
+      };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getByState : async (query) =>{
+    const page = (query._page && Number(query._page)) || 1;
+    const limit = (query._limit && Number(query._limit)) || 20;
+    const offset = (page - 1) * limit;
+    const state = query.state;
+    try {
+      const subCategories = await SubCategory.findAndCountAll({
+        limit: limit,
+        offset: offset,
+        where: { state: state },
+      });
+      if (subCategories) {
+        return { subCategories, isSuccess: true, status: 200 };
+      }
+      return {
+        message: "subCategory not found",
+        isSuccess: false,
+        status: 404,
+      };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getByCateId : async (query) =>{
+    const page = (query._page && Number(query._page)) || 1;
+    const limit = (query._limit && Number(query._limit)) || 20;
+    const offset = (page - 1) * limit;
+    const cateId = query.cateId;
+    try {
+      const subCategories = await SubCategory.findAndCountAll({
+        limit: limit,
+        offset: offset,
+        include: {
+          model: Category,
+          where: {id: {[Op.like]: `%${cateId}%`}},                    
+        }
+      });
+      if (subCategories) {
+        return { subCategories, isSuccess: true, status: 200 };
+      }
+      return {
+        message: "subCategory not found",
+        isSuccess: false,
+        status: 404,
+      };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
 };
 
 module.exports = services;

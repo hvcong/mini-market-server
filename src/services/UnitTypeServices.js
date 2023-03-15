@@ -3,23 +3,14 @@ const { UnitType } = require("../config/persist");
 
 const UnitTypeServices = {
   addUnit: async (data) => {
-    const { id, name, convertionQuantity } = data;
+    const { name, convertionQuantity } = data;
     try {
-      const unitType = await UnitType.findOne({ where: { id: id } });
-      if (unitType) {
-        return {
-          message: "this unitType already exists",
-          isSuccess: false,
-          status: 403,
-        };
-      } else {
+      // const unitType = await UnitType.findOne({ where: { id: id } });
         const unitType = await UnitType.create({
-          id,
           name,
           convertionQuantity,
         });
         return { unitType, isSuccess: true, status: 200 };
-      }
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };
@@ -73,6 +64,18 @@ const UnitTypeServices = {
     try {
       const units = await UnitType.bulkCreate(data)
       return {units,isSuccess: true,status: 200}
+    } catch (error) {
+      console.log(error)
+      return {message: 'something went wrong',isSuccess: false, status: 500}
+    }
+  },
+  getUnitById: async (id) =>{
+    try {
+      const unitType = await UnitType.findByPk(id)
+      if(unitType){
+        return {unitType, isSuccess: true, status: 200}
+      }
+      return {message: 'unitType not found',isSuccess: false, status: 404}
     } catch (error) {
       console.log(error)
       return {message: 'something went wrong',isSuccess: false, status: 500}

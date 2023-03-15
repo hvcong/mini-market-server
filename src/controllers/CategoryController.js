@@ -29,10 +29,26 @@ const CategoryController = {
     return res.status(status).json({ isSuccess, message });
   },
   getByid: async (req,res) =>{
-    const id = req.query.id
-    const {isSuccess,status,category,message} = await services.getById(id)
+    const {query} = req
+    const {isSuccess,status,categories,message} = await services.getById(query)
     if(isSuccess){
-      return res.status(status).json({isSuccess,category})
+      return res.status(status).json({isSuccess,categories})
+    }
+    return res.status(status).json({isSuccess,message})
+  },
+  getByName: async (req,res) =>{
+    const {query} = req
+    const {isSuccess,status,categories,message} = await services.getByName(query)
+    if(isSuccess){
+      return res.status(status).json({isSuccess,categories})
+    }
+    return res.status(status).json({isSuccess,message})
+  },
+  getByState: async (req,res) =>{
+    const {query} = req
+    const {isSuccess,status,categories,message} = await services.getByState(query)
+    if(isSuccess){
+      return res.status(status).json({isSuccess,categories})
     }
     return res.status(status).json({isSuccess,message})
   }
