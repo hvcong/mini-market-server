@@ -8,7 +8,7 @@ const ProductServices = {
   getProductById: async (id) => {
     try {
       const product = await Product.findOne({
-        where: { id: { [Op.like]: `%${id}%` } },
+        where: { id: id },
         include: [
           {
             model: SubCategory,
@@ -22,6 +22,31 @@ const ProductServices = {
       });
       if (product) {
         return { product, isSuccess: true, status: 200 };
+      } else {
+        return { message: "product not found", isSuccess: false, status: 404 };
+      }
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getProductLikeId: async (id) =>{
+    try {
+      const products = await Product.findAll({
+        where: { id: {[Op.like]: `%${id}%`} },
+        include: [
+          {
+            model: SubCategory,
+          },
+          {
+            model: Image,
+            as: "images",
+            attributes: ["uri"],
+          },
+        ],
+      });
+      if (products.length) {
+        return { products, isSuccess: true, status: 200 };
       } else {
         return { message: "product not found", isSuccess: false, status: 404 };
       }

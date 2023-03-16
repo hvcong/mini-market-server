@@ -63,5 +63,6 @@ ProductRoutes.get("/getId", ProductController.getProductById);
 ProductRoutes.get("/getName", ProductController.getProductByname);
 ProductRoutes.get("/getSub", ProductController.getProductByCate);
 ProductRoutes.get('/getState',ProductController.getProductByState)
+ProductRoutes.get('/likeId',ProductController.getProductLikeId)
 
 module.exports = ProductRoutes;

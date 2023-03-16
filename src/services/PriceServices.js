@@ -1,5 +1,12 @@
-const { Price, UnitType, ProductUnitType,ListPricesHeader } = require("../config/persist");
-const {Op} = require('sequelize')
+const {
+  Price,
+  UnitType,
+  ProductUnitType,
+  ListPricesHeader,
+  Product,
+} = require("../config/persist");
+const { Op, QueryTypes } = require("sequelize");
+const sequelize = require("../config/database");
 const PriceServices = {
   addPrice: async (data) => {
     try {
@@ -113,20 +120,49 @@ const PriceServices = {
     }
   },
   getByPriceHeaderId: async (query) => {
-    const page = (query._page && Number(query._page)) || 1;
-    const limit = (query._limit && Number(query._limit)) || 20;
-    var offset = (page - 1) * limit;
     const priceHeaderId = query.priceHeaderId;
     try {
-      const listPrices = await Price.findAndCountAll({
-        limit: limit,
-        offset: offset,
-        include:{
-          model: ListPricesHeader,
-          where: {id: {[Op.like]: `%${priceHeaderId}%`} },
-        }
+      const listPrices = await Price.findAll({
+        include: [
+          {
+            model: ListPricesHeader,
+            where: { id: priceHeaderId },
+          },
+        ],
       });
-      return {listPrices, isSuccess: true, status: 200}
+      return { listPrices, isSuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  rawQuery: async () => {
+    try {
+      const result = await sequelize.query(
+        "SELECT * FROM `prices` JOIN `productunittypes` ON `prices`. `ProductUnitTypeId` = `productunittypes`. `id` JOIN `products` on `productunittypes`.productid = `products`.id join `unittypes` on `productunittypes`.unittypeid = `unittypes`.id",
+        { type: QueryTypes.SELECT }
+      );
+      return { result, isSuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getByProductUnitTypeId: async (query) => {
+    const proUnitId = query.productUnitTypeId;
+    try {
+      const price = await Price.findOne({
+        include: [
+          {
+            model: ProductUnitType,
+            where: { id: proUnitId },
+          },
+        ],
+      });
+      if (price) {
+        return { price, isSuccess: true, status: 200 };
+      }
+      return { message: "not found price", isSuccess: false, status: 404 };
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };

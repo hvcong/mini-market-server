@@ -1,5 +1,5 @@
 const e = require("express");
-const { UnitType } = require("../config/persist");
+const { UnitType, Product } = require("../config/persist");
 
 const UnitTypeServices = {
   addUnit: async (data) => {
@@ -76,6 +76,24 @@ const UnitTypeServices = {
         return {unitType, isSuccess: true, status: 200}
       }
       return {message: 'unitType not found',isSuccess: false, status: 404}
+    } catch (error) {
+      console.log(error)
+      return {message: 'something went wrong',isSuccess: false, status: 500}
+    }
+  },
+  getUnitByProductId: async(id) =>{
+    try {
+      const unitTypes = await UnitType.findAll({
+        include: {
+          model: Product,
+          where: {id: id},
+          through: {attributes: []}
+        }
+      })
+      if(unitTypes.length){
+        return {unitTypes, isSuccess: true, status: 200}
+      }
+      return {message: 'product have not unitTypes yet', isSuccess: false, status: 200}
     } catch (error) {
       console.log(error)
       return {message: 'something went wrong',isSuccess: false, status: 500}

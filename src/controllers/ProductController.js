@@ -81,6 +81,14 @@ const ProductController = {
       return res.status(status).json({isSuccess,products})
     }
     return res.status(status).json({isSuccess,message})
+  },
+  getProductLikeId: async (req,res) =>{
+    const id = req.query.productId
+    const {isSuccess,status,message,products} = await services.getProductLikeId(id)
+    if(isSuccess){
+      return res.status(status).json({isSuccess,products})
+    }
+    return res.status(status).json({isSuccess,message})
   }
 };
 

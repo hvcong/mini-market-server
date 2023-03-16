@@ -33,6 +33,14 @@ const UnitTypeController = {
             return res.status(status).json({isSuccess,unitType})
         }
         return res.status(status).json({isSuccess,message})
+    },
+    getByProductId: async (req,res) =>{
+        const productId = req.query.productId
+        const {isSuccess,status,message,unitTypes} = await services.getUnitByProductId(productId)
+        if(isSuccess){
+            return res.status(status).json({isSuccess,unitTypes})
+        }
+        return res.status(status).json({isSuccess,message})
     }
 }
 module.exports = UnitTypeController
