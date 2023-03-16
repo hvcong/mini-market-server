@@ -57,7 +57,7 @@ const services = {
       const page = (query._page && Number(query._page)) || 1;
       const limit = (query._limit && Number(query._limit)) || 20;
       var offset = (page - 1) * limit;
-      const headers = await ListPricesHeader.findAll({
+      const headers = await ListPricesHeader.findAndCountAll({
         limit: limit,
         offset: offset,
       });

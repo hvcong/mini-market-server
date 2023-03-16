@@ -1,4 +1,4 @@
-const { Product, SubCategory, Image } = require("../config/persist");
+const { Product, SubCategory, Image, UnitType } = require("../config/persist");
 const { Op } = require("sequelize");
 const { getById } = require("../services/SubCategoryServices");
 const { getPriceByProductId } = require("../services/PriceServices");
@@ -85,8 +85,8 @@ const ProductServices = {
       let page = (query._page && Number(query._page)) || 1;
       let limit = (query._limit && Number(query._limit)) || 12;
       let offset = (page - 1) * limit;
-      const state = query.state
-      console.log(state)
+      const state = query.state;
+      console.log(state);
       const products = await Product.findAndCountAll({
         limit: limit,
         offset: offset,
