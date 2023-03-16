@@ -1,4 +1,4 @@
-const { Product, SubCategory, Image } = require("../config/persist");
+const { Product, SubCategory, Image, UnitType } = require("../config/persist");
 const { Op } = require("sequelize");
 const { getById } = require("../services/SubCategoryServices");
 const { getPriceByProductId } = require("../services/PriceServices");
@@ -8,7 +8,7 @@ const ProductServices = {
   getProductById: async (id) => {
     try {
       const product = await Product.findOne({
-        where: { id: { [Op.like]: `%${id}%` } },
+        where: { id: id },
         include: [
           {
             model: SubCategory,

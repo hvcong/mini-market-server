@@ -119,17 +119,12 @@ const PriceServices = {
     }
   },
   getByPriceHeaderId: async (query) => {
-    const page = (query._page && Number(query._page)) || 1;
-    const limit = (query._limit && Number(query._limit)) || 20;
-    var offset = (page - 1) * limit;
     const priceHeaderId = query.priceHeaderId;
     try {
-      const listPrices = await Price.findAndCountAll({
-        limit: limit,
-        offset: offset,
+      const listPrices = await Price.findAll({
         include: {
           model: ListPricesHeader,
-          where: { id: { [Op.like]: `%${priceHeaderId}%` } },
+          where: { id: priceHeaderId },
         },
       });
       return { listPrices, isSuccess: true, status: 200 };
