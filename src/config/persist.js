@@ -164,7 +164,7 @@ GiftProduct.belongsTo(MoneyPromotion)
 GiftProduct.belongsTo(Price)
 
 sequelize
-  .sync({ force: true})
+  .sync({ alter: true})
   .then((result) => {
     console.log("has been done");
   })
