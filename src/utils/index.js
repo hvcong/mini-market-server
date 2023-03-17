@@ -7,6 +7,8 @@ const UnitType = require("../models/UnitType");
 const ProductServices = require("../services/ProductServices");
 const subServices = require("../services/SubCategoryServices");
 const priceService = require("../services/PriceServices");
+const ListPricesHeader = require("../models/ListPricesHeader");
+const {add} = require('../services/ListPricesHeaderServices')
 
 const cateData = [
   {
@@ -83,6 +85,31 @@ const productData = new Array(20).fill(null).map((item, index) => {
   };
 });
 
+const priceHeaderData = new Array(20).fill(null).map((item,index) =>{
+  return {
+      id: "H"+index,
+      title: "bang gia thang"+index,
+      startDate: "2023/3/1",
+      endDate: "2023/4/1",
+      state: true,
+      priceLines: [
+          {            
+              startDate: "2023/3/1",
+              endDate: "2023/4/1",
+              price: 10000,
+              state: true,
+              productUnitTypeId: 1
+          },
+          {         
+              startDate: "2023/3/1",
+              endDate: "2023/4/1",
+              price: 54000,
+              state: true,
+              productUnitTypeId: 2
+          }
+      ]
+  }
+})
 const unitTypeData = [
   {
     id: "T24",
@@ -103,7 +130,6 @@ const unitTypeData = [
 
 const priceData = new Array(20).fill(null).map((item, index) => {
   return {
-    id: "PR" + index,
     productId: "P" + index,
     unitTypeId: "T24",
     endDate: "2023/4/1",
@@ -148,5 +174,11 @@ module.exports = async function generateData() {
   });
   for (let obj of priceData) {
     await priceService.addPrice(obj);
+  }
+  
+  //--- priceHeader
+  await ListPricesHeader.destroy()
+  for(const e of priceHeaderData){
+    await add(e)
   }
 };

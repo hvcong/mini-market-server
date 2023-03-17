@@ -10,19 +10,11 @@ const sequelize = require("../config/database");
 const PriceServices = {
   addPrice: async (data) => {
     try {
-      const {
-        id,
-        startDate,
-        endDate,
-        price,
-        state,
-        headerId,
-        productUnitTypeId,
-      } = data;
+      const { startDate, endDate, price, state, headerId, productUnitTypeId } =
+        data;
       const productUnitType = await ProductUnitType.findByPk(productUnitTypeId);
       if (productUnitType) {
         const productPrice = await Price.create({
-          id,
           startDate,
           endDate,
           price,
@@ -185,6 +177,58 @@ const PriceServices = {
         return { price, isSuccess: true, status: 200 };
       }
       return { message: "not found price", isSuccess: false, status: 404 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  createBulkPrice: async (data) => {
+    try {
+      var listPrices = [];
+      for (const e of data) {
+        const { startDate, endDate, price, state, productUnitTypeId } = e;
+        var line = await Price.create({
+          startDate,
+          endDate,
+          price,
+          state,
+          ProductUnitTypeId: productUnitTypeId,
+        });
+        listPrices.push(line);
+      }
+      return { listPrices, isSuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  updateManyPrice: async (data, headerId) => {
+    try {
+      for (const e of data) {
+        const { startDate, endDate, price, state, productUnitTypeId } = e;
+        const line = await Price.findOne({
+          where: {
+            ListPricesHeaderId: headerId,
+            ProductUnitTypeId: productUnitTypeId,
+          },
+        });
+        if (line) {
+          await Price.update(
+            { startDate, endDate, price, state },
+            { where: { ProductUnitTypeId: productUnitTypeId } }
+          );
+        } else {
+          await Price.create({
+            startDate,
+            endDate,
+            price,
+            state,
+            ProductUnitTypeId: productUnitTypeId,
+            ListPricesHeaderId: headerId,
+          });
+        }
+      }
+      return { message: "updated successful", isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };

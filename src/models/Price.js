@@ -1,13 +1,13 @@
 const sequelize = require("../config/database");
-const { DataTypes } = require("sequelize");
+const { DataTypes, UUIDV4 } = require("sequelize");
 
 const Price = sequelize.define(
   "Price",
   {
     id: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       primaryKey: true,
-      allowNull: false,
+      autoIncrement: true,
     },
     startDate: {
       type: DataTypes.DATE,
