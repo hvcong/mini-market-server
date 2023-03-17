@@ -1,4 +1,10 @@
-const { Product, SubCategory, Image, UnitType } = require("../config/persist");
+const {
+  Product,
+  SubCategory,
+  Image,
+  UnitType,
+  ProductUnitType,
+} = require("../config/persist");
 const { Op } = require("sequelize");
 const { getById } = require("../services/SubCategoryServices");
 const { getPriceByProductId } = require("../services/PriceServices");
@@ -18,6 +24,14 @@ const ProductServices = {
             as: "images",
             attributes: ["uri"],
           },
+          {
+            model: ProductUnitType,
+            include: [
+              {
+                model: UnitType,
+              },
+            ],
+          },
         ],
       });
       if (product) {
@@ -30,10 +44,10 @@ const ProductServices = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  getProductLikeId: async (id) =>{
+  getProductLikeId: async (id) => {
     try {
       const products = await Product.findAll({
-        where: { id: {[Op.like]: `%${id}%`} },
+        where: { id: { [Op.like]: `%${id}%` } },
         include: [
           {
             model: SubCategory,

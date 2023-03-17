@@ -134,6 +134,19 @@ const PriceServices = {
             include: [
               {
                 model: Product,
+                include: [
+                  {
+                    model: ProductUnitType,
+                    include: [
+                      {
+                        model: UnitType,
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                model: UnitType,
               },
             ],
           },
