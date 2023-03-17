@@ -11,7 +11,6 @@ const PriceServices = {
   addPrice: async (data) => {
     try {
       const {
-        id,
         startDate,
         endDate,
         price,
@@ -22,7 +21,6 @@ const PriceServices = {
       const productUnitType = await ProductUnitType.findByPk(productUnitTypeId);
       if (productUnitType) {
         const productPrice = await Price.create({
-          id,
           startDate,
           endDate,
           price,
@@ -169,6 +167,20 @@ const PriceServices = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
+  createBulkPrice: async (data) =>{
+    try {
+      var listPrices = []
+      for(let e of data){
+        const {id,startDate,endDate,price,state,productUnitTypeId} = e
+        const line = await Price.create({id,startDate,endDate,price,state,ProductUnitTypeId: productUnitTypeId})
+        listPrices.push(line)
+      }
+      return { listPrices,isSuccess: true,status: 200}
+    } catch (error) {
+      console.log(error)
+      return {message: 'something went wrong',isSuccess: false, status: 500}
+    }
+  }
 };
 
 module.exports = PriceServices;

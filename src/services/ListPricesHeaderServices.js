@@ -1,18 +1,23 @@
 const { ListPricesHeader } = require("../config/persist");
+const {createBulkPrice} = require('../services/PriceServices') 
 
 const services = {
   add: async (data) => {
+    console.log(data)
     try {
-      const { id } = data;
-      var header = await ListPricesHeader.findByPk(id);
+      const { id, title,startDate,endDate,state, priceLines } = data;
+      console.log(priceLines)
+      var header = await ListPricesHeader.findOne({where: {id: id}});
       if (header) {
         return {
           message: "price header already exists",
-          isSuccess: true,
-          status: 200,
+          isSuccess: false,
+          status: 403,
         };
       }
-      header = await ListPricesHeader.create(data);
+      header = await ListPricesHeader.create({id,title,startDate,endDate,state});
+      const {listPrices} = await createBulkPrice(priceLines)
+      await header.setPrices(listPrices)
       return { header, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
