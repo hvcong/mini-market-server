@@ -5,9 +5,9 @@ const Price = sequelize.define(
   "Price",
   {
     id: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       primaryKey: true,
-      defaultValue: UUIDV4
+      autoIncrement: true,
     },
     startDate: {
       type: DataTypes.DATE,
