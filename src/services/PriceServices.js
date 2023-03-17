@@ -129,6 +129,14 @@ const PriceServices = {
             model: ListPricesHeader,
             where: { id: priceHeaderId },
           },
+          {
+            model: ProductUnitType,
+            include: [
+              {
+                model: Product,
+              },
+            ],
+          },
         ],
       });
       return { listPrices, isSuccess: true, status: 200 };
