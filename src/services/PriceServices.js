@@ -170,6 +170,14 @@ const PriceServices = {
           {
             model: ProductUnitType,
             where: { id: proUnitId },
+            include: [
+              {
+                model: Product,
+              },
+              {
+                model: UnitType,
+              },
+            ],
           },
         ],
       });

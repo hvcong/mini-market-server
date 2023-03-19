@@ -4,6 +4,7 @@ const {
   Image,
   UnitType,
   ProductUnitType,
+  Price,
 } = require("../config/persist");
 const { Op } = require("sequelize");
 const { getById } = require("../services/SubCategoryServices");
@@ -57,6 +58,9 @@ const ProductServices = {
             as: "images",
             attributes: ["uri"],
           },
+          {
+            model: UnitType,
+          },
         ],
       });
       if (products.length) {
@@ -82,6 +86,20 @@ const ProductServices = {
             model: Image,
             as: "images",
             attributes: ["uri"],
+          },
+          {
+            model: ProductUnitType,
+            include: [
+              {
+                model: UnitType,
+              },
+              {
+                model: Price,
+                where: {
+                  state: true,
+                },
+              },
+            ],
           },
         ],
       });
