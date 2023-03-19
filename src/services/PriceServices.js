@@ -77,9 +77,19 @@ const PriceServices = {
       const productLines = await Price.findAll({
         limit: limit,
         offset: offset,
-        include: {
-          model: ProductUnitType,
-        },
+        where: {state: true},
+        include: [
+          {
+            model: ProductUnitType,
+            include: [{
+              model: Product
+            }]
+          },
+          {
+            model: ListPricesHeader,
+            where: {state: true}
+          }
+        ],
       });
       return { productLines, isSuccess: true, status: 200 };
     } catch (error) {
