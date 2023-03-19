@@ -1,0 +1,72 @@
+{
+  "data": [
+    {
+      "level1_id": "01",
+      "name": "Thành phố Hà Nội",
+      "type": "Thành phố Trung ương",
+      "level2s": [
+        {
+          "level2_id": "001",
+          "name": "Quận Ba Đình",
+          "type": "Quận",
+          "level3s": [
+            {
+              "level3_id": "00025",
+              "name": "Phường Ngọc Khánh",
+              "type": "Phường"
+            },
+            {
+              "level3_id": "00028",
+              "name": "Phường Kim Mã",
+              "type": "Phường"
+            },
+            {
+              "level3_id": "00031",
+              "name": "Phường Giảng Võ",
+              "type": "Phường"
+            },
+            {
+              "level3_id": "00034",
+              "name": "Phường Thành Công",
+              "type": "Phường"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "level1_id": "02",
+      "name": "Tỉnh Hà Giang",
+      "type": "Tỉnh",
+      "level2s": [
+        {
+          "level2_id": "024",
+          "name": "Thành phố Hà Giang",
+          "type": "Thành phố",
+          "level3s": [
+            {
+              "level3_id": "00688",
+              "name": "Phường Quang Trung",
+              "type": "Phường"
+            },
+            {
+              "level3_id": "00691",
+              "name": "Phường Trần Phú",
+              "type": "Phường"
+            },
+            {
+              "level3_id": "00692",
+              "name": "Phường Ngọc Hà",
+              "type": "Phường"
+            },
+            {
+              "level3_id": "00694",
+              "name": "Phường Nguyễn Trãi",
+              "type": "Phường"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

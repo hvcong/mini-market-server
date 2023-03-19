@@ -5,7 +5,7 @@ routes.post("/add", controller.add);
 routes.put("/update", controller.update);
 routes.delete("/delete/:phonenumber", controller.delete);
 routes.get("/get", controller.get);
-routes.get("/get", controller.getUserByPhonenumber);
-routes.get("/get", controller.getUserByName);
+routes.get("/getPhone", controller.getUserByPhonenumber);
+routes.get("/getName", controller.getUserByName);
 
 module.exports = routes;

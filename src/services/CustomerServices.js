@@ -53,9 +53,15 @@ const services = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  get: async () => {
+  get: async (query) => {
+    const page = (query._page && Number(query._page)) || 1;
+    const limit = (query._limit && Number(query._limit)) || 20;
+    const offset = (page - 1) * limit;
     try {
-      const customers = await Customer.findAll({ limit: 50 });
+      const customers = await Customer.findAndCountAll({
+        limit: limit,
+        offset: offset,
+      });
       return { customers, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
