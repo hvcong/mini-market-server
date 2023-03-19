@@ -9,4 +9,5 @@ routes.get('/getProductId',controller.getPriceByProductId)
 routes.get('/getPriceHeader',controller.getByPriceHeader)
 routes.get('/query',controller.rawQuery)
 routes.get('/proUnitId',controller.getByProducUnitTypeId)
+routes.get('/getName',controller.getByName)
 module.exports = routes;
