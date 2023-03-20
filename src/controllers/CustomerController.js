@@ -33,7 +33,7 @@ const Controller = {
     return res.status(status).json({ isSuccess, message });
   },
   getUserByPhonenumber: async (req, res) => {
-    const phonenumber = req.params.phonenumber;
+    const phonenumber = req.query.phonenumber;
     const result = await services.getCustomerByPhonenumber(phonenumber);
     const { isSuccess, status, message, customer } = result;
     if (isSuccess) {
@@ -52,5 +52,13 @@ const Controller = {
         .json({ message: "somgthing goes wrong", result: false });
     }
   },
+  getLikePhone: async(req,res) =>{
+    const phonenumber = req.query.phonenumber
+    const {isSuccess,status,customers,message} = await services.getLikePhone(phonenumber)
+    if(isSuccess){
+      return res.status(status).json({isSuccess,customers})
+    }
+    return res.status(status).json({isSuccess,message})
+  }
 };
 module.exports = Controller;

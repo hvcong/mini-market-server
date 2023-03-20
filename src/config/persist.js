@@ -199,4 +199,5 @@ module.exports = {
   RetrieveBill,
   PromotionResult,
   ProductUnitType,
+  TypeCustomer,
 };

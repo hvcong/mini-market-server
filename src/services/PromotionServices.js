@@ -1,9 +1,9 @@
-const { PromotionHeader } = require("../config/persist");
+const { PromotionHeader, ProductPromotion, MoneyPromotion, DiscountRateProduct } = require("../config/persist");
 
 const PromotionHeaderServices = {
   add: async (data) => {
     try {
-      const { id, title, endDate, budget, state } = data;
+      const { id, title, startDate, endDate, budget, state } = data;
       var promotion = await PromotionHeader.findOne({ where: { id: id } });
       if (promotion) {
         return {
@@ -15,6 +15,7 @@ const PromotionHeaderServices = {
       promotion = await PromotionHeader.create({
         id,
         title,
+        startDate,
         endDate,
         budget,
         state,
@@ -51,9 +52,26 @@ const PromotionHeaderServices = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  getAll: async () => {
+  getAll: async (query) => {
+    const page = (query._page && Number(query._page)) || 1;
+    const limit = (query._limit && Number(query._limit)) || 20;
+    var offset = (page - 1) * limit;
     try {
-      const promotions = await PromotionHeader.findAll({ limit: 20 });
+      const promotions = await PromotionHeader.findAndCountAll({
+        limit: limit,
+        offset: offset,
+        include: [
+          {
+            model: ProductPromotion
+          },
+          {
+            model: MoneyPromotion
+          },
+          {
+            model: DiscountRateProduct
+          }
+        ]
+      });
       if (promotions) {
         return { promotions, isSuccess: true, status: 200 };
       }
