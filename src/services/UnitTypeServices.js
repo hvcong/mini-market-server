@@ -1,5 +1,6 @@
 const e = require("express");
 const { UnitType, Product } = require("../config/persist");
+const { Op } = require("sequelize");
 
 const UnitTypeServices = {
   addUnit: async (data) => {
@@ -112,33 +113,73 @@ const UnitTypeServices = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  getAllUnits: async() =>{
+  getAllUnits: async () => {
     try {
-      const unitTypes = await UnitType.findAll()
-      if(unitTypes.length){
-        return {unitTypes,isSuccess: true, status: 200}
+      const unitTypes = await UnitType.findAll();
+      if (unitTypes.length) {
+        return { unitTypes, isSuccess: true, status: 200 };
       }
-      return {message: "no unitType", isSuccess: false, status: 404}
+      return { message: "no unitType", isSuccess: false, status: 404 };
     } catch (error) {
-      console.log(error)
-      return {message: 'something went wrong',isSuccess: false, status: 500}
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  getLimit: async(query) =>{
+  getLimit: async (query) => {
     try {
       const page = (query._page && Number(query._page)) || 1;
       const limit = (query._limit && Number(query._limit)) || 20;
       var offset = (page - 1) * limit;
-      const unitTypes = await UnitType.findAndCountAll({limit: limit, offset: offset})
-      if(unitTypes.rows.length){
-        return {unitTypes,isSuccess: true, status: 200}
+      const unitTypes = await UnitType.findAndCountAll({
+        limit: limit,
+        offset: offset,
+      });
+      if (unitTypes.rows.length) {
+        return { unitTypes, isSuccess: true, status: 200 };
       }
-      return {message: 'no unitTypes',isSuccess: false, status: 404}
+      return { message: "no unitTypes", isSuccess: false, status: 404 };
     } catch (error) {
-      console.log(error)
-      return {message: 'something went wrong',isSuccess: false, status: 500}
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
     }
-  }
+  },
+  getUnitByIds: async (ids) => {
+    try {
+      const listUnit = [];
+      for (const e of ids) {
+        const unitType = await UnitType.findByPk(e.id);
+        if (unitType) {
+          listUnit.push(unitType);
+        }
+      }
+      return { listUnit, isSuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getBaseUnit: async () => {
+    try {
+      const baseUnits = await UnitType.findAll({
+        where: { convertionQuantity: 1 },
+      });
+      return { baseUnits, isSuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getOtherUnits: async () => {
+    try {
+      const otherUnits = await UnitType.findAll({
+        where: { convertionQuantity: {[Op.ne]: 1} },
+      });
+      return { otherUnits, isSuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
 };
 
 module.exports = UnitTypeServices;

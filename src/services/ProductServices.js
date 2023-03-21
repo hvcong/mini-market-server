@@ -10,7 +10,7 @@ const { Op } = require("sequelize");
 const { getById } = require("../services/SubCategoryServices");
 const { getPriceByProductId } = require("../services/PriceServices");
 const { create } = require("../services/ImageServices");
-const { createManyUnit } = require("../services/UnitTypeServices");
+const { getUnitByIds } = require("../services/UnitTypeServices");
 const ProductServices = {
   getProductById: async (id) => {
     try {
@@ -148,7 +148,6 @@ const ProductServices = {
         name,
         images,
         description,
-        quantity,
         baseUnit,
         subCategoryId,
         state,
@@ -166,7 +165,6 @@ const ProductServices = {
           id,
           name,
           description,
-          quantity,
           state,
           baseUnit,
         });
@@ -176,8 +174,8 @@ const ProductServices = {
         }
         const uris = await create(images);
         await product.setImages(uris);
-        const { units } = await createManyUnit(unitTypes);
-        await product.setUnitTypes(units);
+        const {listUnit} = await getUnitByIds(unitTypes)
+        await product.setUnitTypes(listUnit);
         return { product, isSuccess: true, status: 200 };
       }
     } catch (error) {
