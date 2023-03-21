@@ -54,6 +54,19 @@ const services = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
+  getOne: async(query) =>{
+    try {
+      const {id} = query
+      const typeCustomer = await TypeCustomer.findByPk(id)
+      if(typeCustomer){
+        return {typeCustomer,isSuccess: true, status: 200}
+      }
+      return {message: 'type customer not found',isSuccess: false, status: 404}
+    } catch (error) {
+      console.log(error)
+      return {message: 'something went wrong',isSuccess: false, status:500}
+    }
+  }
 };
 
 module.exports = services;
