@@ -184,12 +184,22 @@ const ProductServices = {
     }
   },
   updateProduct: async (id, data) => {
+    const {unitTypes,...newData} =data
     try {
       const product = await Product.findOne({ where: { id: id } });
       if (!product) {
         return { message: "product not found", isSuccess: false, status: 404 };
       }
-      await product.update(data);
+      await product.update(newData);
+      console.log( await product.countUnitTypes())
+      for(const e of unitTypes){        
+        let unit = await UnitType.findByPk(e.id)
+        let x = await product.hasUnitType(unit)
+        console.log(await product.hasUnitType(unit))
+        if(! await product.hasUnitType(unit)){
+          await product.setUnitTypes(unit)
+        }
+      }
       await product.save();
       return { message: "updated succesful", isSuccess: true, status: 200 };
     } catch (error) {

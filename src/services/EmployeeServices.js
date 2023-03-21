@@ -3,7 +3,7 @@ const { Op } = require("sequelize");
 const services = {
   createEmployee: async (data) => {
     try {
-      const { phonenumber } = data;
+      const { name,phonenumber,homeAddressId } = data;
       var employee = await Employee.findOne({
         where: { phonenumber: phonenumber },
       });
@@ -14,7 +14,7 @@ const services = {
           status: 403,
         };
       }
-      employee = await Employee.create(data);
+      employee = await Employee.create({name,phonenumber,HomeAddressId: homeAddressId});
       return { employee, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
@@ -61,7 +61,21 @@ const services = {
         await employee.save();
         return { message: "updated succesful", isSuccess: true, status: 200 };
       }
-      return {message: 'update failed',isSuccess: false, status: 400}
+      return { message: "update failed", isSuccess: false, status: 400 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getOneByPhone: async (phonenumber) => {
+    try {
+      const employee = await Employee.findAll({
+        where: { phonenumber: phonenumber },
+      });
+      if (employee.length) {
+        return { employee, isSuccess: true, status: 200 };
+      }
+      return { message: "employee not found", isSuccess: false, status: 404 };
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };

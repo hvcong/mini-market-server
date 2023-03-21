@@ -33,6 +33,15 @@ const controller = {
             return res.status(status).json({isSuccess,message})
         }
         return res.status(status).json({isSuccess,message})
+    },
+    getOnebyPhone: async (req,res) =>{
+        const {query} = req
+        const phonenumber = query.phonenumber
+        const {isSuccess,status,employee,message} = await services.getOneByPhone(phonenumber)
+        if(isSuccess){
+            return res.status(status).json({isSuccess,employee})
+        }
+        return res.status(status).json({isSuccess,message})
     }
 }
 module.exports = controller
