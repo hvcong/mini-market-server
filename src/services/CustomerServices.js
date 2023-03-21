@@ -4,7 +4,14 @@ const { Op } = require("sequelize");
 const services = {
   add: async (data) => {
     try {
-      const { firstName, lastName, phonenumber } = data;
+      const {
+        firstName,
+        lastName,
+        phonenumber,
+        homeAddressId,
+        typeCustomerId,
+        email,
+      } = data;
       var customer = await Customer.findOne({
         where: { phonenumber: phonenumber },
       });
@@ -15,7 +22,14 @@ const services = {
           status: 403,
         };
       }
-      customer = await Customer.create(data);
+      customer = await Customer.create({
+        firstName,
+        lastName,
+        phonenumber,
+        HomeAddressId: homeAddressId,
+        TypeCustomerId: typeCustomerId,
+        email,
+      });
       return { customer, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
@@ -86,7 +100,7 @@ const services = {
   getLikePhone: async (phonenumber) => {
     try {
       const customers = await Customer.findAll({
-        where: { phonenumber: { [Op.like]:`%${phonenumber}%`} },
+        where: { phonenumber: { [Op.like]: `%${phonenumber}%` } },
       });
       if (customers.length) {
         return { customers, isSuccess: true, status: 200 };

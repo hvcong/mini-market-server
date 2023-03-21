@@ -22,6 +22,9 @@ const Customer = sequelize.define(
       allowNull: false,
       unique: true,
     },
+    email: {
+      type: DataTypes.STRING,
+    }
   },
   {
     timestamps: false,
