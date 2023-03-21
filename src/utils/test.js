@@ -1,17 +1,14 @@
 const data = require('./dvhc.json')
 const city = data.data
-const x = city.values()
 const onlyCites = city.map((item)=>{
     return {
         id : item.level1_id,
-        name : item.name,
-        type : item.type,
+        name : item.name,        
     }
 })
-// console.log(city.entries())
-for( const e of x){
-    console.log(e)
-}
+
+const onlyDistricts = 
+
 // console.log("city",city)
-// console.log(onlyCites)
+console.log(onlyCites)
 
