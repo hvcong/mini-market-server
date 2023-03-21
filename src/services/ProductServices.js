@@ -191,13 +191,12 @@ const ProductServices = {
         return { message: "product not found", isSuccess: false, status: 404 };
       }
       await product.update(newData);
-      console.log( await product.countUnitTypes())
       for(const e of unitTypes){        
-        let unit = await UnitType.findByPk(e.id)
-        let x = await product.hasUnitType(unit)
-        console.log(await product.hasUnitType(unit))
-        if(! await product.hasUnitType(unit)){
-          await product.setUnitTypes(unit)
+        let unit = await UnitType.findByPk(e.id)        
+        if(await product.hasUnitType(unit)){
+          continue;
+        }else{
+          await product.addUnitType(unit)
         }
       }
       await product.save();
