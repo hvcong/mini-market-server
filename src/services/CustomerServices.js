@@ -1,4 +1,5 @@
 const { Customer } = require("../config/persist");
+const { Op } = require("sequelize");
 
 const services = {
   add: async (data) => {
@@ -71,10 +72,24 @@ const services = {
   getCustomerByPhonenumber: async (phonenumber) => {
     try {
       const customer = await Customer.findOne({
-        where: { phonenumber: phonenumber },
+        where: { phonenumber },
       });
       if (customer) {
         return { customer, isSuccess: true, status: 200 };
+      }
+      return { message: "customer not found", isSuccess: false, status: 404 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getLikePhone: async (phonenumber) => {
+    try {
+      const customers = await Customer.findAll({
+        where: { phonenumber: { [Op.like]:`%${phonenumber}%`} },
+      });
+      if (customers.length) {
+        return { customers, isSuccess: true, status: 200 };
       }
       return { message: "customer not found", isSuccess: false, status: 404 };
     } catch (error) {

@@ -252,6 +252,36 @@ const PriceServices = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
+  getByName: async (query) => {
+    try {
+      const name = query.productName
+      const page = (query._page && Number(query._page)) || 1;
+      const limit = (query._limit && Number(query._limit)) || 20;
+      var offset = (page - 1) * limit;
+      const productLines = await Price.findAll({
+        limit: limit,
+        offset: offset,
+        where: {state: true},
+        include: [
+          {
+            model: ProductUnitType,
+            include: [{
+              model: Product,
+              where: {[Op.like]: `%${name}%`}
+            }]
+          },
+          {
+            model: ListPricesHeader,
+            where: {state: true}
+          }
+        ],
+      });
+      return { productLines, isSuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
 };
 
 module.exports = PriceServices;

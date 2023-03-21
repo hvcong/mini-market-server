@@ -154,7 +154,7 @@ ProductPromotion.hasMany(GiftProduct)
 MoneyPromotion.belongsTo(PromotionHeader)
 MoneyPromotion.hasMany(GiftProduct)
 
-//DiscountRateProduct
+//DiscountRateProduct 
 DiscountRateProduct.belongsTo(PromotionHeader)
 DiscountRateProduct.hasMany(Price)
 
@@ -199,4 +199,5 @@ module.exports = {
   RetrieveBill,
   PromotionResult,
   ProductUnitType,
+  TypeCustomer,
 };

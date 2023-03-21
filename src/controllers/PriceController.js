@@ -68,6 +68,14 @@ const PriceController = {
     }
     return res.status(status).json({isSuccess,message})
   },
+  getByName: async(req,res) =>{
+    const {query} = req
+    const {isSuccess,status,message,productLines} = await services.getByName(query)
+    if(isSuccess){
+      return res.status(status).json({isSuccess,message})
+    }
+    return res.status(status).json({isSuccess,message})
+  }
 };
 
 module.exports = PriceController;

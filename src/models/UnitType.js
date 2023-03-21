@@ -5,9 +5,8 @@ const UnitType = sequelize.define(
   "UnitType",
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       primaryKey: true,
-      autoIncrement: true,
     },
     name: {
       type: DataTypes.STRING,

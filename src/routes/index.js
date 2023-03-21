@@ -20,6 +20,7 @@ const ListPricesHeaderRoutes = require('./ListPricesHeaderRoutes')
 const StoreRoutes = require('./StoreRoutes')
 const RetrieveRoutes = require('./RetrieveRoutes')
 const S3Routes = require('./S3Routes')
+const TypeCustomerRoutes = require('./TypeCutomerRoutes')
 
 const routerHandle = (app) => {
   app.use("/auth", AuthRoutes);
@@ -44,6 +45,7 @@ const routerHandle = (app) => {
   app.use('/store',StoreRoutes)
   app.use('/retrieve',RetrieveRoutes)
   app.use('/images',S3Routes)
+  app.use('/typeCustomer',TypeCustomerRoutes)
 };
 
 module.exports = routerHandle;

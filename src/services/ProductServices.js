@@ -95,9 +95,9 @@ const ProductServices = {
               },
               {
                 model: Price,
-                where: {
-                  state: true,
-                },
+                // where: {
+                //   state: true,
+                // },
               },
             ],
           },

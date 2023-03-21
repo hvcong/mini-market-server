@@ -25,6 +25,14 @@ const controller = {
             return res.status(status).json({isSuccess,employees})
         }
         return res.status(status).json({isSuccess,message})
+    },
+    update: async(req,res) =>{
+        const data = req.body 
+        const {isSuccess,message,status} = await services.update(data)
+        if(isSuccess){
+            return res.status(status).json({isSuccess,message})
+        }
+        return res.status(status).json({isSuccess,message})
     }
 }
 module.exports = controller

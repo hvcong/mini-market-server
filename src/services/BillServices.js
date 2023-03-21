@@ -9,7 +9,6 @@ const {
   getCustomerByPhonenumber,
   add,
 } = require("../services/CustomerServices");
-const { create } = require("../services/AccountServices");
 const { createBillDetais } = require("../services/BillDetailServices");
 
 const services = {
@@ -17,7 +16,6 @@ const services = {
     try {
       const { cost, customerPhonenumber, employeeId, voucherId, priceIds } =
         data;
-      console.log(data);
       if (!customerPhonenumber && !employeeId) {
         return {
           message: "missing customerPhonenumber or employeeId",
@@ -25,12 +23,12 @@ const services = {
           status: 400,
         };
       }
-      var { customer } = await getCustomerByPhonenumber(customerPhonenumber);
+      let { customer } = await getCustomerByPhonenumber(customerPhonenumber);
+      console.log(customer);
       if (!customer) {
-        await create(customerPhonenumber);
         customer = await add({ phonenumber: customerPhonenumber });
       }
-      console.log(customer);
+      console.log(customer.dataValues);
       const employee = await Employee.findByPk(employeeId);
       var billdetails = await createBillDetais(priceIds);
       var voucher = null;
@@ -38,7 +36,7 @@ const services = {
         voucher = await Voucher.findOne({ where: { id: voucherId } });
       }
       const bill = await Bill.create({ cost });
-      await bill.setCustomer(customer);
+      //   await bill.setCustomer(customer);
       await bill.setEmployee(employee);
       await bill.setBillDetails(billdetails);
       await bill.setVoucher(voucher);
