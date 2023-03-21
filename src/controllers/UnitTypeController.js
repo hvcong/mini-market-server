@@ -56,6 +56,20 @@ const UnitTypeController = {
             return res.status(status).json({isSuccess,unitTypes})
         }
         return res.status(status).json({isSuccess,message})
+    },
+    getBaseUnit: async (req,res) =>{
+        const {isSuccess,status,baseUnits,message} = await services.getBaseUnit()
+        if(isSuccess){
+            return res.status(status).json({isSuccess,baseUnits})
+        }
+        return res.status(status).json({isSuccess,message})
+    },
+    getOtherUnits: async (req,res) =>{
+        const {isSuccess,status,otherUnits,message} = await services.getOtherUnits()
+        if(isSuccess){
+            return res.status(status).json({isSuccess,otherUnits})
+        }
+        return res.status(status).json({isSuccess,message})
     }
 }
 module.exports = UnitTypeController
