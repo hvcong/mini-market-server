@@ -41,6 +41,16 @@ const services = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
+  getAllByCity: async (query) =>{
+    try {
+      const cityId = query.cityId
+      const districts = await District.findAll({where: {CityId: cityId}})
+      return {districts,isSuccess: true,status: 200}
+    } catch (error) {
+      console.log(error)
+      return {message:'something went wrong',isSuccess: false, status: 500}
+    }
+  }
 };
 
 module.exports = services;
