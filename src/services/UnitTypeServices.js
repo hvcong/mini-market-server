@@ -3,14 +3,23 @@ const { UnitType, Product } = require("../config/persist");
 
 const UnitTypeServices = {
   addUnit: async (data) => {
-    const { name, convertionQuantity } = data;
+    const { id, name, convertionQuantity } = data;
     try {
-      // const unitType = await UnitType.findOne({ where: { id: id } });
-        const unitType = await UnitType.create({
+      let unitType = await UnitType.findOne({ where: { id: id } });
+      if (!unitType) {
+        unitType = await UnitType.create({
+          id,
           name,
           convertionQuantity,
         });
         return { unitType, isSuccess: true, status: 200 };
+      } else {
+        return {
+          message: "unitType already exists",
+          isSuccess: false,
+          status: 403,
+        };
+      }
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };
@@ -60,40 +69,71 @@ const UnitTypeServices = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  createManyUnit: async( data) =>{
+  createManyUnit: async (data) => {
     try {
-      const units = await UnitType.bulkCreate(data)
-      return {units,isSuccess: true,status: 200}
+      const units = await UnitType.bulkCreate(data);
+      return { units, isSuccess: true, status: 200 };
     } catch (error) {
-      console.log(error)
-      return {message: 'something went wrong',isSuccess: false, status: 500}
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  getUnitById: async (id) =>{
+  getUnitById: async (id) => {
     try {
-      const unitType = await UnitType.findByPk(id)
-      if(unitType){
-        return {unitType, isSuccess: true, status: 200}
+      const unitType = await UnitType.findByPk(id);
+      if (unitType) {
+        return { unitType, isSuccess: true, status: 200 };
       }
-      return {message: 'unitType not found',isSuccess: false, status: 404}
+      return { message: "unitType not found", isSuccess: false, status: 404 };
     } catch (error) {
-      console.log(error)
-      return {message: 'something went wrong',isSuccess: false, status: 500}
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  getUnitByProductId: async(id) =>{
+  getUnitByProductId: async (id) => {
     try {
       const unitTypes = await UnitType.findAll({
         include: {
           model: Product,
-          where: {id: id},
-          through: {attributes: []}
-        }
-      })
-      if(unitTypes.length){
-        return {unitTypes, isSuccess: true, status: 200}
+          where: { id: id },
+          through: { attributes: [] },
+        },
+      });
+      if (unitTypes.length) {
+        return { unitTypes, isSuccess: true, status: 200 };
       }
-      return {message: 'product have not unitTypes yet', isSuccess: false, status: 200}
+      return {
+        message: "product have not unitTypes yet",
+        isSuccess: false,
+        status: 200,
+      };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getAllUnits: async() =>{
+    try {
+      const unitTypes = await UnitType.findAll()
+      if(unitTypes.length){
+        return {unitTypes,isSuccess: true, status: 200}
+      }
+      return {message: "no unitType", isSuccess: false, status: 404}
+    } catch (error) {
+      console.log(error)
+      return {message: 'something went wrong',isSuccess: false, status: 500}
+    }
+  },
+  getLimit: async(query) =>{
+    try {
+      const page = (query._page && Number(query._page)) || 1;
+      const limit = (query._limit && Number(query._limit)) || 20;
+      var offset = (page - 1) * limit;
+      const unitTypes = await UnitType.findAndCountAll({limit: limit, offset: offset})
+      if(unitTypes.rows.length){
+        return {unitTypes,isSuccess: true, status: 200}
+      }
+      return {message: 'no unitTypes',isSuccess: false, status: 404}
     } catch (error) {
       console.log(error)
       return {message: 'something went wrong',isSuccess: false, status: 500}

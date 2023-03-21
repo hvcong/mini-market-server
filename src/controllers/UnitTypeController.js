@@ -41,6 +41,21 @@ const UnitTypeController = {
             return res.status(status).json({isSuccess,unitTypes})
         }
         return res.status(status).json({isSuccess,message})
+    },
+    getAll: async( req,res) => {
+        const {isSuccess,status,message,unitTypes} = await services.getAllUnits()
+        if(isSuccess){
+            return res.status(status).json({isSuccess,unitTypes})
+        }
+        return res.status(status).json({isSuccess,message})
+    },
+    getLimit: async (req,res) =>{
+        const {query} = req
+        const {isSuccess,status,message,unitTypes} = await services.getLimit(query)
+        if(isSuccess){
+            return res.status(status).json({isSuccess,unitTypes})
+        }
+        return res.status(status).json({isSuccess,message})
     }
 }
 module.exports = UnitTypeController
