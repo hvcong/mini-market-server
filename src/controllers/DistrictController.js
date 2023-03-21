@@ -25,5 +25,14 @@ const controller = {
     }
     return res.status(status).json({ isSuccess, message });
   },
+  getByCity: async (req, res) => {
+    const { query } = req;
+    const { isSuccess, status, districts, message } =
+      await services.getAllByCity(query);
+    if (isSuccess) {
+      return res.status(status).json({ isSuccess, districts });
+    }
+    return res.status(status).json({ isSuccess, message });
+  },
 };
 module.exports = controller;
