@@ -23,6 +23,14 @@ const controller = {
     }
     return res.status(status).json({ isSuccess, message });
   },
+  getOne: async (req,res) =>{
+    const {query} = req
+    const {isSuccess,status,message,typeCustomer} = await services.getOne(query)
+    if(isSuccess){
+      return res.status(status).json({isSuccess,typeCustomer})
+    }
+    return res.status(status).json({isSuccess,message})
+  }
 };
 
 module.exports = controller
