@@ -12,9 +12,6 @@ const StoreTransaction = sequelize.define(
     quantity: {
       type: DataTypes.INTEGER,      
     },
-    remainingQty: {
-      type: DataTypes.INTEGER,
-    },
     createAt: {
       type: DataTypes.DATE,
       allowNull: false,

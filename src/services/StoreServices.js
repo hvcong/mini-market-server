@@ -4,21 +4,43 @@ const { updateProduct } = require("../services/ProductServices");
 const services = {
   add: async (data) => {
     try {
-      const { quantity, remainingQty, createAt, type, productId, employeeId } =
-        data;
+      const { quantity, createAt, type, productId, employeeId } = data;
       const transaction = await StoreTransaction.create({
         quantity,
-        remainingQty,
         createAt,
         type,
         ProductId: productId,
         EmployeeId: employeeId,
       });
-      const product = await Product.findByPk(productId)
-      const qty = product.quantity
-      let newQty = qty+quantity
-      const {isSuccess} = await updateProduct(productId,{quantity:newQty})
+      const product = await Product.findByPk(productId);
+      const qty = product.quantity;
+      let newQty = qty + quantity;
+      await updateProduct(productId, { quantity: newQty });
       return { transaction, isSuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  addMany: async (data) => {
+    try {
+      const transactions = [];
+      for (const e of data) {
+        const { quantity, createAt, type, productId, employeeId } = e;
+        const transaction = await StoreTransaction.create({
+          quantity,
+          createAt,
+          type,
+          ProductId: productId,
+          EmployeeId: employeeId,
+        });
+        const product = await Product.findByPk(productId);
+        const qty = product.quantity;
+        let newQty = qty + quantity;
+        await updateProduct(productId, { quantity: newQty });
+        transactions.push(transaction);
+      }
+      return { transactions, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };
