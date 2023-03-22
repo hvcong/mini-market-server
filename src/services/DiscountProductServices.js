@@ -4,7 +4,7 @@ const { getById } = require("../services/PromotionServices");
 const services = {
   add: async (data) => {
     try {
-      const { id, startDate, endDate, discountRate, state, promotionHeaderId } =
+      const { id, title,description, startDate, endDate, discountRate, state, promotionHeaderId } =
         data;
       if (!promotionHeaderId) {
         return {
@@ -25,6 +25,8 @@ const services = {
       } else {
         discountProduct = await DiscountRateProduct.create({
           id,
+          title,
+          description,
           startDate,
           endDate,
           discountRate,

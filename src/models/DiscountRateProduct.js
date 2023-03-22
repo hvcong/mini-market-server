@@ -8,6 +8,12 @@ const DiscountRateProduct = sequelize.define(
       type: DataTypes.STRING,
       primaryKey: true,
     },
+    title: {
+      type: DataTypes.STRING,
+    },
+    description: {
+      type: DataTypes.STRING,
+    },
     startDate: {
       type: DataTypes.DATE,
       allowNull: false,
