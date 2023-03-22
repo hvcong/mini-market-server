@@ -1,4 +1,11 @@
-const { Customer } = require("../config/persist");
+const {
+  Customer,
+  HomeAddress,
+  Ward,
+  District,
+  City,
+  TypeCustomer,
+} = require("../config/persist");
 const { Op } = require("sequelize");
 
 const services = {
@@ -76,6 +83,29 @@ const services = {
       const customers = await Customer.findAndCountAll({
         limit: limit,
         offset: offset,
+        include: [
+          {
+            model: HomeAddress,
+            include: [
+              {
+                model: Ward,
+                include: [
+                  {
+                    model: District,
+                    include: [
+                      {
+                        model: City,
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            model: TypeCustomer,
+          },
+        ],
       });
       return { customers, isSuccess: true, status: 200 };
     } catch (error) {
