@@ -16,7 +16,7 @@ const controller = {
       query
     );
     if (isSuccess) {
-      return res.status(status).json(transactions);
+      return res.status(status).json({isSuccess,transactions});
     }
     return res.status(status).json({ isSuccess, message });
   },

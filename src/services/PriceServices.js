@@ -131,6 +131,27 @@ const PriceServices = {
             model: ListPricesHeader,
             where: { id: priceHeaderId },
           },
+          {
+            model: ProductUnitType,
+            include: [
+              {
+                model: Product,
+                include: [
+                  {
+                    model: ProductUnitType,
+                    include: [
+                      {
+                        model: UnitType,
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                model: UnitType,
+              },
+            ],
+          },
         ],
       });
       return { listPrices, isSuccess: true, status: 200 };
@@ -159,6 +180,14 @@ const PriceServices = {
           {
             model: ProductUnitType,
             where: { id: proUnitId },
+            include: [
+              {
+                model: Product,
+              },
+              {
+                model: UnitType,
+              },
+            ],
           },
         ],
       });

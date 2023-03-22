@@ -40,6 +40,7 @@ const ProductController = {
   },
   getProductByname: async (req, res) => {
     const productName = req.query.name;
+    const priceState = req.query.priceState;
     productName.trim();
     const result = await services.getProductByName(productName);
     const { isSuccess, status } = result;
@@ -81,15 +82,16 @@ const ProductController = {
     if (isSuccess) {
       return res.status(status).json({ isSuccess, products });
     }
-    return res.status(status).json({isSuccess,message})
+    return res.status(status).json({ isSuccess, message });
   },
-  getProductLikeId: async (req,res) =>{
-    const id = req.query.productId
-    const {isSuccess,status,message,products} = await services.getProductLikeId(id)
-    if(isSuccess){
-      return res.status(status).json({isSuccess,products})
+  getProductLikeId: async (req, res) => {
+    const id = req.query.productId;
+    const { isSuccess, status, message, products } =
+      await services.getProductLikeId(id);
+    if (isSuccess) {
+      return res.status(status).json({ isSuccess, products });
     }
-    return res.status(status).json({isSuccess,message})
+    return res.status(status).json({ isSuccess, message });
   },
 };
 

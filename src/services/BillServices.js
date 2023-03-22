@@ -1,5 +1,14 @@
-const { Bill, Employee, Voucher, BillDetail, Customer } = require("../config/persist");
-const { getCustomerByPhonenumber,add } = require("../services/CustomerServices");
+const {
+  Bill,
+  Employee,
+  Voucher,
+  BillDetail,
+  Customer,
+} = require("../config/persist");
+const {
+  getCustomerByPhonenumber,
+  add,
+} = require("../services/CustomerServices");
 const { createBillDetais } = require("../services/BillDetailServices");
 
 const services = {
@@ -15,11 +24,11 @@ const services = {
         };
       }
       let { customer } = await getCustomerByPhonenumber(customerPhonenumber);
-      console.log(customer)
+      console.log(customer);
       if (!customer) {
-        customer = await add({phonenumber: customerPhonenumber})
+        customer = await add({ phonenumber: customerPhonenumber });
       }
-      console.log(customer.dataValues)
+      console.log(customer.dataValues);
       const employee = await Employee.findByPk(employeeId);
       var billdetails = await createBillDetais(priceIds);
       var voucher = null;
@@ -27,7 +36,7 @@ const services = {
         voucher = await Voucher.findOne({ where: { id: voucherId } });
       }
       const bill = await Bill.create({ cost });
-    //   await bill.setCustomer(customer);
+      //   await bill.setCustomer(customer);
       await bill.setEmployee(employee);
       await bill.setBillDetails(billdetails);
       await bill.setVoucher(voucher);
@@ -46,15 +55,15 @@ const services = {
         limit: limit,
         offset: offset,
         include: [
-            {
-                model: Customer
-            },
-            {
-                model: Employee
-            }
-        ]
+          {
+            model: Customer,
+          },
+          {
+            model: Employee,
+          },
+        ],
       });
-      return {bills, isSuccess: true, status: 200}
+      return { bills, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };
