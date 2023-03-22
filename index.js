@@ -49,6 +49,7 @@ try {
 }
 
 // generateData();
+
 // require("./src/config/persist");
 
 const port = process.env.PORT || 3000;

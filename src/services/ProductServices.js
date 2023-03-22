@@ -174,7 +174,7 @@ const ProductServices = {
         }
         const uris = await create(images);
         await product.setImages(uris);
-        const {listUnit} = await getUnitByIds(unitTypes)
+        const { listUnit } = await getUnitByIds(unitTypes);
         await product.setUnitTypes(listUnit);
         return { product, isSuccess: true, status: 200 };
       }
@@ -184,19 +184,19 @@ const ProductServices = {
     }
   },
   updateProduct: async (id, data) => {
-    const {unitTypes,...newData} =data
+    const { unitTypes, ...newData } = data;
     try {
       const product = await Product.findOne({ where: { id: id } });
       if (!product) {
         return { message: "product not found", isSuccess: false, status: 404 };
       }
       await product.update(newData);
-      for(const e of unitTypes){        
-        let unit = await UnitType.findByPk(e.id)        
-        if(await product.hasUnitType(unit)){
+      for (const e of unitTypes) {
+        let unit = await UnitType.findByPk(e.id);
+        if (await product.hasUnitType(unit)) {
           continue;
-        }else{
-          await product.addUnitType(unit)
+        } else {
+          await product.addUnitType(unit);
         }
       }
       await product.save();

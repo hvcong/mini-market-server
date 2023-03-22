@@ -20,6 +20,9 @@ const PromotionHeader = sequelize.define(
       type: DataTypes.DATE,
       allowNull: false,
     },
+    desciption: {
+      type: DataTypes.STRING,
+    },
     budget: {
       type: DataTypes.DOUBLE,
       allowNull: false,
