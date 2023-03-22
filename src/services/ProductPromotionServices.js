@@ -3,7 +3,16 @@ const { ProductPromotion, PromotionHeader } = require("../config/persist");
 const Services = {
   add: async (data) => {
     try {
-      const { id, startDate, endDate, minQuantity, state, promotionHeaderId } = data;
+      const {
+        id,
+        title,
+        description,
+        startDate,
+        endDate,
+        minQuantity,
+        state,
+        promotionHeaderId,
+      } = data;
       var promotion = await ProductPromotion.findOne({ where: { id: id } });
       const promotionHeader = await PromotionHeader.findOne({
         where: { id: promotionHeaderId },
@@ -18,6 +27,8 @@ const Services = {
       if (promotionHeader) {
         promotion = await ProductPromotion.create({
           id,
+          title,
+          description,
           startDate,
           endDate,
           minQuantity,
@@ -25,9 +36,12 @@ const Services = {
         });
         await promotion.setPromotionHeader(promotionHeader);
         return { promotion, isSuccess: true, status: 200 };
-      }
-      else{
-        return {message: 'promotion header not found',isSuccess: false, status: 400}
+      } else {
+        return {
+          message: "promotion header not found",
+          isSuccess: false,
+          status: 400,
+        };
       }
     } catch (error) {
       console.log(error);
@@ -71,9 +85,12 @@ const Services = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  get: async (data) => {
+  get: async (query) => {
     try {
-      const promotions = await ProductPromotion.findAll({ limit: 20 });
+      const page = (query._page && Number(query._page)) || 1;
+      const limit = (query._limit && Number(query._limit)) || 20;
+      var offset = (page - 1) * limit;
+      const promotions = await ProductPromotion.findAll({ limit: limit,offset: offset });
       if (promotions.length) {
         return { isSuccess: true, promotions, status: 200 };
       } else {

@@ -29,6 +29,9 @@ const PromotionResult = require('../models/PromotionResult')
 const RetrieveBill = require('../models/RetrieveBill')
 const StoreTransaction = require('../models/StoreTransaction')
 const ProductUnitType = require('../models/ProductUnitype')
+const WareHouseTiket = require('../models/WareHouseTiket')
+const pUnitpPromotion = require('../models/pUnitpPromotion')
+const pUnitDRProduct = require('../models/pUnitDRProduct')
 
 // account
 Account.belongsTo(Customer);
@@ -61,6 +64,7 @@ Product.hasMany(Image, {as: 'images'})
 Image.belongsTo(Product)
 Product.belongsToMany(UnitType, {through: ProductUnitType })
 UnitType.belongsToMany(Product,{through: ProductUnitType})
+Product.hasMany(WareHouseTiket)
 
 Product.hasMany(ProductUnitType)
 
@@ -68,17 +72,20 @@ Product.hasMany(ProductUnitType)
 Price.belongsTo(ListPricesHeader)
 Price.hasOne(CartDetail);
 Price.hasOne(BillDetail);
-Price.hasOne(GiftProduct)
-Price.belongsTo(DiscountRateProduct)
 Price.belongsTo(ProductUnitType)
 
 // UnitType
 UnitType.hasMany(ProductUnitType)
 
 //ProductUnitype
+ProductUnitType.belongsToMany(ProductPromotion, {through: pUnitpPromotion})
+ProductUnitType.belongsToMany(DiscountRateProduct, {through: pUnitDRProduct})
+ProductUnitType.hasMany(pUnitpPromotion)
+ProductUnitType.hasMany(pUnitDRProduct)
 ProductUnitType.belongsTo(Product)
 ProductUnitType.belongsTo(UnitType)
 ProductUnitType.hasMany(Price)
+ProductUnitType.hasOne(GiftProduct)
 
 //storeTransaction
 StoreTransaction.belongsTo(Product)
@@ -95,6 +102,11 @@ Employee.hasMany(Bill)
 Employee.hasOne(Account)
 Employee.belongsTo(HomeAddress)
 Employee.hasMany(StoreTransaction)
+Employee.hasMany(WareHouseTiket)
+
+//WareHouseTiket
+WareHouseTiket.belongsTo(Employee)
+WareHouseTiket.belongsTo(Product)
 
 // Bill
 Bill.hasMany(BillDetail);
@@ -148,23 +160,33 @@ PromotionHeader.hasMany(DiscountRateProduct)
 
 // ProductPromotion
 ProductPromotion.belongsTo(PromotionHeader)
-ProductPromotion.hasMany(GiftProduct)
+ProductPromotion.hasOne(GiftProduct)
+ProductPromotion.belongsToMany(ProductUnitType, {through: pUnitpPromotion})
+ProductPromotion.hasMany(pUnitpPromotion)
+
+//pUnitpPromotion
+pUnitpPromotion.belongsTo(ProductUnitType)
+pUnitpPromotion.belongsTo(ProductPromotion)
 
 // MoneyPromotion
 MoneyPromotion.belongsTo(PromotionHeader)
-MoneyPromotion.hasMany(GiftProduct)
 
 //DiscountRateProduct 
 DiscountRateProduct.belongsTo(PromotionHeader)
-DiscountRateProduct.hasMany(Price)
+DiscountRateProduct.belongsToMany(ProductUnitType,{through: pUnitDRProduct})
+DiscountRateProduct.hasMany(pUnitDRProduct)
+
+//pUnitDRProduct
+pUnitDRProduct.belongsTo(ProductUnitType)
+pUnitDRProduct.belongsTo(DiscountRateProduct)
+
 
 // GiftProduct
 GiftProduct.belongsTo(ProductPromotion)
-GiftProduct.belongsTo(MoneyPromotion)
-GiftProduct.belongsTo(Price)
+GiftProduct.belongsTo(ProductUnitType)
 
 sequelize
-  .sync({ alter: true})
+  .sync({ force: true})
   .then((result) => {
     console.log("has been done");
   })
@@ -200,4 +222,5 @@ module.exports = {
   PromotionResult,
   ProductUnitType,
   TypeCustomer,
+  WareHouseTiket
 };

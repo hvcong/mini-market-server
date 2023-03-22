@@ -24,7 +24,8 @@ const Controller = {
     return res.status(status).json({ message, isSuccess });
   },
   get: async (req, res) => {
-    const result = await services.get();
+    const {query} = req
+    const result = await services.get(query);
     const { isSuccess, status, promotions, message } = result;
     if (isSuccess) {
       return res.status(status).json({ isSuccess, promotions });
