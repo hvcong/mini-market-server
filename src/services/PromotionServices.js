@@ -1,4 +1,10 @@
-const { PromotionHeader, ProductPromotion, MoneyPromotion, DiscountRateProduct } = require("../config/persist");
+const {
+  PromotionHeader,
+  ProductPromotion,
+  MoneyPromotion,
+  DiscountRateProduct,
+  Voucher,
+} = require("../config/persist");
 
 const PromotionHeaderServices = {
   add: async (data) => {
@@ -62,15 +68,15 @@ const PromotionHeaderServices = {
         offset: offset,
         include: [
           {
-            model: ProductPromotion
+            model: ProductPromotion,
           },
           {
-            model: MoneyPromotion
+            model: MoneyPromotion,
           },
           {
-            model: DiscountRateProduct
-          }
-        ]
+            model: DiscountRateProduct,
+          },
+        ],
       });
       if (promotions) {
         return { promotions, isSuccess: true, status: 200 };
@@ -83,7 +89,15 @@ const PromotionHeaderServices = {
   },
   getById: async (id) => {
     try {
-      const promotion = await PromotionHeader.findOne({ where: { id: id } });
+      const promotion = await PromotionHeader.findOne({
+        where: { id: id },
+        include: [
+          { model: ProductPromotion },
+          { model: DiscountRateProduct },
+          { model: MoneyPromotion },
+          { model: Voucher },
+        ],
+      });
       if (promotion) {
         return { promotion, isSuccess: true, status: 200 };
       }
