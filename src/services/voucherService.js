@@ -7,47 +7,46 @@ const voucherService = {
       code,
       startDate,
       endDate,
-      disCountMoney,
-      disCountPercent,
+      discountMoney,
+      discountRate,
       maxDiscountMoney,
-      remainingUsage,
     } = data;
 
     // check data
-    if (!code || !startDate || !endDate || !maxDiscountMoney) {
+    if (
+      !code ||
+      !startDate ||
+      !endDate ||
+      !maxDiscountMoney ||
+      !discountMoney ||
+      !discountRate
+    ) {
       return {
         isSuccess: false,
         message: "Missing some data",
+        status: 400,
       };
     }
-
-    if (!disCountMoney && !disCountPercent) {
-      return {
-        isSuccess: false,
-        message: "Missing some data",
-      };
-    }
-
     try {
-      let voucher = await Voucher.create({
-        code: code.toUpperCase(),
-        startDate,
-        endDate,
-        disCountMoney,
-        disCountPercent,
-        maxDiscountMoney,
-        remainingUsage,
-      });
-
+      let voucher = await Voucher.findOne({ where: { code: code } });
+      if (voucher) {
+        return {
+          message: "the code is already exists",
+          isSuccess: false,
+          status: 400,
+        };
+      }
+      voucher = await Voucher.create(data);
       return {
-        isSuccess: true,
-        message: "Create voucher oke",
         voucher,
+        isSuccess: true,
+        status: 200,
       };
     } catch (error) {
       return {
         isSuccess: false,
-        message: "Internal server error",
+        message: "something went wrong",
+        status: 500,
       };
     }
   },
@@ -59,7 +58,6 @@ const voucherService = {
         message: "Missing voucher id",
       };
     }
-
     try {
       await Voucher.destroy({
         where: {
@@ -70,11 +68,14 @@ const voucherService = {
       return {
         isSuccess: true,
         message: "Delete oke",
+        status: 200,
       };
     } catch (error) {
       console.log(error);
       return {
         isSuccess: false,
+        message: "something went wrong",
+        status: 500,
       };
     }
   },
@@ -116,49 +117,14 @@ const voucherService = {
       return {
         isSuccess: false,
         message: "Missing code",
+        status: 400,
       };
     }
-
     try {
-      const result = await voucherService.getByCode(code);
-
-      if (!result.voucher) {
-        return result;
-      }
-
-      const { voucher } = result;
-
-      if (!voucher.isActive || voucher.remainingUsage <= 0) {
-        return {
-          isSuccess: false,
-          message: "Voucher can't use",
-        };
-      }
-
-      if (voucher.endDate > new Date()) {
-        return {
-          isSuccess: false,
-          message: "Voucher is expired",
-        };
-      }
-
-      // oke
-      await Voucher.update(
-        {
-          remainingUsage: voucher.remainingUsage - 1,
-          isActive: voucher.remainingUsage == 1 ? false : true,
-        },
-        {
-          where: {
-            code,
-          },
-        }
-      );
-
-      return {
-        isSuccess: true,
-        message: "Using voucher oke",
-      };
+      const voucher = await Voucher.findOne({ where: { code: code } });
+      await voucher.update({ state: false });
+      await voucher.save();
+      return { message: "udated successful", isSuccess: true, status: 200 };
     } catch (error) {
       return {
         isSuccess: false,
@@ -171,24 +137,22 @@ const voucherService = {
     try {
       const vouches = await Voucher.findAll({
         where: {
-          isActive: true,
+          state: true,
           endDate: {
             [Op.lte]: new Date(),
           },
-          remainingUsage: {
-            [Op.gt]: 0,
-          },
         },
       });
-
       return {
         isSuccess: true,
         vouches,
+        status: 200,
       };
     } catch (error) {
       return {
         isSuccess: false,
         message: "Internal server error",
+        status: 500,
       };
     }
   },

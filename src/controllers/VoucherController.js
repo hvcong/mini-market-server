@@ -2,47 +2,39 @@ const voucherService = require("../services/voucherService");
 
 const VoucherController = {
   add: async (req, res) => {
-    let result = await voucherService.create(req.body);
-
-    if (!result.isSuccess) {
-      return res.status(300).json(result);
+    let {isSuccess,status,message,voucher} = await voucherService.create(req.body);
+    if (!isSuccess) {
+      return res.status(status).json({isSuccess,message});
     }
-    return res.status(200).json(result);
+    return res.status(status).json({isSuccess,voucher});
   },
 
   deleteById: async (req, res) => {
-    let result = await voucherService.deleteById(req.params.id);
-    if (!result.isSuccess) {
-      return res.status(300).json(result);
-    }
-
-    return res.status(200).json(result);
+    let {isSuccess,message,status} = await voucherService.deleteById(req.params.id);
+    return res.status(status).json({isSuccess,message});
   },
   getByCode: async (req, res) => {
-    console.log("get voucher by code route");
-    let result = await voucherService.getByCode(req.params.code);
-    if (!result.isSuccess) {
-      return res.status(300).json(result);
+    const code = req.query.code
+    let {isSuccess,message,voucher} = await voucherService.getByCode(code);
+    if (!isSuccess) {
+      return res.status(300).json({isSuccess,message});
     }
-
-    return res.status(200).json(result);
+    return res.status(200).json({isSuccess,voucher});
   },
 
   updateWhenIsUsed: async (req, res) => {
-    let result = await voucherService.updateWhenIsUsed(req.params.code);
-    if (!result.isSuccess) {
-      return res.status(300).json(result);
-    }
+    const code = req.query.code
+    let {isSuccess,message,status} = await voucherService.updateWhenIsUsed(code);
+      return res.status(status).json({isSuccess,message});
 
-    return res.status(200).json(result);
   },
 
   getAllUsableVoucher: async (req, res) => {
-    let result = await voucherService.getAllUsableVoucher();
-    if (!result.isSuccess) {
-      return res.status(300).json(result);
+    let {isSuccess,status,message,vouches} = await voucherService.getAllUsableVoucher();
+    if (!isSuccess) {
+      return res.status(status).json({isSuccess,message});
     }
-    return res.status(200).json(result);
+    return res.status(status).json({isSuccess,vouches});
   },
 };
 

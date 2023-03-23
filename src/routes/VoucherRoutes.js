@@ -4,8 +4,8 @@ const VoucherRoutes = require("express").Router();
 
 VoucherRoutes.post("/", VoucherController.add);
 VoucherRoutes.delete("/:id", VoucherController.deleteById);
-VoucherRoutes.get("/code/:code", VoucherController.getByCode);
-VoucherRoutes.put("/code/:code/use", VoucherController.updateWhenIsUsed);
-VoucherRoutes.get("/usable", VoucherController.getAllUsableVoucher);
+VoucherRoutes.get("/get", VoucherController.getByCode);
+VoucherRoutes.put("/update", VoucherController.updateWhenIsUsed);
+VoucherRoutes.get("/useable", VoucherController.getAllUsableVoucher);
 
 module.exports = VoucherRoutes;
