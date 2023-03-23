@@ -1,4 +1,4 @@
-const { WareHouseTiket } = require("../config/persist");
+const { WareHouseTiket, Employee, Product } = require("../config/persist");
 const services = {
   add: async (data) => {
     try {
@@ -41,8 +41,13 @@ const services = {
     const limit = (query._limit && Number(query._limit)) || 20;
     var offset = (page - 1) * limit;
     try {
-      const tickets = await WareHouseTiket.findAndCountAll({limit: limit, offset: offset});
-      return {tickets,isSuccess: true, status: 200}
+      const tickets = await WareHouseTiket.findAndCountAll({
+        limit: limit,
+        offset: offset,
+
+        include: [{ model: Employee }, { model: Product }],
+      });
+      return { tickets, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };
