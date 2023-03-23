@@ -53,7 +53,7 @@ const PromotionHeaderServices = {
       const promotion = await PromotionHeader.findOne({ where: { id: id } });
       if (promotion) {
         await promotion.update(data);
-        await promotion.save()
+        await promotion.save();
         return { message: "updated successful", isSuccess: true, status: 200 };
       }
       return { message: "promotion not found", isSuccess: false, status: 404 };
@@ -97,6 +97,7 @@ const PromotionHeaderServices = {
             model: TypeCustomer,
           },
         ],
+        distinct: true,
       });
       if (promotions) {
         return { promotions, isSuccess: true, status: 200 };
