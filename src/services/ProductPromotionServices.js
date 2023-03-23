@@ -11,12 +11,13 @@ const Services = {
         endDate,
         minQuantity,
         state,
-        promotionHeaderId,
+        ProductUnitTypeId,
+        PromotionHeaderId,
       } = data;
       var promotion = await ProductPromotion.findOne({ where: { id: id } });
-      const promotionHeader = await PromotionHeader.findOne({
-        where: { id: promotionHeaderId },
-      });
+      // let promotionHeader = await PromotionHeader.findOne({
+      //   where: { PromotionHeaderId: PromotionHeaderId },
+      // });
       if (promotion) {
         return {
           message: "this Product promotion already exists",
@@ -24,25 +25,19 @@ const Services = {
           status: 400,
         };
       }
-      if (promotionHeader) {
-        promotion = await ProductPromotion.create({
-          id,
-          title,
-          description,
-          startDate,
-          endDate,
-          minQuantity,
-          state,
-        });
-        await promotion.setPromotionHeader(promotionHeader);
-        return { promotion, isSuccess: true, status: 200 };
-      } else {
-        return {
-          message: "promotion header not found",
-          isSuccess: false,
-          status: 400,
-        };
-      }
+      promotion = await ProductPromotion.create({
+        id,
+        title,
+        description,
+        startDate,
+        endDate,
+        minQuantity,
+        state,
+        ProductUnitTypeId,
+        PromotionHeaderId,
+      });
+      // await promotion.setPromotionHeader(promotionHeader);
+      return { promotion, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };
@@ -90,7 +85,10 @@ const Services = {
       const page = (query._page && Number(query._page)) || 1;
       const limit = (query._limit && Number(query._limit)) || 20;
       var offset = (page - 1) * limit;
-      const promotions = await ProductPromotion.findAll({ limit: limit,offset: offset });
+      const promotions = await ProductPromotion.findAll({
+        limit: limit,
+        offset: offset,
+      });
       if (promotions.length) {
         return { isSuccess: true, promotions, status: 200 };
       } else {

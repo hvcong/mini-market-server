@@ -30,8 +30,7 @@ const RetrieveBill = require("../models/RetrieveBill");
 const StoreTransaction = require("../models/StoreTransaction");
 const ProductUnitType = require("../models/ProductUnitype");
 const WareHouseTiket = require("../models/WareHouseTiket");
-const pUnitpPromotion = require("../models/pUnitpPromotion");
-const pUnitDRProduct = require("../models/pUnitDRProduct");
+const PromotionTypeCustomer = require("../models/PromoHeaderTypeCustomer");
 
 // account
 Account.belongsTo(Customer);
@@ -49,6 +48,8 @@ Customer.belongsTo(TypeCustomer);
 
 // typeuser
 TypeCustomer.hasMany(Customer);
+TypeCustomer.belongsToMany(PromotionHeader, { through: PromotionTypeCustomer });
+TypeCustomer.hasMany(PromotionTypeCustomer);
 
 //category
 Category.hasMany(SubCategory);
@@ -78,14 +79,12 @@ Price.belongsTo(ProductUnitType);
 UnitType.hasMany(ProductUnitType);
 
 //ProductUnitype
-ProductUnitType.belongsToMany(ProductPromotion, { through: pUnitpPromotion });
-ProductUnitType.belongsToMany(DiscountRateProduct, { through: pUnitDRProduct });
-ProductUnitType.hasMany(pUnitpPromotion);
-ProductUnitType.hasMany(pUnitDRProduct);
 ProductUnitType.belongsTo(Product);
 ProductUnitType.belongsTo(UnitType);
 ProductUnitType.hasMany(Price);
 ProductUnitType.hasOne(GiftProduct);
+ProductUnitType.hasOne(ProductPromotion);
+ProductUnitType.hasOne(DiscountRateProduct);
 
 //storeTransaction
 StoreTransaction.belongsTo(Product);
@@ -151,35 +150,31 @@ PromotionHeader.hasMany(ProductPromotion);
 PromotionHeader.hasMany(MoneyPromotion);
 PromotionHeader.hasMany(Voucher);
 PromotionHeader.hasMany(DiscountRateProduct);
+PromotionHeader.belongsToMany(TypeCustomer, { through: PromotionTypeCustomer });
+PromotionHeader.hasMany(PromotionTypeCustomer);
+
+//PromotionTypeCustomer
+PromotionTypeCustomer.belongsTo(PromotionHeader);
+PromotionTypeCustomer.belongsTo(TypeCustomer);
 
 // ProductPromotion
 ProductPromotion.belongsTo(PromotionHeader);
 ProductPromotion.hasOne(GiftProduct);
-ProductPromotion.belongsToMany(ProductUnitType, { through: pUnitpPromotion });
-ProductPromotion.hasMany(pUnitpPromotion);
-
-//pUnitpPromotion
-pUnitpPromotion.belongsTo(ProductUnitType);
-pUnitpPromotion.belongsTo(ProductPromotion);
+ProductPromotion.belongsTo(ProductUnitType);
 
 // MoneyPromotion
 MoneyPromotion.belongsTo(PromotionHeader);
 
 //DiscountRateProduct
 DiscountRateProduct.belongsTo(PromotionHeader);
-DiscountRateProduct.belongsToMany(ProductUnitType, { through: pUnitDRProduct });
-DiscountRateProduct.hasMany(pUnitDRProduct);
-
-//pUnitDRProduct
-pUnitDRProduct.belongsTo(ProductUnitType);
-pUnitDRProduct.belongsTo(DiscountRateProduct);
+DiscountRateProduct.belongsTo(ProductUnitType);
 
 // GiftProduct
 GiftProduct.belongsTo(ProductPromotion);
 GiftProduct.belongsTo(ProductUnitType);
 
 sequelize
-  .sync({ force: false })
+  .sync({ alter: true })
   .then((result) => {
     console.log("has been done");
   })

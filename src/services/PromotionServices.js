@@ -5,11 +5,13 @@ const {
   DiscountRateProduct,
   Voucher,
 } = require("../config/persist");
+const { getByIds } = require("../services/TypeCustomerServices");
 
 const PromotionHeaderServices = {
   add: async (data) => {
     try {
-      const { id, title, startDate, endDate, budget, state } = data;
+      const { id, title, description, startDate, endDate, budget,availableBudget, state, customerIds } =
+        data;
       var promotion = await PromotionHeader.findOne({ where: { id: id } });
       if (promotion) {
         return {
@@ -23,9 +25,13 @@ const PromotionHeaderServices = {
         title,
         startDate,
         endDate,
+        description,
         budget,
+        availableBudget,
         state,
       });
+      const { typeCustomers } = await getByIds(customerIds);
+      await promotion.setTypeCustomers(typeCustomers)
       return { promotion, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);

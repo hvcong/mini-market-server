@@ -33,6 +33,16 @@ const controller = {
       return res.status(status).json({ message, isSuccess });
     }
   },
+<<<<<<< HEAD
+  getOne: async (req,res) =>{
+    const id = req.query.id
+    const {isSuccess,status,message,promotion} = await services.getById(id)
+    if(isSuccess){
+      return res.status(status).json({isSuccess,promotion})
+    }
+    return res.status(status).json({isSuccess,message})
+  }
+=======
   getOneById: async (req, res) => {
     const id = req.query.id;
     const result = await services.getById(id);
@@ -44,6 +54,7 @@ const controller = {
       return res.status(status).json({ message, isSuccess });
     }
   },
+>>>>>>> a589e8d8600683eb9b76a4caec707495e991d3b3
 };
 
 module.exports = controller;
