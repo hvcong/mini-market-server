@@ -66,6 +66,20 @@ const services = {
       console.log(error)
       return {message: 'something went wrong',isSuccess: false, status:500}
     }
+  },
+  getByIds: async(ids) =>{
+    try {
+      const typeCustomers= []
+      let typeCustomer = null
+      for(const e of ids){
+        typeCustomer = await TypeCustomer.findByPk(e.id)
+        typeCustomers.push(typeCustomer)
+      }
+      return {typeCustomers,isSuccess: true,status: 200}
+    } catch (error) {
+      console.log(error)
+      return {message:'something went wrong',isSuccess: false, status: 500}
+    }
   }
 };
 

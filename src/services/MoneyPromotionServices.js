@@ -3,23 +3,10 @@ const { MoneyPromotion, PromotionHeader } = require("../config/persist");
 const Services = {
   add: async (data) => {
     try {
-      const {
-        id,
-        title,
-        description,
-        minCost,
-        startDate,
-        endDate,
-        state,
-        discountMoney,
-        discountRate,
-        maxDiscountMoney,
-        promotionHeaderId,
-      } = data;
-      var promotion = await MoneyPromotion.findOne({ where: { id: id } });
-      const promotionHeader = await PromotionHeader.findOne({
-        where: { id: promotionHeaderId },
-      });
+      const { id } = data;
+      console.log(data,id)
+      let promotion = await MoneyPromotion.findOne({ where: { id: id } });
+
       if (promotion) {
         return {
           message: "this Money promotion already exists",
@@ -27,19 +14,7 @@ const Services = {
           status: 400,
         };
       }
-      promotion = await MoneyPromotion.create({
-        id,
-        title,
-        description,
-        startDate,
-        endDate,
-        minCost,
-        state,
-        discountMoney,
-        discountRate,
-        maxDiscountMoney,
-      });
-      await promotion.setPromotionHeader(promotionHeader);
+      promotion = await MoneyPromotion.create(data);
       return { promotion, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
@@ -88,7 +63,10 @@ const Services = {
       const page = (query._page && Number(query._page)) || 1;
       const limit = (query._limit && Number(query._limit)) || 20;
       var offset = (page - 1) * limit;
-      const promotions = await MoneyPromotion.findAll({ limit: limit, offset: offset });
+      const promotions = await MoneyPromotion.findAll({
+        limit: limit,
+        offset: offset,
+      });
       if (promotions.length) {
         return { isSuccess: true, promotions, status: 200 };
       } else {

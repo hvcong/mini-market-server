@@ -11,14 +11,14 @@ const Controller = {
     }
   },
   update: async (req, res) => {
-    const id = req.params.id;
+    const id = req.query.id;
     const data = req.body;
     const result = await services.update(id, data);
     const { isSuccess, status, message } = result;
     return res.status(status).json({ message, isSuccess });
   },
   delete: async (req, res) => {
-    const id = req.params.id;
+    const id = req.query.id;
     const result = await services.delete(id);
     const { isSuccess, status, message } = result;
     return res.status(status).json({ message, isSuccess });
