@@ -10,15 +10,12 @@ const sequelize = require("../config/database");
 const PriceServices = {
   addPrice: async (data) => {
     try {
-      const { startDate, endDate, price, state, headerId, productUnitTypeId } =
+      const { price, headerId, productUnitTypeId } =
         data;
       const productUnitType = await ProductUnitType.findByPk(productUnitTypeId);
       if (productUnitType) {
         const productPrice = await Price.create({
-          startDate,
-          endDate,
           price,
-          state,
           ListPricesHeaderId: headerId,
         });
         await productPrice.setProductUnitType(productUnitType);
@@ -77,7 +74,6 @@ const PriceServices = {
       const productLines = await Price.findAll({
         limit: limit,
         offset: offset,
-        where: {state: true},
         include: [
           {
             model: ProductUnitType,
@@ -100,9 +96,6 @@ const PriceServices = {
   getPriceByProductId: async (id) => {
     try {
       const price = await Price.findAll({
-        where: {
-          state: true,
-        },
         include: [
           {
             model: ProductUnitType,

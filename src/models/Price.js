@@ -9,21 +9,9 @@ const Price = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    startDate: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    },
-    endDate: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
     price: {
       type: DataTypes.DOUBLE,
       allowNull: false,
-    },
-    state: {
-      type: DataTypes.BOOLEAN,
-      allowNull: true,
     },
   },
   {

@@ -11,7 +11,7 @@ const controller = {
     }
   },
   update: async (req, res) => {
-    const id = req.params.id;
+    const id = req.query.id;
     const data = req.body;
     const result = await services.update(id, data);
     const { isSuccess, message, status } = result;
@@ -33,17 +33,14 @@ const controller = {
       return res.status(status).json({ message, isSuccess });
     }
   },
-  getOneById: async (req, res) => {
-    const id = req.query.id;
-    const result = await services.getById(id);
-
-    const { promotion, isSuccess, status, message } = result;
-    if (isSuccess) {
-      return res.status(status).json({ isSuccess, promotion });
-    } else {
-      return res.status(status).json({ message, isSuccess });
+  getOne: async (req,res) =>{
+    const id = req.query.id
+    const {isSuccess,status,message,promotion} = await services.getById(id)
+    if(isSuccess){
+      return res.status(status).json({isSuccess,promotion})
     }
-  },
+    return res.status(status).json({isSuccess,message})
+  }
 };
 
 module.exports = controller;
