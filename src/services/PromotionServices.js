@@ -3,6 +3,7 @@ const {
   ProductPromotion,
   MoneyPromotion,
   DiscountRateProduct,
+  Voucher,
 } = require("../config/persist");
 const { getByIds } = require("../services/TypeCustomerServices");
 
@@ -94,7 +95,15 @@ const PromotionHeaderServices = {
   },
   getById: async (id) => {
     try {
-      const promotion = await PromotionHeader.findOne({ where: { id: id } });
+      const promotion = await PromotionHeader.findOne({
+        where: { id: id },
+        include: [
+          { model: ProductPromotion },
+          { model: DiscountRateProduct },
+          { model: MoneyPromotion },
+          { model: Voucher },
+        ],
+      });
       if (promotion) {
         return { promotion, isSuccess: true, status: 200 };
       }

@@ -7,7 +7,7 @@ const {
 const services = {
   add: async (data) => {
     try {
-      const { id, title, startDate, endDate, state, priceLines } = data;
+      const { id, ...newData } = data;
       var header = await ListPricesHeader.findOne({ where: { id: id } });
       if (header) {
         return {
@@ -18,13 +18,8 @@ const services = {
       }
       header = await ListPricesHeader.create({
         id,
-        title,
-        startDate,
-        endDate,
-        state,
+        ...newData,
       });
-      const { listPrices } = await createBulkPrice(priceLines);
-      await header.setPrices(listPrices);
       return { header, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
@@ -32,19 +27,16 @@ const services = {
     }
   },
   update: async (data) => {
-    const { id, title, startDate, endDate, state, priceLines } = data;
+    const { id, ...newData } = data;
     try {
       const header = await ListPricesHeader.findOne({
         where: { id: id },
       });
+
       if (header) {
-        await header.update({ title, startDate, endDate, state });
+        await header.update({ ...newData });
         await header.save();
-        const { isSuccess } = await updateManyPrice(priceLines, id);
-        if (isSuccess) {
-          return { message: "updated succesful", isSuccess: true, status: 200 };
-        }
-        return { message: "updated failed", isSuccess: false, status: 500 };
+        return { message: "updated succesful", isSuccess: true, status: 200 };
       } else {
         return { message: "price not found", isSuccess: false, status: 404 };
       }

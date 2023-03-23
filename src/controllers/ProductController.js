@@ -32,7 +32,7 @@ const ProductController = {
     const { isSuccess } = result;
     if (isSuccess) {
       const { products, status } = result;
-      return res.status(status).json(products);
+      return res.status(status).json({ products, isSuccess });
     } else {
       const { message, status } = result;
       return res.status(status).json({ message, isSuccess });
