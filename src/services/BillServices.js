@@ -1,8 +1,6 @@
 const {
   Bill,
   Employee,
-  Voucher,
-  BillDetail,
   Customer,
 } = require("../config/persist");
 const {
@@ -14,9 +12,9 @@ const { createBillDetais } = require("../services/BillDetailServices");
 const services = {
   add: async (data) => {
     try {
-      const { cost, customerPhonenumber, employeeId, voucherId, priceIds } =
+      const { cost, customerPhonenumber, EmployeeId, VoucherId, priceIds } =
         data;
-      if (!customerPhonenumber && !employeeId) {
+      if (!customerPhonenumber && !EmployeeId) {
         return {
           message: "missing customerPhonenumber or employeeId",
           isSuccess: false,
@@ -24,22 +22,15 @@ const services = {
         };
       }
       let { customer } = await getCustomerByPhonenumber(customerPhonenumber);
-      console.log(customer);
-      if (!customer) {
-        customer = await add({ phonenumber: customerPhonenumber });
-      }
-      console.log(customer.dataValues);
-      const employee = await Employee.findByPk(employeeId);
       var billdetails = await createBillDetais(priceIds);
-      var voucher = null;
-      if (voucherId) {
-        voucher = await Voucher.findOne({ where: { id: voucherId } });
+      const bill = await Bill.create({ cost, EmployeeId, VoucherId });
+      if(customer){
+        await bill.setCustomer(customer);
+      }else{
+        let {customer} = await add({phonenumber: customerPhonenumber})
+        await bill.setCustomer(customer)
       }
-      const bill = await Bill.create({ cost });
-      //   await bill.setCustomer(customer);
-      await bill.setEmployee(employee);
       await bill.setBillDetails(billdetails);
-      await bill.setVoucher(voucher);
       return { bill, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);

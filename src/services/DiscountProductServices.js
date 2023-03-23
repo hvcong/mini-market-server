@@ -4,16 +4,16 @@ const { getById } = require("../services/PromotionServices");
 const services = {
   add: async (data) => {
     try {
-      const { id, title,description, startDate, endDate, discountRate, state, promotionHeaderId } =
+      const { id,PromotionHeaderId, ProductUnitTypeId } =
         data;
-      if (!promotionHeaderId) {
+      if (!PromotionHeaderId || !ProductUnitTypeId ) {
         return {
-          message: "missed promotionHeaderId",
+          message: "missed PromotionHeaderId or ProductUnitTypeId",
           isSuccess: false,
           status: 400,
         };
       }
-      var discountProduct = await DiscountRateProduct.findOne({
+      let discountProduct = await DiscountRateProduct.findOne({
         where: { id: id },
       });
       if (discountProduct) {
@@ -23,17 +23,7 @@ const services = {
           status: 403,
         };
       } else {
-        discountProduct = await DiscountRateProduct.create({
-          id,
-          title,
-          description,
-          startDate,
-          endDate,
-          discountRate,
-          state,
-        });
-        const {promotion} = await getById(promotionHeaderId);
-        discountProduct.setPromotionHeader(promotion)
+        discountProduct = await DiscountRateProduct.create(data);        
         return { discountProduct, isSuccess: true, status: 200 };
       }
     } catch (error) {
@@ -48,6 +38,20 @@ const services = {
         var offset = (page - 1) * limit;
         const discountProducts  = await DiscountRateProduct.findAndCountAll({limit: limit, offset: offset})
         return {discountProducts,isSuccess: true, status: 200}
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  update: async (id, data) => {
+    try {
+      const discount = await DiscountRateProduct.findOne({ where: { id: id } });
+      if (discount) {
+        await discount.update(data);
+        await discount.save()
+        return { message: "updated successful", isSuccess: true, status: 200 };
+      }
+      return { message: "promotion not found", isSuccess: false, status: 404 };
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };
