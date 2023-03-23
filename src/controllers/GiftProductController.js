@@ -11,7 +11,7 @@ const Controller = {
     }
   },
   update: async (req, res) => {
-    const id = req.params.id;
+    const id = req.query.id;
     const data = req.body;
     const result = await services.update(id, data);
     const { isSuccess, status, message } = result;

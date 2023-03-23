@@ -7,11 +7,8 @@ const {
 
 const Services = {
   add: async (data) => {
-    const { id, quantity, productPromotionId, moneyPromotionId, priceId } =
-      data;
-    var promotion = null;
+    const { id, ProductUnitTypeId, ProductPromotionId } = data;
     try {
-      const price = await Price.findOne({ where: { id: priceId } });
       var gift = await GiftProduct.findOne({ where: { id: id } });
       if (gift) {
         return {
@@ -20,27 +17,14 @@ const Services = {
           status: 400,
         };
       }
-      if (!productPromotionId && !moneyPromotionId && !priceId) {
+      if (!ProductUnitTypeId && !ProductPromotionId) {
         return {
-          message: "required productPromotionId or moneyPromotionId, priceId is always required",
+          message: "required productPromotionId and ProductPromotionId",
           isSuccess: false,
           status: 403,
         };
       }
-      gift = await GiftProduct.create({ id, quantity });
-      if (productPromotionId && price) {
-        promotion = await ProductPromotion.findOne({
-          where: { id: productPromotionId },
-        });
-        await gift.setProductPromotion(promotion);
-        await gift.setPrice(price);
-      } else {
-        promotion = await MoneyPromotion.findOne({
-          where: { id: moneyPromotionId },
-        });
-        await gift.setMoneyPromotion(promotion);
-        await gift.setPrice(price);
-      }
+      gift = await GiftProduct.create(data);
       return { gift, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
@@ -84,7 +68,7 @@ const Services = {
   },
   get: async () => {
     try {
-      const gifts = await GiftProduct.findAll({ limit: 20 });
+      const gifts = await GiftProduct.findAll();
       if (gifts.length) {
         return { gifts, isSuccess: true, status: 200 };
       }
