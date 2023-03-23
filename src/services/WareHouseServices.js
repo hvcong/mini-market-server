@@ -1,9 +1,12 @@
-const { WareHouseTiket, Employee, Product } = require("../config/persist");
+const { WareHouseTicket, Employee, Product } = require("../config/persist");
+const {addTickets} = require('./TicketServices')
 const services = {
   add: async (data) => {
+    const {EmployeeId,...others} = data
     try {
-      //   const { reportQty, realQty,ProductId, EmployeeId } = data;
-      const ticket = await WareHouseTiket.create(data);
+      const ticket = await WareHouseTicket.create({EmployeeId});
+      const {details} = await addTickets(others.ticketDetails)
+      ticket.setTicketDetails(details)
       return { ticket, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);

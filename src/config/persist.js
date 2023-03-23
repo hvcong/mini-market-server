@@ -29,8 +29,9 @@ const PromotionResult = require("../models/PromotionResult");
 const RetrieveBill = require("../models/RetrieveBill");
 const StoreTransaction = require("../models/StoreTransaction");
 const ProductUnitType = require("../models/ProductUnitype");
-const WareHouseTiket = require("../models/WareHouseTiket");
+const WareHouseTicket = require("../models/WareHouseTicket");
 const PromotionTypeCustomer = require("../models/PromoHeaderTypeCustomer");
+const TicketDetail = require('../models/TicketDetails')
 
 // account
 Account.belongsTo(Customer);
@@ -65,7 +66,7 @@ Product.hasMany(Image, { as: "images" });
 Image.belongsTo(Product);
 Product.belongsToMany(UnitType, { through: ProductUnitType });
 UnitType.belongsToMany(Product, { through: ProductUnitType });
-Product.hasMany(WareHouseTiket);
+Product.hasOne(TicketDetail)
 
 Product.hasMany(ProductUnitType);
 
@@ -98,11 +99,15 @@ Employee.hasMany(Bill);
 Employee.hasOne(Account);
 Employee.belongsTo(HomeAddress);
 Employee.hasMany(StoreTransaction);
-Employee.hasMany(WareHouseTiket);
+Employee.hasMany(WareHouseTicket);
 
 //WareHouseTiket
-WareHouseTiket.belongsTo(Employee);
-WareHouseTiket.belongsTo(Product);
+WareHouseTicket.belongsTo(Employee);
+WareHouseTicket.hasMany(TicketDetail)
+
+//WareHouseProduct
+TicketDetail.belongsTo(WareHouseTicket)
+TicketDetail.belongsTo(Product)
 
 // Bill
 Bill.hasMany(BillDetail);
@@ -210,5 +215,6 @@ module.exports = {
   PromotionResult,
   ProductUnitType,
   TypeCustomer,
-  WareHouseTiket,
+  WareHouseTicket,
+  TicketDetail,
 };
