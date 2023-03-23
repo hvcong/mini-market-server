@@ -4,19 +4,13 @@ function uid() {
     return "Ticket-" + new Date().getTime();
   }
 
-const WareHouseTiket = sequelize.define(
-  "WareHouseTiket",
+const WareHouseTicket = sequelize.define(
+  "WareHouseTicket",
   {
     id: {
       type: DataTypes.STRING,
       primaryKey: true,      
       defaultValue: uid
-    },
-    reportQty: {
-      type: DataTypes.INTEGER,      
-    },
-    realQty: {
-        type: DataTypes.INTEGER,        
     },
     createAt: {
         type: DataTypes.DATE,
@@ -28,4 +22,4 @@ const WareHouseTiket = sequelize.define(
   }
 );
 
-module.exports = WareHouseTiket;
+module.exports = WareHouseTicket;

@@ -21,20 +21,15 @@ const Voucher = sequelize.define(
       type: DataTypes.DATE,
       allowNull: false,
     },
-    isActive: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
+    state: {
+      type: DataTypes.BOOLEAN
     },
-    isUsed: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
-    disCountMoney: {
+    discountMoney: {
       type: DataTypes.DOUBLE,
       defaultValue: 0,
     },
-    disCountPercent: {
-      type: DataTypes.FLOAT,
+    discountRate: {
+      type: DataTypes.DOUBLE,
       defaultValue: 0,
     },
     maxDiscountMoney: {
