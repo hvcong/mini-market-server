@@ -3,24 +3,10 @@ const Voucher = require("../models/Voucher");
 
 const voucherService = {
   create: async (data) => {
-    const {
-      code,
-      startDate,
-      endDate,
-      discountMoney,
-      discountRate,
-      maxDiscountMoney,
-    } = data;
+    const { code, startDate, endDate } = data;
 
     // check data
-    if (
-      !code ||
-      !startDate ||
-      !endDate ||
-      !maxDiscountMoney ||
-      !discountMoney ||
-      !discountRate
-    ) {
+    if (!code || !startDate || !endDate) {
       return {
         isSuccess: false,
         message: "Missing some data",

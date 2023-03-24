@@ -2,6 +2,11 @@ const {
   Bill,
   Employee,
   Customer,
+  BillDetail,
+  PromotionResult,
+  MoneyPromotion,
+  DiscountRateProduct,
+  ProductPromotion,
 } = require("../config/persist");
 const {
   getCustomerByPhonenumber,
@@ -24,11 +29,11 @@ const services = {
       let { customer } = await getCustomerByPhonenumber(customerPhonenumber);
       var billdetails = await createBillDetais(priceIds);
       const bill = await Bill.create({ cost, EmployeeId, VoucherId });
-      if(customer){
+      if (customer) {
         await bill.setCustomer(customer);
-      }else{
-        let {customer} = await add({phonenumber: customerPhonenumber})
-        await bill.setCustomer(customer)
+      } else {
+        let { customer } = await add({ phonenumber: customerPhonenumber });
+        await bill.setCustomer(customer);
       }
       await bill.setBillDetails(billdetails);
       return { bill, isSuccess: true, status: 200 };
@@ -61,14 +66,31 @@ const services = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  getById: async (query) =>{
-    const id = query.id
+  getById: async (query) => {
+    const id = query.id;
     try {
-      const bill = await Bill.findByPk(id)
-      if(bill){
-        return {bill,isSuccess: true, status: 200}
+      const bill = await Bill.findOne({
+        where: {
+          id: id,
+        },
+        include: [
+          {
+            model: BillDetail,
+          },
+          {
+            model: PromotionResult,
+            include: [
+              { model: MoneyPromotion },
+              { model: DiscountRateProduct },
+              { model: ProductPromotion },
+            ],
+          },
+        ],
+      });
+      if (bill) {
+        return { bill, isSuccess: true, status: 200 };
       }
-      return {message: 'bill not found',isSuccess: false, status: 404}
+      return { message: "bill not found", isSuccess: false, status: 404 };
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };

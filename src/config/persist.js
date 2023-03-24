@@ -31,7 +31,7 @@ const StoreTransaction = require("../models/StoreTransaction");
 const ProductUnitType = require("../models/ProductUnitype");
 const WareHouseTicket = require("../models/WareHouseTicket");
 const PromotionTypeCustomer = require("../models/PromoHeaderTypeCustomer");
-const TicketDetail = require('../models/TicketDetails')
+const TicketDetail = require("../models/TicketDetails");
 
 // account
 Account.belongsTo(Customer);
@@ -66,7 +66,7 @@ Product.hasMany(Image, { as: "images" });
 Image.belongsTo(Product);
 Product.belongsToMany(UnitType, { through: ProductUnitType });
 UnitType.belongsToMany(Product, { through: ProductUnitType });
-Product.hasOne(TicketDetail)
+Product.hasOne(TicketDetail);
 
 Product.hasMany(ProductUnitType);
 
@@ -103,11 +103,11 @@ Employee.hasMany(WareHouseTicket);
 
 //WareHouseTiket
 WareHouseTicket.belongsTo(Employee);
-WareHouseTicket.hasMany(TicketDetail)
+WareHouseTicket.hasMany(TicketDetail);
 
 //WareHouseProduct
-TicketDetail.belongsTo(WareHouseTicket)
-TicketDetail.belongsTo(Product)
+TicketDetail.belongsTo(WareHouseTicket);
+TicketDetail.belongsTo(Product);
 
 // Bill
 Bill.hasMany(BillDetail);
@@ -179,7 +179,7 @@ GiftProduct.belongsTo(ProductPromotion);
 GiftProduct.belongsTo(ProductUnitType);
 
 sequelize
-  .sync({ alter: true })
+  .sync({ alter: false })
   .then((result) => {
     console.log("has been done");
   })
