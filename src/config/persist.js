@@ -114,7 +114,7 @@ Bill.hasMany(BillDetail);
 Bill.belongsTo(Voucher);
 Bill.belongsTo(Customer);
 Bill.belongsTo(Employee);
-Bill.hasOne(PromotionResult);
+Bill.hasMany(PromotionResult);
 Bill.hasOne(RetrieveBill);
 Bill.belongsTo(Voucher)
 
