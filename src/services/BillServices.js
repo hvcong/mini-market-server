@@ -8,11 +8,10 @@ const {
   DiscountRateProduct,
   ProductPromotion,
 } = require("../config/persist");
-const {
-  getCustomerByPhonenumber,
-  add,
-} = require("../services/CustomerServices");
-const { createBillDetais } = require("../services/BillDetailServices");
+const { Op } = require("sequelize");
+const { getCustomerByPhonenumber, add } = require("./CustomerServices");
+const { createBillDetais } = require("./BillDetailServices");
+const { getRetrieveIds } = require("./RetrieveBillServices");
 
 const services = {
   add: async (data) => {
@@ -105,6 +104,34 @@ const services = {
         limit: limit,
         offset: offset,
         where: {},
+        include: [
+          {
+            model: Customer,
+          },
+          {
+            model: Employee,
+          },
+        ],
+        distinct: true,
+      });
+      return { bills, isSuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getSucceedBill: async (query) => {
+    const page = (query._page && Number(query._page)) || 1;
+    const limit = (query._limit && Number(query._limit)) || 20;
+    const offset = (page - 1) * limit;
+    const { ids } = await getRetrieveIds();
+    const retrieveIds = ids.map((e) => e.id);
+    console.log(retrieveIds)
+    try {
+      const bills = await Bill.findAndCountAll({
+        limit: limit,
+        offset: offset,
+        where: { id: { [Op.not]: [retrieveIds.flat()]} },
         include: [
           {
             model: Customer,
