@@ -7,6 +7,7 @@ const {
   MoneyPromotion,
   DiscountRateProduct,
   ProductPromotion,
+  RetrieveBill,
 } = require("../config/persist");
 const { Op } = require("sequelize");
 const { getCustomerByPhonenumber, add } = require("./CustomerServices");
@@ -55,6 +56,9 @@ const services = {
           },
           {
             model: Employee,
+          },
+          {
+            model: RetrieveBill,
           },
         ],
         distinct: true,
@@ -126,12 +130,13 @@ const services = {
     const offset = (page - 1) * limit;
     const { ids } = await getRetrieveIds();
     const retrieveIds = ids.map((e) => e.id);
-    console.log(retrieveIds)
+    console.log(retrieveIds);
+
     try {
       const bills = await Bill.findAndCountAll({
         limit: limit,
         offset: offset,
-        where: { id: { [Op.notIn]: [retrieveIds.flat()]} },
+        where: { id: { [Op.notIn]: [retrieveIds.flat()] } },
         include: [
           {
             model: Customer,
@@ -139,7 +144,11 @@ const services = {
           {
             model: Employee,
           },
+          {
+            model: ReceiveBill,
+          },
         ],
+
         distinct: true,
       });
       return { bills, isSuccess: true, status: 200 };
