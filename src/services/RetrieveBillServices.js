@@ -3,11 +3,7 @@ const { RetrieveBill } = require("../config/persist");
 const services = {
   add: async (data) => {
     try {
-      const { note, billId } = data;
-      const retrieve = await RetrieveBill.create({
-        note,
-        BillId: billId,
-      });
+      const retrieve = await RetrieveBill.create(data);
       return { retrieve, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
