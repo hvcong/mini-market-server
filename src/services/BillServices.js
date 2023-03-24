@@ -125,13 +125,13 @@ const services = {
     const limit = (query._limit && Number(query._limit)) || 20;
     const offset = (page - 1) * limit;
     const { ids } = await getRetrieveIds();
-    const retrieveIds = ids.map((e) => e.id);
-    console.log(retrieveIds)
+    const retrieveIds = ids.map((e) => e.BillId);
+    console.log(retrieveIds);
     try {
       const bills = await Bill.findAndCountAll({
         limit: limit,
         offset: offset,
-        where: { id: { [Op.notIn]: [retrieveIds.flat()]} },
+        where: { id: { [Op.notIn]: retrieveIds} },
         include: [
           {
             model: Customer,
