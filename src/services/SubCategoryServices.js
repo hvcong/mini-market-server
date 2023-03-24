@@ -143,7 +143,8 @@ const services = {
         include: {
           model: Category,
           where: {id: {[Op.like]: `%${cateId}%`}},                    
-        }
+        },
+        distinct: true,
       });
       if (subCategories) {
         return { subCategories, isSuccess: true, status: 200 };

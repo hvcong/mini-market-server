@@ -6,7 +6,6 @@ const {
   add,
 } = require("../services/SubCategoryServices");
 
-
 const services = {
   add: async (data) => {
     try {
@@ -71,11 +70,16 @@ const services = {
   },
   getById: async (query) => {
     try {
-      const id = query.id
+      const id = query.id;
       const page = (query._page && Number(query._page)) || 1;
       const limit = (query._limit && Number(query._limit)) || 20;
       const offset = (page - 1) * limit;
-      const categories = await Category.findAndCountAll({ limit: limit,offset: offset, where: { id: { [Op.like]: `%${id}%` } } });
+      const categories = await Category.findAndCountAll({
+        limit: limit,
+        offset: offset,
+        where: { id: { [Op.like]: `%${id}%` } },
+        distinct: true,
+      });
       if (!categories) {
         return { message: "category not found", isSuccess: false, status: 404 };
       }
@@ -106,12 +110,12 @@ const services = {
   },
   getByName: async (query) => {
     try {
-      const name = query.name
+      const name = query.name;
       const page = (query._page && Number(query._page)) || 1;
       const limit = (query._limit && Number(query._limit)) || 20;
       const offset = (page - 1) * limit;
       const categories = await Category.findAndCountAll({
-        where: {name: {[Op.like] : `%${name}%`}},
+        where: { name: { [Op.like]: `%${name}%` } },
         limit: limit,
         offset: offset,
         include: { model: SubCategory, attributes: ["id", "name", "state"] },

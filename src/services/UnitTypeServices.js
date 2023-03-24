@@ -133,6 +133,7 @@ const UnitTypeServices = {
       const unitTypes = await UnitType.findAndCountAll({
         limit: limit,
         offset: offset,
+        distinct: true,
       });
       if (unitTypes.rows.length) {
         return { unitTypes, isSuccess: true, status: 200 };

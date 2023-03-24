@@ -106,6 +106,7 @@ const services = {
             model: TypeCustomer,
           },
         ],
+        distinct: true,
       });
       return { customers, isSuccess: true, status: 200 };
     } catch (error) {

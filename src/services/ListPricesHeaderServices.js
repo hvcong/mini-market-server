@@ -69,6 +69,7 @@ const services = {
       const headers = await ListPricesHeader.findAndCountAll({
         limit: limit,
         offset: offset,
+        distinct: true,
       });
       return { headers, isSuccess: true, status: 200 };
     } catch (error) {

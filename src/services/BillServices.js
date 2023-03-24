@@ -53,6 +53,45 @@ const services = {
             model: Employee,
           },
         ],
+        distinct: true,
+      });
+      return { bills, isSuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getById: async (query) =>{
+    const id = query.id
+    try {
+      const bill = await Bill.findByPk(id)
+      if(bill){
+        return {bill,isSuccess: true, status: 200}
+      }
+      return {message: 'bill not found',isSuccess: false, status: 404}
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getClause: async (query) => {
+    const page = (query._page && Number(query._page)) || 1;
+    const limit = (query._limit && Number(query._limit)) || 20;
+    const offset = (page - 1) * limit;
+    try {
+      const bills = await Bill.findAndCountAll({
+        limit: limit,
+        offset: offset,
+        where: {},
+        include: [
+          {
+            model: Customer,
+          },
+          {
+            model: Employee,
+          },
+        ],
+        distinct: true,
       });
       return { bills, isSuccess: true, status: 200 };
     } catch (error) {
