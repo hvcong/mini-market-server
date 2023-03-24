@@ -1,13 +1,16 @@
 const sequelize = require("../config/database");
 const { DataTypes } = require("sequelize");
+function uid() {
+  return "PRes" + new Date().getTime();
+}
 
 const PromotionResult = sequelize.define(
   "PromotionResult",
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       primaryKey: true,
-      autoIncrement: true,
+      defaultValue: uid,
     },
     isSuccess: {
       type: DataTypes.BOOLEAN,
@@ -16,7 +19,7 @@ const PromotionResult = sequelize.define(
     note: {
       type: DataTypes.STRING,
       allowNull: true,
-    }
+    },
   },
   {
     timestamps: false,

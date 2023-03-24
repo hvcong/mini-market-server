@@ -23,6 +23,7 @@ const S3Routes = require('./S3Routes')
 const TypeCustomerRoutes = require('./TypeCutomerRoutes')
 const HomeRoutes = require('./HomeRoutes')
 const WareHouseRoutes = require('./WareHouseRoutes')
+const PromotionResultRoutes = require('./PromotionResultRoutes')
 
 const routerHandle = (app) => {
   app.use("/auth", AuthRoutes);
@@ -50,6 +51,7 @@ const routerHandle = (app) => {
   app.use('/typeCustomer',TypeCustomerRoutes)
   app.use('/home',HomeRoutes)
   app.use('/ticket',WareHouseRoutes)
+  app.use('/result',PromotionResultRoutes)
 };
 
 module.exports = routerHandle;
