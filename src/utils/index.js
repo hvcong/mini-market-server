@@ -244,7 +244,7 @@ const typeCustomers = [
   },
 ];
 
-console.log(lv1.length)
+console.log(lv1.length);
 async function generateData() {
   //city
   await db.City.destroy({ where: {} });
@@ -300,5 +300,3 @@ async function generateData() {
   //   await add(e);
   // }
 }
-
-generateData();

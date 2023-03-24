@@ -29,7 +29,7 @@ const services = {
   getRetrieveIds: async () => {
     try {
       const ids = await RetrieveBill.findAll({
-        attributes: ["id"],
+        attributes: ["BillId"],
       });
       return {ids,isSuccess: true, status: 200}
     } catch (error) {
