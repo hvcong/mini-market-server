@@ -54,6 +54,7 @@ const services = {
       const transactions = await StoreTransaction.findAndCountAll({
         limit: limit,
         offset: offset,
+        distinct: true,
       });
       return { transactions, isSuccess: true, status: 200 };
     } catch (error) {

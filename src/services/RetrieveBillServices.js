@@ -15,9 +15,10 @@ const services = {
       const page = (query._page && Number(query._page)) || 1;
       const limit = (query._limit && Number(query._limit)) || 20;
       var offset = (page - 1) * limit;
-      const retrieves = await RetrieveBill.findAll({
+      const retrieves = await RetrieveBill.findAndCountAll({        
         limit: limit,
         offset: offset,
+        distinct: true,
       });
       return { retrieves, isSuccess: true, status: 200 };
     } catch (error) {

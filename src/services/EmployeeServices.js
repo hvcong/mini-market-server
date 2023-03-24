@@ -43,6 +43,7 @@ const services = {
       const employees = await Employee.findAndCountAll({
         limit: limit,
         offset: offset,
+        distinct: true,
       });
       return { employees, isSuccess: true, status: 200 };
     } catch (error) {

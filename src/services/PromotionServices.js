@@ -84,6 +84,7 @@ const PromotionHeaderServices = {
             model: DiscountRateProduct,
           },
         ],
+        distinct: true,
       });
       if (promotions) {
         return { promotions, isSuccess: true, status: 200 };
