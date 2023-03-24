@@ -60,5 +60,18 @@ const services = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
+  getById: async (query) =>{
+    const id = query.id
+    try {
+      const bill = await Bill.findByPk(id)
+      if(bill){
+        return {bill,isSuccess: true, status: 200}
+      }
+      return {message: 'bill not found',isSuccess: false, status: 404}
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  }
 };
 module.exports = services;
