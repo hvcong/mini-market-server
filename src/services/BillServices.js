@@ -131,7 +131,7 @@ const services = {
       const bills = await Bill.findAndCountAll({
         limit: limit,
         offset: offset,
-        where: { id: { [Op.not]: [retrieveIds.flat()]} },
+        where: { id: { [Op.notIn]: [retrieveIds.flat()]} },
         include: [
           {
             model: Customer,
