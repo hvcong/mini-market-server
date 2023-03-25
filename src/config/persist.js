@@ -114,7 +114,7 @@ Bill.hasMany(BillDetail);
 Bill.belongsTo(Voucher);
 Bill.belongsTo(Customer);
 Bill.belongsTo(Employee);
-Bill.hasOne(PromotionResult);
+Bill.hasMany(PromotionResult);
 Bill.hasOne(RetrieveBill);
 Bill.belongsTo(Voucher);
 
@@ -188,7 +188,7 @@ GiftProduct.belongsTo(ProductPromotion);
 GiftProduct.belongsTo(ProductUnitType);
 
 sequelize
-  .sync({ alter: false })
+  .sync({ alter: true })
   .then((result) => {
     console.log("has been done");
   })

@@ -2,7 +2,7 @@ const sequelize = require("../config/database");
 const { DataTypes, UUIDV4 } = require("sequelize");
 
 function uid() {
-  return "TRS-" + new Date().getTime();
+  return "TRS" + new Date().getTime();
 }
 
 const StoreTransaction = sequelize.define(

@@ -1,15 +1,3 @@
-// các hàm
-// const Category = require("../models/Category");
-// const Price = require("../models/Price");
-// const Product = require("../models/Product");
-// const SubCategory = require("../models/SubCategory");
-// const UnitType = require("../models/UnitType");
-// const ProductServices = require("../services/ProductServices");
-// const subServices = require("../services/SubCategoryServices");
-// const priceService = require("../services/PriceServices");
-// const ListPricesHeader = require("../models/ListPricesHeader");
-// const { add } = require("../services/ListPricesHeaderServices");
-
 const db = require("../config/persist");
 
 const cateData = [
@@ -48,25 +36,37 @@ const subCateData = [
     id: " sub1",
     name: "Nước có ga",
     state: true,
-    categoryId: "ct001",
+    CategoryId: "ct001",
   },
   {
     id: " sub2",
     name: "Nước không có ga",
     state: true,
-    categoryId: "ct001",
+    CategoryId: "ct001",
+  },
+  {
+    id: " sub7",
+    name: "Nước ép trái cây",
+    state: true,
+    CategoryId: "ct001",
   },
   {
     id: " sub3",
     name: "Nước mắm",
     state: true,
-    categoryId: "ct002",
+    CategoryId: "ct002",
   },
   {
     id: " sub4",
     name: "Bột ngọt",
     state: true,
-    categoryId: "ct002",
+    CategoryId: "ct002",
+  },
+  {
+    id: " sub5",
+    name: "Cây lau nhà",
+    state: true,
+    CategoryId: "ct003",
   },
 ];
 
@@ -74,21 +74,18 @@ const productData = new Array(20).fill(null).map((item, index) => {
   return {
     id: "sp" + index,
     name: "Coca Cola",
-    images: [
-      "https://vinmec-prod.s3.amazonaws.com/images/20211218_114300_993458_an-tao-luc-nao-tot-.max-1800x1800.jpg",
-      "https://vinmec-prod.s3.amazonaws.com/images/20211218_114300_993458_an-tao-luc-nao-tot-.max-1800x1800.jpg",
-    ],
-    description: "các sản phẩm",
+    description:
+      "nước giải khát coca cola, vị ngọt, sảng khoái, ngon hơn khi uống lạnh",
+    quantity: 0,
     state: true,
     subCategoryId: "sub1",
-    unitTypes: [{ id: "L1" }, { id: "L6" }, { id: "T24" }],
   };
 });
 
-const priceHeaderData = new Array(20).fill(null).map((item, index) => {
+const priceHeaderData = new Array(10).fill(null).map((item, index) => {
   return {
     id: "H" + index,
-    title: "bang gia thang" + index,
+    title: "Bảng giá tháng " + index,
     startDate: "2023/3/1",
     endDate: "2023/4/1",
     state: true,
@@ -97,35 +94,50 @@ const priceHeaderData = new Array(20).fill(null).map((item, index) => {
 const unitTypeData = [
   {
     id: "T24",
-    name: "thung 24",
+    name: "Thùng 24",
     convertionQuantity: 24,
   },
   {
-    id: "T12",
-    name: "thung 12",
-    convertionQuantity: 12,
-  },
-  {
     id: "L6",
-    name: "Loc 6",
+    name: "Lốc 6",
     convertionQuantity: 6,
   },
   {
     id: "L1",
-    name: "Loc ",
-    convertionQuantity: 6,
+    name: "Lon ",
+    convertionQuantity: 1,
+  },
+  {
+    id: "G1",
+    name: "Gói",
+    convertionQuantity: 1,
+  },
+  {
+    id: "CH1",
+    name: "Chai 1",
+    convertionQuantity: 1,
   },
 ];
 
-const priceData = new Array(20).fill(null).map((item, index) => {
-  return {
-    price: 2222,
+const priceData = [
+  {
+    price: 10000,
     headerId: "H1",
-    productUnitTypeId: index,
-  };
-});
+    ProductUnitTypeId: 1,
+  },
+  {
+    price: 54000,
+    headerId: "H1",
+    ProductUnitTypeId: 2,
+  },
+  {
+    price: 180000,
+    headerId: "H1",
+    ProductUnitTypeId: 3,
+  },
+];
 
-const promotion = new Array(10).fill(null).map((item, index) => {
+const promotionData = new Array(10).fill(null).map((item, index) => {
   return {
     id: "P" + index,
     title: "Chương trình khuyến mãi tháng 3",
@@ -199,10 +211,10 @@ const bill = new Array(10).fill(null).map((item, index) => {
 
 const { lv1, lv2, lv3 } = require("./test");
 
-const home = new Array(10).fill(null).map((item, index) => {
+const homeData = new Array(10).fill(null).map((item, index) => {
   return {
-    homeAddress: index + "- St Paul street",
-    wardId: "00001",
+    homeAddress: "Number " + index + "- St Paul street",
+    WardId: "00001",
   };
 });
 const store = new Array(10).fill(null).map((item, index) => {
@@ -229,7 +241,7 @@ const warehouseticket = {
     },
   ],
 };
-const typeCustomers = [
+const typeCustomerData = [
   {
     id: "Type1",
     name: "Khách hàng vàng",
@@ -244,59 +256,127 @@ const typeCustomers = [
   },
 ];
 
-console.log(lv1.length);
-async function generateData() {
-  //city
-  await db.City.destroy({ where: {} });
+const employeeData = [
+  {
+    name: "Le Dinh But",
+    phonenumber: "0356267135",
+    HomeAddressId: 1,
+  },
+  {
+    name: "Hoang Van Cong",
+    phonenumber: "0356267136",
+    HomeAddressId: 2,
+  },
+  {
+    name: "Nguyen Tien Dat",
+    phonenumber: "0356267137",
+    HomeAddressId: 3,
+  },
+];
+const customerData = [
+  {
+    firstName: "cong",
+    lastName: "van",
+    phonenumber: "0356267140",
+    email: "hvcong@gmail.com",
+    HomeAddressId: 4,
+    TypeCustomerId: "Type1",
+  },
+  {
+    firstName: "But",
+    lastName: "Le",
+    phonenumber: "0356267141",
+    email: "hvcong@gmail.com",
+    HomeAddressId: 5,
+    TypeCustomerId: "Type2",
+  },
+  {
+    firstName: "cong",
+    lastName: "van",
+    phonenumber: "0356267142",
+    email: "hvcong@gmail.com",
+    HomeAddressId: 6,
+    TypeCustomerId: "Type3",
+  },
+];
+const productUnittypeData = [
+  {
+    ProductId: "sp1",
+    UnitTypeId: 1,
+    state: true,
+  },
+  {
+    ProductId: "sp1",
+    UnitTypeId: 2,
+    state: true,
+  },
+  {
+    ProductId: "sp1",
+    UnitTypeId: 3,
+    state: true,
+  },
+  {
+    ProductId: "sp2",
+    UnitTypeId: 1,
+    state: true,
+  },
+  {
+    ProductId: "sp2",
+    UnitTypeId: 2,
+    state: true,
+  },
+  {
+    ProductId: "sp2",
+    UnitTypeId: 3,
+    state: true,
+  },
+];
+module.exports = async function generateData() {
   await db.City.bulkCreate(lv1);
 
   //district
-  // await db.District.destroy({ where: {} });
-  // await db.District.bulkCreate(lv2)
+  await db.District.bulkCreate(lv2);
 
-  // await db.Ward.destroy({ where: {} });
-  // await db.Ward.bulkCreate(lv3)
+  //ward
+  await db.Ward.bulkCreate(lv3);
 
-  //category
-  //------
-  // await Category.destroy({
-  //   where: {},
-  // });
-  // await Category.bulkCreate(cateData);
-  // //sub category
-  // //------
-  // await SubCategory.destroy({
-  //   where: {},
-  // });
-  // for (let obj of subCateData) {
-  //   await subServices.add(obj);
-  // }
-  // // // unit-type
-  // //------
-  // await UnitType.destroy({
-  //   where: {},
-  // });
-  // await UnitType.bulkCreate(unitTypeData);
-  // //------
+  await db.HomeAddress.bulkCreate(homeData);
 
-  // await Product.destroy({
-  //   where: {},
-  // });
-  // for (let obj of productData) {
-  //   await ProductServices.addProduct(obj);
-  // }
+  //employee
+  // await db.Employee.bulkCreate(employeeData);
 
-  // //------
-  // await Price.destroy({
-  //   where: {},
-  // });
-  // for (let obj of priceData) {
-  //   await priceService.addPrice(obj);
-  // }
+  //typecustomer
 
-  // //--- priceHeader
-  // await ListPricesHeader.destroy();
-  // for (const e of priceHeaderData) {
-  //   await add(e);
-  // }
-}
+  // await db.TypeCustomer.bulkCreate(typeCustomerData);
+
+  // //customer
+
+  // await db.Customer.bulkCreate(customerData);
+
+  // //category
+
+  // await db.Category.bulkCreate(cateData);
+
+  // //subCategory
+
+  // await db.SubCategory.bulkCreate(subCateData);
+
+  // //unittype
+
+  // await db.UnitType.bulkCreate(unitTypeData);
+
+  // //product
+
+  // await db.Product.bulkCreate(productData);
+
+  // //product unittype
+
+  // await db.ProductUnitType.bulkCreate(productUnittypeData);
+
+  // //priceHeader
+
+  // await db.ListPricesHeader.bulkCreate(priceHeaderData);
+
+  // //price
+  // await db.Price.bulkCreate(priceData);
+};

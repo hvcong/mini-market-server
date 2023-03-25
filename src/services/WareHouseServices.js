@@ -34,9 +34,14 @@ const services = {
   },
   getOne: async (id) => {
     try {
-      const ticket = await WareHouseTicket.findByPk(id, {
-        include: [{ model: TicketDetail, include: [{ model: Product }] }],
+      const ticket = await WareHouseTicket.findOne({
+        where: { id: id },
+        include: [
+          { model: Employee },
+          { model: TicketDetail, include: [{ model: Product }] },
+        ],
       });
+
       if (ticket) {
         return { ticket, isSuccess: true, status: 200 };
       }
