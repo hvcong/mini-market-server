@@ -9,6 +9,9 @@ const {
   ProductPromotion,
   RetrieveBill,
   Voucher,
+  Price,
+  ProductUnitType,
+  UnitType,
 } = require("../config/persist");
 const { Op } = require("sequelize");
 const { getCustomerByPhonenumber, add } = require("./CustomerServices");
@@ -80,6 +83,21 @@ const services = {
         include: [
           {
             model: BillDetail,
+            include: [
+              {
+                model: Price,
+                include: [
+                  {
+                    model: ProductUnitType,
+                    include: [
+                      {
+                        model: UnitType,
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
           },
 
           {

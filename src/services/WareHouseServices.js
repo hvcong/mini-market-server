@@ -1,12 +1,17 @@
-const { WareHouseTicket, Employee, Product } = require("../config/persist");
-const {addTickets} = require('./TicketServices')
+const {
+  WareHouseTicket,
+  Employee,
+  Product,
+  TicketDetail,
+} = require("../config/persist");
+const { addTickets } = require("./TicketServices");
 const services = {
   add: async (data) => {
-    const {EmployeeId,...others} = data
+    const { EmployeeId, ...others } = data;
     try {
-      const ticket = await WareHouseTicket.create({EmployeeId});
-      const {details} = await addTickets(others.ticketDetails)
-      ticket.setTicketDetails(details)
+      const ticket = await WareHouseTicket.create({ EmployeeId });
+      const { details } = await addTickets(others.ticketDetails);
+      ticket.setTicketDetails(details);
       return { ticket, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
@@ -15,7 +20,7 @@ const services = {
   },
   update: async (id, data) => {
     try {
-      const ticket = await WareHouseTiket.findByPk(id);
+      const ticket = await WareHouseTicket.findByPk(id);
       if (ticket) {
         await ticket.update(data);
         await ticket.save();
@@ -29,7 +34,9 @@ const services = {
   },
   getOne: async (id) => {
     try {
-      const ticket = await WareHouseTiket.findByPk(id);
+      const ticket = await WareHouseTicket.findByPk(id, {
+        include: [{ model: TicketDetail, include: [{ model: Product }] }],
+      });
       if (ticket) {
         return { ticket, isSuccess: true, status: 200 };
       }
@@ -44,11 +51,11 @@ const services = {
     const limit = (query._limit && Number(query._limit)) || 20;
     var offset = (page - 1) * limit;
     try {
-      const tickets = await WareHouseTiket.findAndCountAll({
+      const tickets = await WareHouseTicket.findAndCountAll({
         limit: limit,
         offset: offset,
 
-        include: [{ model: Employee }, { model: Product }],
+        include: [{ model: Employee }],
       });
       return { tickets, isSuccess: true, status: 200 };
     } catch (error) {
@@ -58,7 +65,7 @@ const services = {
   },
   addMany: async (data) => {
     try {
-      const tickets = await WareHouseTiket.bulkCreate(data);
+      const tickets = await WareHouseTicket.bulkCreate(data);
       return { tickets, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);

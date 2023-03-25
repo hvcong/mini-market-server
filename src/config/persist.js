@@ -116,14 +116,14 @@ Bill.belongsTo(Customer);
 Bill.belongsTo(Employee);
 Bill.hasOne(PromotionResult);
 Bill.hasOne(RetrieveBill);
-Bill.belongsTo(Voucher)
+Bill.belongsTo(Voucher);
 
 //promotionResult
 PromotionResult.belongsTo(Bill);
-PromotionResult.belongsTo(ProductPromotion)
-PromotionResult.belongsTo(MoneyPromotion)
-PromotionResult.belongsTo(DiscountRateProduct)
-PromotionResult.belongsTo(Voucher)
+PromotionResult.belongsTo(ProductPromotion);
+PromotionResult.belongsTo(MoneyPromotion);
+PromotionResult.belongsTo(DiscountRateProduct);
+PromotionResult.belongsTo(Voucher);
 
 //retrievebill
 RetrieveBill.belongsTo(Bill);
@@ -134,8 +134,8 @@ BillDetail.belongsTo(Price);
 
 // voucher
 Voucher.belongsTo(PromotionHeader);
-Voucher.hasOne(PromotionResult)
-Voucher.hasOne(Bill)
+Voucher.hasOne(PromotionResult);
+Voucher.hasOne(Bill);
 
 // City
 City.hasMany(District);
@@ -172,16 +172,16 @@ PromotionTypeCustomer.belongsTo(TypeCustomer);
 ProductPromotion.belongsTo(PromotionHeader);
 ProductPromotion.hasOne(GiftProduct);
 ProductPromotion.belongsTo(ProductUnitType);
-ProductPromotion.hasMany(PromotionResult)
+ProductPromotion.hasMany(PromotionResult);
 
 // MoneyPromotion
 MoneyPromotion.belongsTo(PromotionHeader);
-MoneyPromotion.hasMany(PromotionResult)
+MoneyPromotion.hasMany(PromotionResult);
 
 //DiscountRateProduct
 DiscountRateProduct.belongsTo(PromotionHeader);
 DiscountRateProduct.belongsTo(ProductUnitType);
-DiscountRateProduct.hasMany(PromotionResult)
+DiscountRateProduct.hasMany(PromotionResult);
 
 // GiftProduct
 GiftProduct.belongsTo(ProductPromotion);
