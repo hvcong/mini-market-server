@@ -1,7 +1,7 @@
 const sequelize = require("../config/database");
 const { DataTypes } = require("sequelize");
 function uid() {
-  return "Bill-" + new Date().getTime();
+  return "Bill" + new Date().getTime();
 }
 
 const Bill = sequelize.define(

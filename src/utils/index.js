@@ -1,5 +1,6 @@
 const db = require("../config/persist");
 
+
 const cateData = [
   {
     id: "ct001",
@@ -215,7 +216,7 @@ const { lv1, lv2, lv3 } = require("./test");
 const homeData = new Array(10).fill(null).map((item, index) => {
   return {
     homeAddress: "Number " + index + "- St Paul street",
-    WardId: "0000" + (index + 1),
+    WardId: "00001",
   };
 });
 const store = new Array(10).fill(null).map((item, index) => {
@@ -332,62 +333,53 @@ const productUnittypeData = [
     state: true,
   },
 ];
-async function generateData() {
-  //city
-  await db.City.destroy({ where: {} });
+module.exports = async function generateData() {
   await db.City.bulkCreate(lv1);
 
-  //district
-  await db.District.destroy({ where: {} });
+ //district
   await db.District.bulkCreate(lv2);
 
   //ward
-  await db.Ward.destroy({ where: {} });
   await db.Ward.bulkCreate(lv3);
 
-  //home
-  await db.HomeAddress.destroy({ where: {} });
   await db.HomeAddress.bulkCreate(homeData);
 
   //employee
-  await db.Employee.destroy({ where: {} });
-  await db.Employee.bulkCreate(employeeData);
+  // await db.Employee.bulkCreate(employeeData);
 
   //typecustomer
-  await db.TypeCustomer.destroy({ where: {} });
-  await db.TypeCustomer.bulkCreate(typeCustomerData);
+  
+  // await db.TypeCustomer.bulkCreate(typeCustomerData);
 
-  //customer
-  await db.Customer.destroy({ where: {} });
-  await db.Customer.bulkCreate(customerData);
+  // //customer
 
-  //category
-  await db.Category.destroy({ where: {} });
-  await db.Category.bulkCreate(cateData);
+  // await db.Customer.bulkCreate(customerData);
 
-  //subCategory
-  await db.SubCategory.destroy({ where: {} });
-  await db.SubCategory.bulkCreate(subCateData);
+  // //category
 
-  //unittype
-  await db.UnitType.destroy({ where: {} });
-  await db.UnitType.bulkCreate(unitTypeData);
+  // await db.Category.bulkCreate(cateData);
 
-  //product
-  await db.Product.destroy({ where: {} });
-  await db.Product.bulkCreate(productData);
+  // //subCategory
 
-  //product unittype
-  await db.ProductUnitType.destroy({ where: {} });
-  await db.ProductUnitType.bulkCreate(productUnittypeData);
+  // await db.SubCategory.bulkCreate(subCateData);
 
-  //priceHeader
-  await db.ListPricesHeader.destroy({ where: {} });
-  await db.ListPricesHeader.bulkCreate(priceHeaderData);
+  // //unittype
 
-  //price
-  await db.Price.destroy({ where: {} });
-  await db.Price.bulkCreate(priceData);
+  // await db.UnitType.bulkCreate(unitTypeData);
+
+  // //product
+  
+  // await db.Product.bulkCreate(productData);
+
+  // //product unittype
+  
+  // await db.ProductUnitType.bulkCreate(productUnittypeData);
+
+  // //priceHeader
+  
+  // await db.ListPricesHeader.bulkCreate(priceHeaderData);
+
+  // //price
+  // await db.Price.bulkCreate(priceData);
 }
 
-generateData();

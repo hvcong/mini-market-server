@@ -1,7 +1,7 @@
 const sequelize = require("../config/database");
 const { DataTypes, UUIDV4 } = require("sequelize");
 function uid() {
-  return "retri-" + new Date().getTime();
+  return "retri" + new Date().getTime();
 }
 
 const RetrieveBill = sequelize.define(

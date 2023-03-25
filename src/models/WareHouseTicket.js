@@ -1,7 +1,7 @@
 const sequelize = require("../config/database");
 const { DataTypes } = require("sequelize");
 function uid() {
-    return "Ticket-" + new Date().getTime();
+    return "Ticket" + new Date().getTime();
   }
 
 const WareHouseTicket = sequelize.define(
