@@ -77,6 +77,18 @@ const Services = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
+  getByid: async (id) => {
+    try {
+      const moneyPromotion = await MoneyPromotion.findByPk(id)
+      if (!moneyPromotion) {
+        return { message: "not found", isSuccess: false, status: 404 };
+      }
+      return { moneyPromotion, isSuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
 };
 
 module.exports = Services;

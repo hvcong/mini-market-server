@@ -1,4 +1,4 @@
-const { DiscountRateProduct } = require("../config/persist");
+const { DiscountRateProduct, ProductUnitType } = require("../config/persist");
 const { getById } = require("../services/PromotionServices");
 
 const services = {
@@ -55,6 +55,21 @@ const services = {
         return { message: "updated successful", isSuccess: true, status: 200 };
       }
       return { message: "promotion not found", isSuccess: false, status: 404 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getByid: async (id) => {
+    try {
+      const discountRate = await DiscountRateProduct.findOne({
+        where: { id: id },
+        include: { model: ProductUnitType },
+      });
+      if (!discountRate) {
+        return { message: "not found", isSuccess: false, status: 404 };
+      }
+      return { discountRate, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };

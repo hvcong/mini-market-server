@@ -1,4 +1,8 @@
-const { ProductPromotion, PromotionHeader } = require("../config/persist");
+const {
+  ProductPromotion,
+  PromotionHeader,
+  GiftProduct,
+} = require("../config/persist");
 
 const Services = {
   add: async (data) => {
@@ -94,6 +98,34 @@ const Services = {
       } else {
         return { message: "no promotions", isSuccess: false, status: 200 };
       }
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getGiftByKmId: async (id) => {
+    try {
+      const pm = await ProductPromotion.findByPk(id);
+      const gift = await pm.getGiftProduct();
+      if (!pm) {
+        return { message: "not found", isSuccess: false, status: 404 };
+      }
+      return { gift, isSuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getByid: async (id) => {
+    try {
+      const productPromotion = await ProductPromotion.findOne({
+        where: { id: id },
+        include: { model: GiftProduct },
+      });
+      if (!productPromotion) {
+        return { message: "not found", isSuccess: false, status: 404 };
+      }
+      return { productPromotion, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };

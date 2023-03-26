@@ -10,8 +10,7 @@ const sequelize = require("../config/database");
 const PriceServices = {
   addPrice: async (data) => {
     try {
-      const { price, headerId, productUnitTypeId } =
-        data;
+      const { price, headerId, productUnitTypeId } = data;
       const productUnitType = await ProductUnitType.findByPk(productUnitTypeId);
       if (productUnitType) {
         const productPrice = await Price.create({
@@ -77,14 +76,16 @@ const PriceServices = {
         include: [
           {
             model: ProductUnitType,
-            include: [{
-              model: Product
-            }]
+            include: [
+              {
+                model: Product,
+              },
+            ],
           },
           {
             model: ListPricesHeader,
-            where: {state: true}
-          }
+            where: { state: true },
+          },
         ],
       });
       return { productLines, isSuccess: true, status: 200 };
@@ -247,29 +248,46 @@ const PriceServices = {
   },
   getByName: async (query) => {
     try {
-      const name = query.productName
+      const name = query.productName;
       const page = (query._page && Number(query._page)) || 1;
       const limit = (query._limit && Number(query._limit)) || 20;
       var offset = (page - 1) * limit;
       const productLines = await Price.findAll({
         limit: limit,
         offset: offset,
-        where: {state: true},
+        where: { state: true },
         include: [
           {
             model: ProductUnitType,
-            include: [{
-              model: Product,
-              where: {[Op.like]: `%${name}%`}
-            }]
+            include: [
+              {
+                model: Product,
+                where: { [Op.like]: `%${name}%` },
+              },
+            ],
           },
           {
             model: ListPricesHeader,
-            where: {state: true}
-          }
+            where: { state: true },
+          },
         ],
       });
       return { productLines, isSuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getProductByPriceId: async ( priceId) => {
+    try {
+      const price = await Price.findOne({
+        where: {id: priceId},
+        include: { model: ProductUnitType, attributes: ['ProductId'] },
+      });
+      if(price){
+        return {price,isSuccess: true,status: 200}
+      }
+      return {message: 'not found',isSuccess: false, status: 404}
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };
