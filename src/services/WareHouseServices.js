@@ -9,6 +9,10 @@ const services = {
   add: async (data) => {
     const { EmployeeId, ...others } = data;
     try {
+      const employee = await Employee.findByPk(EmployeeId)
+      if(!employee){
+        return {message: 'employee not found',isSuccess: false,status: 400}
+      }
       const ticket = await WareHouseTicket.create({ EmployeeId });
       const { details } = await addTickets(others.ticketDetails);
       ticket.setTicketDetails(details);

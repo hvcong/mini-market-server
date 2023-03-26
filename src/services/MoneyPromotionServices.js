@@ -4,9 +4,7 @@ const Services = {
   add: async (data) => {
     try {
       const { id } = data;
-      console.log(data,id)
       let promotion = await MoneyPromotion.findOne({ where: { id: id } });
-
       if (promotion) {
         return {
           message: "this Money promotion already exists",
