@@ -1,3 +1,5 @@
+const { Op } = require("sequelize");
+const sequelize = require("../config/database");
 const {
   ListPricesHeader,
   Price,
