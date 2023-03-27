@@ -36,6 +36,14 @@ const VoucherController = {
     }
     return res.status(status).json({isSuccess,vouches});
   },
+  getById: async (req,res) =>{
+    const id = req.query.id
+    const {isSuccess,status,message,voucher} = await voucherService.getById(id)
+    if(isSuccess){
+      return res.status(status).json({isSuccess,voucher})
+    }
+    return res.status(status).json({isSuccess,message})
+  }
 };
 
 module.exports = VoucherController;

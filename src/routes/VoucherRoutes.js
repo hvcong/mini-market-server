@@ -7,5 +7,6 @@ VoucherRoutes.delete("/:id", VoucherController.deleteById);
 VoucherRoutes.get("/get", VoucherController.getByCode);
 VoucherRoutes.put("/update", VoucherController.updateWhenIsUsed);
 VoucherRoutes.get("/useable", VoucherController.getAllUsableVoucher);
+VoucherRoutes.get('/getId',VoucherController.getById)
 
 module.exports = VoucherRoutes;

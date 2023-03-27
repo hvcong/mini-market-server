@@ -28,6 +28,9 @@ const MoneyPromotion = sequelize.define(
       allowNull: false,
     },
     state: DataTypes.BOOLEAN,
+    type: {
+      type: DataTypes.STRING,
+    },
     discountMoney: {
       type: DataTypes.DOUBLE,
       allowNull: true,
@@ -40,6 +43,12 @@ const MoneyPromotion = sequelize.define(
       type: DataTypes.DOUBLE,
       allowNull: true,
     },
+    budget: {
+      type: DataTypes.DOUBLE
+    },
+    availableBudget: {
+      type: DataTypes.DOUBLE
+    }
   },
   {
     timestamps: false,

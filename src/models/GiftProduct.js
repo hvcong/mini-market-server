@@ -7,7 +7,6 @@ const GiftProduct = sequelize.define(
     id: {
       type: DataTypes.STRING,
       primaryKey: true,
-      // autoIncrement: true,
     },
     quantity: DataTypes.INTEGER,
   },

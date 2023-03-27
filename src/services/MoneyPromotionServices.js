@@ -4,9 +4,7 @@ const Services = {
   add: async (data) => {
     try {
       const { id } = data;
-      console.log(data,id)
       let promotion = await MoneyPromotion.findOne({ where: { id: id } });
-
       if (promotion) {
         return {
           message: "this Money promotion already exists",
@@ -72,6 +70,18 @@ const Services = {
       } else {
         return { message: "no promotions", isSuccess: false, status: 200 };
       }
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getByid: async (id) => {
+    try {
+      const moneyPromotion = await MoneyPromotion.findByPk(id)
+      if (!moneyPromotion) {
+        return { message: "not found", isSuccess: false, status: 404 };
+      }
+      return { moneyPromotion, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };

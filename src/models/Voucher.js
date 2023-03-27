@@ -24,6 +24,9 @@ const Voucher = sequelize.define(
     state: {
       type: DataTypes.BOOLEAN
     },
+    type: {
+      type: DataTypes.STRING,
+    },
     discountMoney: {
       type: DataTypes.DOUBLE,
       defaultValue: 0,

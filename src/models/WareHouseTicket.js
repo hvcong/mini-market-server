@@ -15,6 +15,9 @@ const WareHouseTicket = sequelize.define(
     createAt: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW        
+    },
+    note: {
+      type: DataTypes.STRING,
     }
   },
   {
