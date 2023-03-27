@@ -1,4 +1,10 @@
-const { ListPricesHeader } = require("../config/persist");
+const {
+  ListPricesHeader,
+  Price,
+  ProductUnitType,
+  Product,
+  UnitType,
+} = require("../config/persist");
 const {
   createBulkPrice,
   updateManyPrice,
@@ -79,11 +85,51 @@ const services = {
   },
   getById: async (id) => {
     try {
-      const header = await ListPricesHeader.findByPk(id);
+      const header = await ListPricesHeader.findOne({
+        where: {
+          id: id,
+        },
+        include: [
+          {
+            model: Price,
+            include: [
+              {
+                model: ProductUnitType,
+                include: [{ model: Product }, { model: UnitType }],
+              },
+            ],
+          },
+        ],
+      });
       if (header) {
         return { header, isSuccess: true, status: 200 };
       }
       return { message: "header not found", isSuccess: false, status: 404 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getAllOnActive: async () => {
+    try {
+      const headers = await ListPricesHeader.findAll({
+        where: {
+          state: true,
+        },
+        include: [
+          {
+            model: Price,
+            include: [
+              {
+                model: ProductUnitType,
+                include: [{ model: Product }, { model: UnitType }],
+              },
+            ],
+          },
+        ],
+      });
+
+      return { headers, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };

@@ -1,5 +1,5 @@
-const dvhc = require('./dvhc.json')
-const data = dvhc.data
+const dvhc = require("./dvhc.json");
+const data = dvhc.data;
 
 let lv1 = [];
 let lv2 = [];
@@ -28,8 +28,6 @@ let a = data.map((item) => {
   });
 });
 
-module.exports.lv1 = lv1
-module.exports.lv2 = lv2
-module.exports.lv3 = lv3
-
-
+module.exports.lv1 = lv1;
+module.exports.lv2 = lv2;
+module.exports.lv3 = lv3;

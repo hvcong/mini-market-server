@@ -12,6 +12,8 @@ const {
   Price,
   ProductUnitType,
   UnitType,
+  GiftProduct,
+  Product,
 } = require("../config/persist");
 const { Op } = require("sequelize");
 const { getCustomerByPhonenumber, add } = require("./CustomerServices");
@@ -105,7 +107,24 @@ const services = {
             include: [
               { model: MoneyPromotion },
               { model: DiscountRateProduct },
-              { model: ProductPromotion },
+              {
+                model: ProductPromotion,
+                include: [
+                  {
+                    model: GiftProduct,
+                    include: [
+                      {
+                        model: ProductUnitType,
+                        include: [
+                          { model: Product },
+                          { model: UnitType },
+                          { model: Price },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
               { model: Voucher },
             ],
           },

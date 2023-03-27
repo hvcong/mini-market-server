@@ -3,7 +3,7 @@ const express = require("express");
 const cors = require("cors");
 
 const bodyParser = require("body-parser");
-// const generateData = require("./src/utils/");
+const generateData = require("./src/utils/");
 
 //swagger
 const swaggerUi = require("swagger-ui-express");
@@ -48,7 +48,7 @@ try {
   console.error("Unable to connect to the database:", error);
 }
 
-// generateData();
+generateData();
 
 // require("./src/config/persist");
 

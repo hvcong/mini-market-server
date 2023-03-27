@@ -1,4 +1,5 @@
 const db = require("../config/persist");
+const services = require("../services/WardServices");
 
 const cateData = [
   {
@@ -332,51 +333,38 @@ const productUnittypeData = [
   },
 ];
 module.exports = async function generateData() {
-  await db.City.bulkCreate(lv1);
-
+  // await db.City.bulkCreate(lv1);
   //district
-  await db.District.bulkCreate(lv2);
-
-  //ward
-  await db.Ward.bulkCreate(lv3);
-
-  await db.HomeAddress.bulkCreate(homeData);
-
+  // await db.District.bulkCreate(lv2);
+  // //ward
+  // lv3.map(async (item, index) => {
+  //   await services.addWard({
+  //     id: item.id,
+  //     name: item.name,
+  //     districtId: item.DistrictId,
+  //   });
+  // });
   //employee
   // await db.Employee.bulkCreate(employeeData);
-
   //typecustomer
-
   // await db.TypeCustomer.bulkCreate(typeCustomerData);
-
   // //customer
-
   // await db.Customer.bulkCreate(customerData);
-
   // //category
-
   // await db.Category.bulkCreate(cateData);
-
   // //subCategory
-
   // await db.SubCategory.bulkCreate(subCateData);
-
   // //unittype
-
   // await db.UnitType.bulkCreate(unitTypeData);
-
   // //product
-
   // await db.Product.bulkCreate(productData);
-
   // //product unittype
-
   // await db.ProductUnitType.bulkCreate(productUnittypeData);
-
   // //priceHeader
-
   // await db.ListPricesHeader.bulkCreate(priceHeaderData);
-
   // //price
   // await db.Price.bulkCreate(priceData);
 };
+
+// INSERT INTO NHANVIEN (ID,TEN,TUOI,DIACHI,LUONG)
+// VALUES (1, 'Thanh', 24, 'Haiphong', 2000.00 );

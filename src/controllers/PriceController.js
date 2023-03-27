@@ -61,21 +61,23 @@ const PriceController = {
     return res.status(status).json({ result });
   },
   getByProducUnitTypeId: async (req, res) => {
-    const {query} = req
-    const {isSuccess,status,message,price} = await services.getByProductUnitTypeId(query)
-    if(isSuccess){
-      return res.status(status).json({isSuccess,price})
+    const { query } = req;
+    const { isSuccess, status, message, price } =
+      await services.getByProductUnitTypeId(query);
+    if (isSuccess) {
+      return res.status(status).json({ isSuccess, price });
     }
-    return res.status(status).json({isSuccess,message})
+    return res.status(status).json({ isSuccess, message });
   },
-  getByName: async(req,res) =>{
-    const {query} = req
-    const {isSuccess,status,message,productLines} = await services.getByName(query)
-    if(isSuccess){
-      return res.status(status).json({isSuccess,message})
+  getByName: async (req, res) => {
+    const { query } = req;
+    const { isSuccess, status, message, productLines } =
+      await services.getByName(query);
+    if (isSuccess) {
+      return res.status(status).json({ isSuccess, message });
     }
-    return res.status(status).json({isSuccess,message})
-  }
+    return res.status(status).json({ isSuccess, message });
+  },
 };
 
 module.exports = PriceController;
