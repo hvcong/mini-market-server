@@ -21,10 +21,6 @@ const StoreTransaction = sequelize.define(
       allowNull: false,
       defaultValue: DataTypes.NOW,
     },
-    priceIn: {
-      type: DataTypes.DOUBLE,
-      allowNull: true,
-    },
     type: {
       type: DataTypes.STRING,
     },

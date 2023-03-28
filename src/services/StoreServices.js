@@ -1,5 +1,5 @@
 const { StoreTransaction, Product } = require("../config/persist");
-const { updateProduct } = require("../services/ProductServices");
+const { onlyUpdateProduct } = require("../services/ProductServices");
 
 const services = {
   add: async (data) => {
@@ -15,7 +15,7 @@ const services = {
       const product = await Product.findByPk(productId);
       const qty = product.quantity;
       let newQty = qty + quantity;
-      await updateProduct(productId, { quantity: newQty });
+      await onlyUpdateProduct(productId, { quantity: newQty });
       return { transaction, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);

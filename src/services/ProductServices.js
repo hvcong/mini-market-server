@@ -206,6 +206,21 @@ const ProductServices = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
+  onlyUpdateProduct: async (id, data) => {
+    const { unitTypes, ...newData } = data;
+    try {
+      const product = await Product.findOne({ where: { id: id } });
+      if (!product) {
+        return { message: "product not found", isSuccess: false, status: 404 };
+      }
+      await product.update(newData);     
+      await product.save();
+      return { message: "updated succesful", isSuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
   deleteProduct: async (id) => {
     try {
       const product = await Product.findOne({ where: { id: id } });
