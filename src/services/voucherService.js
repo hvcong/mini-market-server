@@ -98,16 +98,12 @@ const voucherService = {
     }
   },
 
-  updateWhenIsUsed: async (code) => {
-    if (!code) {
-      return {
-        isSuccess: false,
-        message: "Missing code",
-        status: 400,
-      };
-    }
+  updateWhenIsUsed: async (id) => {    
     try {
-      const voucher = await Voucher.findOne({ where: { code: code } });
+      const voucher = await Voucher.findOne({ where: { id: id } });
+      if(!voucher){
+        return {message: 'voucher not found',isSuccess: false, status: 404}
+      }
       await voucher.update({ state: false });
       await voucher.save();
       return { message: "udated successful", isSuccess: true, status: 200 };
@@ -115,6 +111,7 @@ const voucherService = {
       return {
         isSuccess: false,
         message: "Internal server error",
+        status: 500,
       };
     }
   },
