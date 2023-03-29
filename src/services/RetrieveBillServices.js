@@ -1,7 +1,15 @@
-const { RetrieveBill, Bill } = require("../config/persist");
-const { getProductByPriceId } = require("./PriceServices");
+const {
+  RetrieveBill,
+  Bill,
+  BillDetail,
+  Product,
+  GiftProduct,
+} = require("../config/persist");
+const { getByPriceId } = require("./PriceServices");
 const StoreServices = require("./StoreServices");
 const { getGiftByKmId } = require("./ProductPromotionServices");
+const { getProduct } = require("./ProductUnitTypeServices");
+const { getByid, update} = require("./MoneyPromotionServices");
 
 const services = {
   add: async (data) => {
@@ -13,17 +21,36 @@ const services = {
       }
       const retrieve = await RetrieveBill.create(data);
       const billDetails = await bill.getBillDetails();
-      const result = await bill.getPromotionResults();      
+      const result = await bill.getPromotionResults();
       for (const e of result) {        
-        const {gift} = await getGiftByKmId(e.ProductPromotionId)
-        console.log(gift)
+        if (e.ProductPromotionId !== null) {
+          const { gift } = await getGiftByKmId(e.ProductPromotionId);
+          const product = await getProduct(gift.ProductUnitTypeId);
+          await StoreServices.add({
+            quantity: gift.quantity,
+            productId: product.id,
+            type: "trả hàng khuyến mãi",
+          });
+        }
+        if (e.MoneyPromotionId !== null) {
+          const {moneyPromotion} = await getByid(e.MoneyPromotionId)          
+          if(moneyPromotion.type == 'money'){
+            await update(e.MoneyPromotionId,{availableBudget: (moneyPromotion.availableBudget + moneyPromotion.discountMoney)})
+          }
+          if(moneyPromotion.type == 'rate'){
+            await update(e.MoneyPromotionId,{availableBudget: (moneyPromotion.availableBudget + moneyPromotion.maxMoneyDiscount)})
+          }
+        }
       }
       for (const e of billDetails) {
-        const { price } = await getProductByPriceId(1);     
-        console.log(price.dataValues)   
+        const { price } = await getByPriceId(e.PriceId);
+        const product = await getProduct(price.ProductUnitTypeId);
+        await StoreServices.add({
+          quantity: e.quantity,
+          productId: product.id,
+          type: "trả hàng",
+        });
       }
-      const psResult = await bill.getPromotionResults();
-      // console.log(psResult);
       return { retrieve, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);

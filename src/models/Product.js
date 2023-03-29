@@ -24,9 +24,6 @@ const Product = sequelize.define(
       type: DataTypes.BOOLEAN,
       defaultValue: true,
     },
-    baseUnit: {
-      type: DataTypes.STRING,
-    },
   },
   {
     timestamps: false,

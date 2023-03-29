@@ -23,8 +23,8 @@ const VoucherController = {
   },
 
   updateWhenIsUsed: async (req, res) => {
-    const code = req.query.code
-    let {isSuccess,message,status} = await voucherService.updateWhenIsUsed(code);
+    const id = req.query.id
+    let {isSuccess,message,status} = await voucherService.updateWhenIsUsed(id);
       return res.status(status).json({isSuccess,message});
 
   },

@@ -278,7 +278,7 @@ const PriceServices = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  getProductByPriceId: async (priceId) => {
+  getByPriceId: async (priceId) => {
     try {
       const price = await Price.findOne({
         where: { id: priceId },
