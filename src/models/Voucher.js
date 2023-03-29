@@ -17,12 +17,20 @@ const Voucher = sequelize.define(
       type: DataTypes.DATE,
       allowNull: false,
     },
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    description: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     endDate: {
       type: DataTypes.DATE,
       allowNull: false,
     },
     state: {
-      type: DataTypes.BOOLEAN
+      type: DataTypes.BOOLEAN,
     },
     type: {
       type: DataTypes.STRING,

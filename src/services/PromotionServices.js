@@ -5,6 +5,9 @@ const {
   DiscountRateProduct,
   Voucher,
   TypeCustomer,
+  ProductUnitType,
+  GiftProduct,
+  Product,
 } = require("../config/persist");
 const { getByIds } = require("../services/TypeCustomerServices");
 
@@ -124,6 +127,48 @@ const PromotionHeaderServices = {
       });
       if (promotion) {
         return { promotion, isSuccess: true, status: 200 };
+      }
+      return { message: "promotion not found", isSuccess: false, status: 404 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getAllOnActive: async () => {
+    try {
+      const promotions = await PromotionHeader.findAll({
+        where: { state: true },
+        include: [
+          {
+            model: ProductPromotion,
+            include: [
+              {
+                model: GiftProduct,
+                include: [
+                  { model: ProductUnitType, include: [{ model: Product }] },
+                ],
+              },
+              { model: ProductUnitType, include: [{ model: Product }] },
+            ],
+          },
+          {
+            model: DiscountRateProduct,
+            include: [
+              {
+                model: ProductUnitType,
+                include: [{ model: Product }],
+              },
+            ],
+          },
+          { model: MoneyPromotion },
+          { model: Voucher },
+          {
+            model: TypeCustomer,
+          },
+        ],
+      });
+      if (promotions) {
+        return { promotions, isSuccess: true, status: 200 };
       }
       return { message: "promotion not found", isSuccess: false, status: 404 };
     } catch (error) {

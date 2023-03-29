@@ -278,16 +278,19 @@ const PriceServices = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  getProductByPriceId: async ( priceId) => {
+  getProductByPriceId: async (priceId) => {
     try {
       const price = await Price.findOne({
-        where: {id: priceId},
-        include: { model: ProductUnitType, attributes: ['ProductId'] },
+        where: { id: priceId },
+        include: {
+          model: ProductUnitType,
+          include: [{ model: Product }, { model: UnitType }],
+        },
       });
-      if(price){
-        return {price,isSuccess: true,status: 200}
+      if (price) {
+        return { price, isSuccess: true, status: 200 };
       }
-      return {message: 'not found',isSuccess: false, status: 404}
+      return { message: "not found", isSuccess: false, status: 404 };
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };

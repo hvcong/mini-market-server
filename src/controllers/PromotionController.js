@@ -33,14 +33,25 @@ const controller = {
       return res.status(status).json({ message, isSuccess });
     }
   },
-  getOne: async (req,res) =>{
-    const id = req.query.id
-    const {isSuccess,status,message,promotion} = await services.getById(id)
-    if(isSuccess){
-      return res.status(status).json({isSuccess,promotion})
+  getOne: async (req, res) => {
+    const id = req.query.id;
+    const { isSuccess, status, message, promotion } = await services.getById(
+      id
+    );
+    if (isSuccess) {
+      return res.status(status).json({ isSuccess, promotion });
     }
-    return res.status(status).json({isSuccess,message})
-  }
+    return res.status(status).json({ isSuccess, message });
+  },
+  getAllOnActive: async (req, res) => {
+    const result = await services.getAllOnActive();
+    const { isSuccess, status, message, promotions } = result;
+    if (isSuccess) {
+      return res.status(status).json({ isSuccess, promotions });
+    } else {
+      return res.status(status).json({ message, isSuccess });
+    }
+  },
 };
 
 module.exports = controller;

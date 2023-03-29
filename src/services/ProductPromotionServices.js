@@ -2,6 +2,9 @@ const {
   ProductPromotion,
   PromotionHeader,
   GiftProduct,
+  Product,
+  UnitType,
+  ProductUnitType,
 } = require("../config/persist");
 
 const Services = {
@@ -120,7 +123,12 @@ const Services = {
     try {
       const productPromotion = await ProductPromotion.findOne({
         where: { id: id },
-        include: { model: GiftProduct },
+        include: [
+          { model: GiftProduct, include: [{ model: ProductUnitType }] },
+          {
+            model: ProductUnitType,
+          },
+        ],
       });
       if (!productPromotion) {
         return { message: "not found", isSuccess: false, status: 404 };

@@ -67,6 +67,7 @@ const voucherService = {
   },
 
   getByCode: async (code) => {
+    console.log(code);
     if (!code)
       return {
         isSuccess: false,
@@ -142,18 +143,18 @@ const voucherService = {
       };
     }
   },
-  getById: async (id) =>{
+  getById: async (id) => {
     try {
-      const voucher = await Voucher.findByPk(id)
-      if(!voucher){
-        return {message: 'not found', isSuccess: false,status: 404}
+      const voucher = await Voucher.findByPk(id);
+      if (!voucher) {
+        return { message: "not found", isSuccess: false, status: 404 };
       }
-      return {voucher,isSuccess: true,status: 200}
+      return { voucher, isSuccess: true, status: 200 };
     } catch (error) {
-      console.log(error)
-      return {message:'something went wrong', isSuccess: false, status: 500}
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
     }
-  }
+  },
 };
 
 module.exports = voucherService;
