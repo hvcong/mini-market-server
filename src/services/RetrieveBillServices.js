@@ -14,7 +14,7 @@ const { getByid, update } = require("./MoneyPromotionServices");
 const services = {
   add: async (data) => {
     try {
-      const { note, BillId, EmployeeId } = data;
+      const { note, BillId, employeeId } = data;
       const bill = await Bill.findByPk(BillId);
       if (!bill) {
         return { message: "billId not found", isSuccess: false, status: 400 };
@@ -30,7 +30,7 @@ const services = {
             quantity: gift.quantity,
             productId: product.id,
             type: "trả hàng khuyến mãi",
-            employeeId: EmployeeId,
+            employeeId,
           });
         }
         if (e.MoneyPromotionId !== null) {
@@ -57,7 +57,7 @@ const services = {
           quantity: e.quantity,
           productId: product.id,
           type: "trả hàng",
-          EmployeeId,
+          employeeId,
         });
       }
       return { retrieve, isSuccess: true, status: 200 };
