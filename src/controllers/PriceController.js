@@ -80,8 +80,9 @@ const PriceController = {
   },
   getProductByPriceId: async (req, res) => {
     const id = req.query.id;
-    const { isSuccess, status, message, price } =
-      await services.getProductByPriceId(id);
+    const { isSuccess, status, message, price } = await services.getByPriceId(
+      id
+    );
     if (isSuccess) {
       return res.status(status).json({ isSuccess, price });
     }

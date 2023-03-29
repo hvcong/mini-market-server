@@ -9,12 +9,12 @@ const { getByPriceId } = require("./PriceServices");
 const StoreServices = require("./StoreServices");
 const { getGiftByKmId } = require("./ProductPromotionServices");
 const { getProduct } = require("./ProductUnitTypeServices");
-const { getByid, update} = require("./MoneyPromotionServices");
+const { getByid, update } = require("./MoneyPromotionServices");
 
 const services = {
   add: async (data) => {
     try {
-      const { note, BillId,EmployeeId } = data;
+      const { note, BillId, EmployeeId } = data;
       const bill = await Bill.findByPk(BillId);
       if (!bill) {
         return { message: "billId not found", isSuccess: false, status: 400 };
@@ -22,7 +22,7 @@ const services = {
       const retrieve = await RetrieveBill.create(data);
       const billDetails = await bill.getBillDetails();
       const result = await bill.getPromotionResults();
-      for (const e of result) {        
+      for (const e of result) {
         if (e.ProductPromotionId !== null) {
           const { gift } = await getGiftByKmId(e.ProductPromotionId);
           const product = await getProduct(gift.ProductUnitTypeId);
@@ -30,16 +30,23 @@ const services = {
             quantity: gift.quantity,
             productId: product.id,
             type: "trả hàng khuyến mãi",
-            EmployeeId,
+            employeeId: EmployeeId,
           });
         }
         if (e.MoneyPromotionId !== null) {
-          const {moneyPromotion} = await getByid(e.MoneyPromotionId)          
-          if(moneyPromotion.type == 'money'){
-            await update(e.MoneyPromotionId,{availableBudget: (moneyPromotion.availableBudget + moneyPromotion.discountMoney)})
+          const { moneyPromotion } = await getByid(e.MoneyPromotionId);
+          if (moneyPromotion.type == "money") {
+            await update(e.MoneyPromotionId, {
+              availableBudget:
+                moneyPromotion.availableBudget + moneyPromotion.discountMoney,
+            });
           }
-          if(moneyPromotion.type == 'rate'){
-            await update(e.MoneyPromotionId,{availableBudget: (moneyPromotion.availableBudget + moneyPromotion.maxMoneyDiscount)})
+          if (moneyPromotion.type == "rate") {
+            await update(e.MoneyPromotionId, {
+              availableBudget:
+                moneyPromotion.availableBudget +
+                moneyPromotion.maxMoneyDiscount,
+            });
           }
         }
       }
