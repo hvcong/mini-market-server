@@ -16,8 +16,7 @@ const { getRetrieveIds } = require("./RetrieveBillServices");
 const services = {
   add: async (data) => {
     try {
-      const { cost, customerPhonenumber, EmployeeId, VoucherId, priceIds } =
-        data;
+      const { cost, customerPhonenumber, type, EmployeeId, priceIds } = data;
       if (!customerPhonenumber && !EmployeeId) {
         return {
           message: "missing customerPhonenumber or employeeId",
@@ -27,7 +26,7 @@ const services = {
       }
       let { customer } = await getCustomerByPhonenumber(customerPhonenumber);
       var billdetails = await createBillDetais(priceIds);
-      const bill = await Bill.create({ cost, EmployeeId, VoucherId });
+      const bill = await Bill.create({ cost, EmployeeId, type });
       if (customer) {
         await bill.setCustomer(customer);
       } else {
@@ -58,6 +57,7 @@ const services = {
           },
         ],
         distinct: true,
+        order: [["orderDate", "DESC"]],
       });
       return { bills, isSuccess: true, status: 200 };
     } catch (error) {
@@ -113,6 +113,7 @@ const services = {
           },
         ],
         distinct: true,
+        order: [["orderDate", "DESC"]],
       });
       return { bills, isSuccess: true, status: 200 };
     } catch (error) {
@@ -125,13 +126,12 @@ const services = {
     const limit = (query._limit && Number(query._limit)) || 20;
     const offset = (page - 1) * limit;
     const { ids } = await getRetrieveIds();
-    const retrieveIds = ids.map((e) => e.BillId);
-    console.log(retrieveIds);
+    const retrieveIds = ids.map((e) => e.BillId);    
     try {
       const bills = await Bill.findAndCountAll({
         limit: limit,
         offset: offset,
-        where: { id: { [Op.notIn]: retrieveIds} },
+        where: { id: { [Op.notIn]: retrieveIds } },
         include: [
           {
             model: Customer,
@@ -141,8 +141,29 @@ const services = {
           },
         ],
         distinct: true,
+        order: [["orderDate", "DESC"]],
       });
       return { bills, isSuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getPendingCancelBill: async (query) => {
+    try {
+      const page = (query._page && Number(query._page)) || 1;
+      const limit = (query._limit && Number(query._limit)) || 20;
+      const offset = (page - 1) * limit;
+      const bills = await Bill.findAndCountAll({
+        limit: limit,
+        offset: offset,
+        where: { type: ["pending", "cancel"] },
+        order: [["orderDate", "DESC"]],
+      });
+      if (bills.rows.length) {
+        return { bills, isSuccess: true, status: 200 };
+      }
+      return { message: "bill not found", isSuccess: false, status: 404 };
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };

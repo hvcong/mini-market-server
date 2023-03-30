@@ -26,7 +26,7 @@ const StoreTransaction = sequelize.define(
     },
   },
   {
-    timestamps: false,
+    timestamps: true,
   }
 );
 module.exports = StoreTransaction;

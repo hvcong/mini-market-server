@@ -11,7 +11,7 @@ const GiftProduct = sequelize.define(
     quantity: DataTypes.INTEGER,
   },
   {
-    timestamps: false,
+    timestamps: true,
   }
 );
 module.exports = GiftProduct;

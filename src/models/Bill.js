@@ -21,6 +21,9 @@ const Bill = sequelize.define(
       type: DataTypes.DOUBLE,
       allowNull: true,
     },
+    type: {
+      type: DataTypes.STRING,
+    }
   },
   { timestamps: false }
 );

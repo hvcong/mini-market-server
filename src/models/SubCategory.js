@@ -24,7 +24,7 @@ const SubCategory = sequelize.define(
       type: DataTypes.BOOLEAN,
     },
   },
-  { timestamps: false }
+  { timestamps: true }
 );
 
 module.exports = SubCategory;

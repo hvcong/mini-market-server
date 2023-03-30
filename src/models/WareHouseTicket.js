@@ -21,7 +21,7 @@ const WareHouseTicket = sequelize.define(
     }
   },
   {
-    timestamps: false,
+    timestamps: true,
   }
 );
 
