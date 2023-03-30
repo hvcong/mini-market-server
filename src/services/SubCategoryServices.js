@@ -49,6 +49,7 @@ const services = {
       const subs = await SubCategory.findAndCountAll({
         limit: limit,
         offset: offset,
+        order: [['updateAt','DESC']],
       });
       return { subs, isSuccess: true, status: 200 };
     } catch (error) {
@@ -92,6 +93,7 @@ const services = {
       const subCategories = await SubCategory.findAndCountAll({
         limit: limit,
         offset: offset,
+        order: [['updateAt','DESC']],
         where: { name: { [Op.like ]: `%${name}%`} },
       });
       if (subCategories) {
@@ -117,6 +119,7 @@ const services = {
         limit: limit,
         offset: offset,
         where: { state: state },
+        order: [['updateAt','DESC']]
       });
       if (subCategories) {
         return { subCategories, isSuccess: true, status: 200 };
@@ -145,6 +148,7 @@ const services = {
           where: {id: {[Op.like]: `%${cateId}%`}},                    
         },
         distinct: true,
+        order: [['updateAt','DESC']]
       });
       if (subCategories) {
         return { subCategories, isSuccess: true, status: 200 };

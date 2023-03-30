@@ -119,6 +119,7 @@ const voucherService = {
   getAllUsableVoucher: async () => {
     try {
       const vouches = await Voucher.findAll({
+        order: [['updateAt','DESC']],
         where: {
           state: true,
           endDate: {

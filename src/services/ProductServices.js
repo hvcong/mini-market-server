@@ -238,6 +238,7 @@ const ProductServices = {
     try {
       const products = await Product.findAll({
         limit: 20,
+        order: [['updateAt','DESC']],
         include: [
           {
             model: SubCategory,
@@ -263,6 +264,7 @@ const ProductServices = {
       const products = await Product.findAndCountAll({
         limit: limit,
         offset: offset,
+        order: [['updateAt','DESC']],
         include: [
           {
             model: SubCategory,

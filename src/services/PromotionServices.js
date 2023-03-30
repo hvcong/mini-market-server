@@ -83,6 +83,7 @@ const PromotionHeaderServices = {
       const promotions = await PromotionHeader.findAndCountAll({
         limit: limit,
         offset: offset,
+        order: [['updateAt','DESC']],
         include: [
           {
             model: ProductPromotion,

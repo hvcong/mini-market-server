@@ -24,7 +24,7 @@ const services = {
   },
   update: async (id, data) => {
     try {
-      const ticket = await WareHouseTiket.findByPk(id);
+      const ticket = await WareHouseTicket.findByPk(id);
       if (ticket) {
         await ticket.update(data);
         await ticket.save();
@@ -63,6 +63,7 @@ const services = {
       const tickets = await WareHouseTicket.findAndCountAll({
         limit: limit,
         offset: offset,
+        order: [['updateAt','DESC']],      
         include: [
           { model: Employee },
           {
