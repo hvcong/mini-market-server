@@ -22,7 +22,7 @@ const PromotionResult = sequelize.define(
     },
   },
   {
-    timestamps: false,
+    timestamps: true,
   }
 );
 module.exports = PromotionResult;

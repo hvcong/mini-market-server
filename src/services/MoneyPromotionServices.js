@@ -64,6 +64,7 @@ const Services = {
       const promotions = await MoneyPromotion.findAll({
         limit: limit,
         offset: offset,
+        order: [['updateAt','DESC']]
       });
       if (promotions.length) {
         return { isSuccess: true, promotions, status: 200 };

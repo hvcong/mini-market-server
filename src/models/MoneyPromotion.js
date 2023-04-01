@@ -51,7 +51,7 @@ const MoneyPromotion = sequelize.define(
     }
   },
   {
-    timestamps: false,
+    timestamps: true,
   }
 );
 module.exports = MoneyPromotion;

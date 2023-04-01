@@ -26,7 +26,7 @@ const ListPricesHeader = sequelize.define(
     },
   },
   {
-    timestamps: false,
+    timestamps: true,
   }
 );
 module.exports = ListPricesHeader;

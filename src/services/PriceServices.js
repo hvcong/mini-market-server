@@ -73,6 +73,7 @@ const PriceServices = {
       const productLines = await Price.findAll({
         limit: limit,
         offset: offset,
+        order: [['updateAt','DESC']],
         include: [
           {
             model: ProductUnitType,
@@ -120,6 +121,7 @@ const PriceServices = {
     const priceHeaderId = query.priceHeaderId;
     try {
       const listPrices = await Price.findAll({
+        order: [['updateAt','DESC']],
         include: [
           {
             model: ListPricesHeader,
@@ -271,6 +273,7 @@ const PriceServices = {
             where: { state: true },
           },
         ],
+        order: [['updateAt','DESC']]
       });
       return { productLines, isSuccess: true, status: 200 };
     } catch (error) {

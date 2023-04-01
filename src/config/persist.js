@@ -116,7 +116,6 @@ Bill.belongsTo(Customer);
 Bill.belongsTo(Employee);
 Bill.hasMany(PromotionResult);
 Bill.hasOne(RetrieveBill);
-Bill.belongsTo(Voucher);
 
 //promotionResult
 PromotionResult.belongsTo(Bill);
@@ -135,7 +134,6 @@ BillDetail.belongsTo(Price);
 // voucher
 Voucher.belongsTo(PromotionHeader);
 Voucher.hasOne(PromotionResult);
-Voucher.hasOne(Bill);
 
 // City
 City.hasMany(District);

@@ -95,6 +95,7 @@ const Services = {
       const promotions = await ProductPromotion.findAll({
         limit: limit,
         offset: offset,
+        order: [['updateAt','DESC']]
       });
       if (promotions.length) {
         return { isSuccess: true, promotions, status: 200 };

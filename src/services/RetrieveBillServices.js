@@ -75,6 +75,7 @@ const services = {
         limit: limit,
         offset: offset,
         distinct: true,
+        order: [['updateAt','DESC']],
       });
       return { retrieves, isSuccess: true, status: 200 };
     } catch (error) {

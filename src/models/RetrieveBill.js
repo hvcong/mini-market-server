@@ -22,7 +22,7 @@ const RetrieveBill = sequelize.define(
     },
   },
   {
-    timestamps: false,
+    timestamps: true,
   }
 );
 module.exports = RetrieveBill;

@@ -99,13 +99,13 @@ const voucherService = {
     }
   },
 
-  updateWhenIsUsed: async (id) => {    
+  updateWhenIsUsed: async (id,data) => {    
     try {
       const voucher = await Voucher.findOne({ where: { id: id } });
       if(!voucher){
         return {message: 'voucher not found',isSuccess: false, status: 404}
       }
-      await voucher.update({ state: false });
+      await voucher.update(data);
       await voucher.save();
       return { message: "udated successful", isSuccess: true, status: 200 };
     } catch (error) {
@@ -120,6 +120,7 @@ const voucherService = {
   getAllUsableVoucher: async () => {
     try {
       const vouches = await Voucher.findAll({
+        order: [['updateAt','DESC']],
         where: {
           state: true,
           endDate: {

@@ -18,7 +18,7 @@ const UnitType = sequelize.define(
     },
   },
   {
-    timestamps: false,
+    timestamps: true,
   }
 );
 

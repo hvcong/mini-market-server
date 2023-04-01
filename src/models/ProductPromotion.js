@@ -30,7 +30,7 @@ const ProductPromotion = sequelize.define(
     state: DataTypes.BOOLEAN,
   },
   {
-    timestamps: false,
+    timestamps: true,
   }
 );
 module.exports = ProductPromotion;

@@ -25,7 +25,7 @@ const PromotionTypeCustomer = sequelize.define("PromotionTypeCustomer", {
   },
 },
 {
-  timestamps: false,
+  timestamps: true,
 });
 
 module.exports = PromotionTypeCustomer;

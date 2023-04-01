@@ -40,6 +40,14 @@ const controller = {
             return res.status(status).json({isSuccess,bills})
         }
         return res.status(status).json({isSuccess,message})
+    },
+    getPendingCancelBill: async (req,res) =>{
+        const {query} = req
+        const {isSuccess,status,bills,message} = await services.getPendingCancelBill(query)
+        if(isSuccess){
+            return res.status(status).json({isSuccess,bills})
+        }
+        return res.status(status).json({isSuccess,message})
     }
 }
 module.exports = controller

@@ -15,7 +15,7 @@ const Price = sequelize.define(
     },
   },
   {
-    timestamps: false,
+    timestamps: true,
   }
 );
 module.exports = Price;

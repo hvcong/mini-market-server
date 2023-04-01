@@ -55,6 +55,7 @@ const services = {
         limit: limit,
         offset: offset,
         distinct: true,
+        order: [['updateAt','DESC']],
       });
       return { transactions, isSuccess: true, status: 200 };
     } catch (error) {
