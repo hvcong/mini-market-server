@@ -19,6 +19,8 @@ const services = {
       if (!bill) {
         return { message: "billId not found", isSuccess: false, status: 400 };
       }
+      await bill.update({ type: "retrieve" });
+
       const retrieve = await RetrieveBill.create(data);
       const billDetails = await bill.getBillDetails();
       const result = await bill.getPromotionResults();
@@ -75,7 +77,7 @@ const services = {
         limit: limit,
         offset: offset,
         distinct: true,
-        order: [['updateAt','DESC']],
+        order: [["updatedAt", "DESC"]],
       });
       return { retrieves, isSuccess: true, status: 200 };
     } catch (error) {

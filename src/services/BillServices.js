@@ -104,6 +104,9 @@ const services = {
               },
             ],
           },
+          {
+            model: RetrieveBill,
+          },
 
           {
             model: PromotionResult,
@@ -173,12 +176,11 @@ const services = {
     const limit = (query._limit && Number(query._limit)) || 20;
     const offset = (page - 1) * limit;
     const { ids } = await getRetrieveIds();
-    const retrieveIds = ids.map((e) => e.BillId);    
     try {
       const bills = await Bill.findAndCountAll({
         limit: limit,
         offset: offset,
-        where: { id: { [Op.notIn]: retrieveIds } },
+        where: { type: "success" },
         include: [
           {
             model: Customer,
@@ -215,6 +217,34 @@ const services = {
         return { bills, isSuccess: true, status: 200 };
       }
       return { message: "bill not found", isSuccess: false, status: 404 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  updateType: async (billId, type) => {
+    try {
+      const bill = await Bill.findOne({
+        where: {
+          id: billId,
+        },
+      });
+      if (!bill) {
+        return {
+          isSuccess: false,
+          status: 400,
+        };
+      }
+
+      //update
+      bill.update({
+        type: type,
+      });
+
+      return {
+        isSuccess: true,
+        status: 200,
+      };
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };

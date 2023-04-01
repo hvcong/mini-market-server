@@ -64,7 +64,7 @@ const Services = {
       const promotions = await MoneyPromotion.findAll({
         limit: limit,
         offset: offset,
-        order: [['updateAt','DESC']]
+        order: [["updatedAt", "DESC"]],
       });
       if (promotions.length) {
         return { isSuccess: true, promotions, status: 200 };
@@ -78,7 +78,7 @@ const Services = {
   },
   getByid: async (id) => {
     try {
-      const moneyPromotion = await MoneyPromotion.findByPk(id)
+      const moneyPromotion = await MoneyPromotion.findByPk(id);
       if (!moneyPromotion) {
         return { message: "not found", isSuccess: false, status: 404 };
       }

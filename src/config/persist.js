@@ -4,7 +4,7 @@ const Account = require("../models/Account.js");
 const HomeAddress = require("../models/HomeAddress.js");
 const Bill = require("../models/Bill.js");
 const BillDetail = require("../models/BillDetail.js");
-const CartDetail = require("../models/CartDetail.js");
+// const CartDetail = require("../models/CartDetail.js");
 const Customer = require("../models/Customer.js");
 const PromotionHeader = require("../models/PromotionHeader.js");
 const MoneyPromotion = require("../models/MoneyPromotion.js");
@@ -72,7 +72,7 @@ Product.hasMany(ProductUnitType);
 
 //Price
 Price.belongsTo(ListPricesHeader);
-Price.hasOne(CartDetail);
+// Price.hasOne(CartDetail);
 Price.hasOne(BillDetail);
 Price.belongsTo(ProductUnitType);
 
@@ -152,7 +152,7 @@ HomeAddress.hasOne(Employee);
 HomeAddress.belongsTo(Ward);
 
 // CartDetail
-CartDetail.belongsTo(Price);
+// CartDetail.belongsTo(Price);
 
 // PromotionHeader
 PromotionHeader.hasMany(ProductPromotion);
@@ -200,7 +200,7 @@ module.exports = {
   HomeAddress,
   Bill,
   BillDetail,
-  CartDetail,
+  // CartDetail,
   Category,
   MoneyPromotion,
   ProductPromotion,

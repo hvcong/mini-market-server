@@ -49,7 +49,7 @@ const services = {
       const subs = await SubCategory.findAndCountAll({
         limit: limit,
         offset: offset,
-        order: [['updateAt','DESC']],
+        order: [["updatedAt", "DESC"]],
       });
       return { subs, isSuccess: true, status: 200 };
     } catch (error) {
@@ -84,7 +84,7 @@ const services = {
       return false;
     }
   },
-  getByName : async (query) =>{
+  getByName: async (query) => {
     const page = (query._page && Number(query._page)) || 1;
     const limit = (query._limit && Number(query._limit)) || 20;
     const offset = (page - 1) * limit;
@@ -93,8 +93,8 @@ const services = {
       const subCategories = await SubCategory.findAndCountAll({
         limit: limit,
         offset: offset,
-        order: [['updateAt','DESC']],
-        where: { name: { [Op.like ]: `%${name}%`} },
+        order: [["updatedAt", "DESC"]],
+        where: { name: { [Op.like]: `%${name}%` } },
       });
       if (subCategories) {
         return { subCategories, isSuccess: true, status: 200 };
@@ -109,7 +109,7 @@ const services = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  getByState : async (query) =>{
+  getByState: async (query) => {
     const page = (query._page && Number(query._page)) || 1;
     const limit = (query._limit && Number(query._limit)) || 20;
     const offset = (page - 1) * limit;
@@ -119,7 +119,7 @@ const services = {
         limit: limit,
         offset: offset,
         where: { state: state },
-        order: [['updateAt','DESC']]
+        order: [["updatedAt", "DESC"]],
       });
       if (subCategories) {
         return { subCategories, isSuccess: true, status: 200 };
@@ -134,7 +134,7 @@ const services = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  getByCateId : async (query) =>{
+  getByCateId: async (query) => {
     const page = (query._page && Number(query._page)) || 1;
     const limit = (query._limit && Number(query._limit)) || 20;
     const offset = (page - 1) * limit;
@@ -145,10 +145,10 @@ const services = {
         offset: offset,
         include: {
           model: Category,
-          where: {id: {[Op.like]: `%${cateId}%`}},                    
+          where: { id: { [Op.like]: `%${cateId}%` } },
         },
         distinct: true,
-        order: [['updateAt','DESC']]
+        order: [["updatedAt", "DESC"]],
       });
       if (subCategories) {
         return { subCategories, isSuccess: true, status: 200 };

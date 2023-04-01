@@ -26,7 +26,7 @@ const services = {
         limit: limit,
         offset: offset,
         distinct: true,
-        order: [['updateAt','DESC']],
+        order: [["updatedAt", "DESC"]],
         include: [
           {
             model: Bill,

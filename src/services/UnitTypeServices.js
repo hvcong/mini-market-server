@@ -115,7 +115,9 @@ const UnitTypeServices = {
   },
   getAllUnits: async () => {
     try {
-      const unitTypes = await UnitType.findAll({order: [['updateAt','DESC']]});
+      const unitTypes = await UnitType.findAll({
+        order: [["updatedAt", "DESC"]],
+      });
       if (unitTypes.length) {
         return { unitTypes, isSuccess: true, status: 200 };
       }
@@ -134,7 +136,7 @@ const UnitTypeServices = {
         limit: limit,
         offset: offset,
         distinct: true,
-        order: [['updateAt','DESC']]
+        order: [["updatedAt", "DESC"]],
       });
       if (unitTypes.rows.length) {
         return { unitTypes, isSuccess: true, status: 200 };
@@ -174,8 +176,8 @@ const UnitTypeServices = {
   getOtherUnits: async () => {
     try {
       const otherUnits = await UnitType.findAll({
-        where: { convertionQuantity: {[Op.ne]: 1} },
-        order: [['updateAt','DESC']]
+        where: { convertionQuantity: { [Op.ne]: 1 } },
+        order: [["updatedAt", "DESC"]],
       });
       return { otherUnits, isSuccess: true, status: 200 };
     } catch (error) {

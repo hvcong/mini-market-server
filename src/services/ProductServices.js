@@ -213,7 +213,7 @@ const ProductServices = {
       if (!product) {
         return { message: "product not found", isSuccess: false, status: 404 };
       }
-      await product.update(newData);     
+      await product.update(newData);
       await product.save();
       return { message: "updated succesful", isSuccess: true, status: 200 };
     } catch (error) {
@@ -238,7 +238,7 @@ const ProductServices = {
     try {
       const products = await Product.findAll({
         limit: 20,
-        order: [['updateAt','DESC']],
+        order: [["updatedAt", "DESC"]],
         include: [
           {
             model: SubCategory,
@@ -264,7 +264,7 @@ const ProductServices = {
       const products = await Product.findAndCountAll({
         limit: limit,
         offset: offset,
-        order: [['updateAt','DESC']],
+        order: [["updatedAt", "DESC"]],
         include: [
           {
             model: SubCategory,

@@ -61,7 +61,7 @@ const services = {
         offset: offset,
         include: { model: SubCategory, attributes: ["id", "name", "state"] },
         distinct: true,
-        order: [["updateAt", "DESC"]],
+        order: [["updatedAt", "DESC"]],
       });
       return { cates, isSuccess: true, status: 200 };
     } catch (error) {
@@ -80,7 +80,7 @@ const services = {
         offset: offset,
         where: { id: { [Op.like]: `%${id}%` } },
         distinct: true,
-        order: [['updateAt','DESC']]
+        order: [["updatedAt", "DESC"]],
       });
       if (!categories) {
         return { message: "category not found", isSuccess: false, status: 404 };
@@ -103,7 +103,7 @@ const services = {
         where: { state: state },
         include: { model: SubCategory, attributes: ["id", "name", "state"] },
         distinct: true,
-        order: [['updateAt','DESC']]
+        order: [["updatedAt", "DESC"]],
       });
       return { categories, isSuccess: true, status: 200 };
     } catch (error) {
@@ -123,7 +123,7 @@ const services = {
         offset: offset,
         include: { model: SubCategory, attributes: ["id", "name", "state"] },
         distinct: true,
-        order: [['updateAt','DESC']]
+        order: [["updatedAt", "DESC"]],
       });
       return { categories, isSuccess: true, status: 200 };
     } catch (error) {

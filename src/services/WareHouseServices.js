@@ -63,7 +63,7 @@ const services = {
       const tickets = await WareHouseTicket.findAndCountAll({
         limit: limit,
         offset: offset,
-        order: [["updateAt", "DESC"]],
+        order: [["updatedAt", "DESC"]],
         include: [
           { model: Employee },
           {

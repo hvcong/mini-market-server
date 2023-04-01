@@ -78,7 +78,7 @@ const services = {
         limit: limit,
         offset: offset,
         distinct: true,
-        order: [['updateAt','DESC']]
+        order: [["updatedAt", "DESC"]],
       });
       return { headers, isSuccess: true, status: 200 };
     } catch (error) {
