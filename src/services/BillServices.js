@@ -95,6 +95,9 @@ const services = {
                       {
                         model: UnitType,
                       },
+                      {
+                        model: Product,
+                      },
                     ],
                   },
                 ],
