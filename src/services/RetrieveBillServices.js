@@ -1,36 +1,31 @@
-const {
-  RetrieveBill,
-  Bill,
-  BillDetail,
-  Product,
-  GiftProduct,
-} = require("../config/persist");
+const { RetrieveBill, Bill } = require("../config/persist");
 const { getByPriceId } = require("./PriceServices");
 const StoreServices = require("./StoreServices");
 const { getGiftByKmId } = require("./ProductPromotionServices");
-const { getProduct } = require("./ProductUnitTypeServices");
 const { getByid, update } = require("./MoneyPromotionServices");
 
 const services = {
   add: async (data) => {
     try {
       const { note, BillId, employeeId } = data;
+      const check = await RetrieveBill.findOne({where: {BillId: BillId}});
+      if(check){
+        return {message: 'this bill already retrieved',isSuccess: false, status: 400}
+      }
       const bill = await Bill.findByPk(BillId);
       if (!bill) {
         return { message: "billId not found", isSuccess: false, status: 400 };
       }
       await bill.update({ type: "retrieve" });
-
       const retrieve = await RetrieveBill.create(data);
       const billDetails = await bill.getBillDetails();
       const result = await bill.getPromotionResults();
       for (const e of result) {
         if (e.ProductPromotionId !== null) {
           const { gift } = await getGiftByKmId(e.ProductPromotionId);
-          const product = await getProduct(gift.ProductUnitTypeId);
           await StoreServices.add({
             quantity: gift.quantity,
-            productId: product.id,
+            ProductUnitTypeId: gift.ProductUnitTypeId,
             type: "trả hàng khuyến mãi",
             employeeId,
           });
@@ -54,10 +49,10 @@ const services = {
       }
       for (const e of billDetails) {
         const { price } = await getByPriceId(e.PriceId);
-        const product = await getProduct(price.ProductUnitTypeId);
+        // const product = await getProduct(price.ProductUnitTypeId);
         await StoreServices.add({
           quantity: e.quantity,
-          productId: product.id,
+          ProductUnitTypeId: price.ProductUnitTypeId,
           type: "trả hàng",
           employeeId,
         });

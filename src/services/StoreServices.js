@@ -5,10 +5,9 @@ const { getProduct, getUnitType } = require("./ProductUnitTypeServices");
 const services = {
   add: async (data) => {
     try {
-      const { quantity, createAt, type, ProductUnitTypeId, employeeId } = data;
+      const { quantity, type, ProductUnitTypeId, employeeId } = data;
       const transaction = await StoreTransaction.create({
-        quantity,
-        createAt,
+        quantity,        
         type,
         ProductUnitTypeId,
         EmployeeId: employeeId,
@@ -58,7 +57,7 @@ const services = {
         limit: limit,
         offset: offset,
         distinct: true,
-        order: [["updatedAt", "DESC"]],
+        order: [["createAt", "DESC"]],
       });
       return { transactions, isSuccess: true, status: 200 };
     } catch (error) {
