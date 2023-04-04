@@ -64,6 +64,7 @@ const services = {
         limit: limit,
         offset: offset,
         order: [["updatedAt", "DESC"]],
+        distinct: true,
         include: [
           { model: Employee },
           {
