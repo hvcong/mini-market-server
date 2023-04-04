@@ -1,4 +1,4 @@
-const { StoreTransaction, Product } = require("../config/persist");
+const { StoreTransaction } = require("../config/persist");
 const { onlyUpdateProduct } = require("./ProductServices");
 const { getProduct, getUnitType } = require("./ProductUnitTypeServices");
 
