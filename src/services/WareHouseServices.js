@@ -1,20 +1,20 @@
 const {
   WareHouseTicket,
   Employee,
-  Product,
   TicketDetail,
+  ProductUnitType,
 } = require("../config/persist");
 const { addTickets } = require("./TicketServices");
 const services = {
   add: async (data) => {
-    const { EmployeeId, ...others } = data;
+    const { EmployeeId, id, note, ticketDetails } = data;
     try {
       const employee = await Employee.findByPk(EmployeeId);
       if (!employee) {
         return { message: "employee not found", isSuccess: false, status: 400 };
       }
-      const ticket = await WareHouseTicket.create({ EmployeeId });
-      const { details } = await addTickets(others.ticketDetails);
+      const ticket = await WareHouseTicket.create({ id, EmployeeId, note });
+      const { details } = await addTickets(ticketDetails);
       ticket.setTicketDetails(details);
       return { ticket, isSuccess: true, status: 200 };
     } catch (error) {
@@ -42,7 +42,7 @@ const services = {
         where: { id: id },
         include: [
           { model: Employee },
-          { model: TicketDetail, include: [{ model: Product }] },
+          { model: TicketDetail, include: [{ model: ProductUnitType }] },
         ],
       });
 
@@ -63,7 +63,7 @@ const services = {
       const tickets = await WareHouseTicket.findAndCountAll({
         limit: limit,
         offset: offset,
-        order: [["updatedAt", "DESC"]],
+        order: [["createAt", "DESC"]],
         distinct: true,
         include: [
           { model: Employee },
@@ -71,7 +71,7 @@ const services = {
             model: TicketDetail,
             include: [
               {
-                model: Product,
+                model: ProductUnitType,
               },
             ],
           },

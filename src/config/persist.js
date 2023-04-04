@@ -89,7 +89,7 @@ ProductUnitType.hasMany(TicketDetail)
 ProductUnitType.hasMany(StoreTransaction)
 
 //storeTransaction
-StoreTransaction.belongsTo(Product);
+StoreTransaction.belongsTo(ProductUnitType);
 StoreTransaction.belongsTo(ProductUnitType);
 
 //ListPricesHeader

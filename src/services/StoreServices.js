@@ -1,21 +1,23 @@
 const { StoreTransaction, Product } = require("../config/persist");
-const { onlyUpdateProduct } = require("../services/ProductServices");
+const { onlyUpdateProduct } = require("./ProductServices");
+const { getProduct, getUnitType } = require("./ProductUnitTypeServices");
 
 const services = {
   add: async (data) => {
     try {
-      const { quantity, createAt, type, productId, employeeId } = data;
+      const { quantity, createAt, type, ProductUnitTypeId, employeeId } = data;
       const transaction = await StoreTransaction.create({
         quantity,
         createAt,
         type,
-        ProductId: productId,
+        ProductUnitTypeId,
         EmployeeId: employeeId,
       });
-      const product = await Product.findByPk(productId);
+      const unitType = await getUnitType(ProductUnitTypeId);
+      const product = await getProduct(ProductUnitTypeId);
       const qty = product.quantity;
-      let newQty = qty + quantity;
-      await onlyUpdateProduct(productId, { quantity: newQty });
+      let newQty = qty + quantity * unitType.convertionQuantity;
+      await onlyUpdateProduct(product.id, { quantity: newQty });
       return { transaction, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
@@ -26,18 +28,19 @@ const services = {
     try {
       const transactions = [];
       for (const e of data) {
-        const { quantity, createAt, type, productId, employeeId } = e;
+        const { quantity, createAt, type, ProductUnitTypeId, employeeId } = e;
         const transaction = await StoreTransaction.create({
           quantity,
           createAt,
           type,
-          ProductId: productId,
+          ProductUnitTypeId,
           EmployeeId: employeeId,
         });
-        const product = await Product.findByPk(productId);
+        const unitType = await getUnitType(ProductUnitTypeId);
+        const product = await getProduct(ProductUnitTypeId);
         const qty = product.quantity;
-        let newQty = qty + quantity;
-        await onlyUpdateProduct(productId, { quantity: newQty });
+        let newQty = qty + quantity * unitType.convertionQuantity;
+        await onlyUpdateProduct(product.id, { quantity: newQty });
         transactions.push(transaction);
       }
       return { transactions, isSuccess: true, status: 200 };
