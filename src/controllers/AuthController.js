@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const { config } = require("dotenv");
 const jwt = require("jsonwebtoken");
-const { Account } = require("../config/persist");
+const { Account, Employee } = require("../config/persist");
 const { create } = require("../services/AccountServices");
 
 var refreshTokens = [];
@@ -46,6 +46,7 @@ const AuthControllers = {
     try {
       const account = await Account.findOne({
         where: { phonenumber: req.body.phonenumber },
+        include: [{ model: Employee }],
       });
       if (!account) {
         return res.status(404).json("account not found");

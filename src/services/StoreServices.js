@@ -37,7 +37,7 @@ const services = {
         const product = await Product.findByPk(productId);
         const qty = product.quantity;
         let newQty = qty + quantity;
-        await updateProduct(productId, { quantity: newQty });
+        await onlyUpdateProduct(productId, { quantity: newQty });
         transactions.push(transaction);
       }
       return { transactions, isSuccess: true, status: 200 };
