@@ -10,7 +10,7 @@ const Image = sequelize.define(
       autoIncrement: true,
     },
     uri: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
   },
