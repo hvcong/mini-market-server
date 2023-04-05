@@ -32,6 +32,8 @@ const ProductUnitType = require("../models/ProductUnitype");
 const WareHouseTicket = require("../models/WareHouseTicket");
 const PromotionTypeCustomer = require("../models/PromoHeaderTypeCustomer");
 const TicketDetail = require("../models/TicketDetails");
+const Input = require('../models/Input')
+const InputDetail = require('../models/InputDetail')
 
 // account
 Account.belongsTo(Customer);
@@ -61,18 +63,14 @@ SubCategory.hasMany(Product);
 
 //product
 Product.belongsTo(SubCategory);
-Product.hasMany(StoreTransaction);
 Product.hasMany(Image, { as: "images" });
 Image.belongsTo(Product);
 Product.belongsToMany(UnitType, { through: ProductUnitType });
 UnitType.belongsToMany(Product, { through: ProductUnitType });
-Product.hasOne(TicketDetail);
-
 Product.hasMany(ProductUnitType);
 
 //Price
 Price.belongsTo(ListPricesHeader);
-// Price.hasOne(CartDetail);
 Price.hasOne(BillDetail);
 Price.belongsTo(ProductUnitType);
 
@@ -86,10 +84,13 @@ ProductUnitType.hasMany(Price);
 ProductUnitType.hasOne(GiftProduct);
 ProductUnitType.hasOne(ProductPromotion);
 ProductUnitType.hasOne(DiscountRateProduct);
+ProductUnitType.hasMany(InputDetail)
+ProductUnitType.hasMany(TicketDetail)
+ProductUnitType.hasMany(StoreTransaction)
 
 //storeTransaction
-StoreTransaction.belongsTo(Product);
-StoreTransaction.belongsTo(Employee);
+StoreTransaction.belongsTo(ProductUnitType);
+StoreTransaction.belongsTo(ProductUnitType);
 
 //ListPricesHeader
 ListPricesHeader.hasMany(Price);
@@ -100,6 +101,15 @@ Employee.hasOne(Account);
 Employee.belongsTo(HomeAddress);
 Employee.hasMany(StoreTransaction);
 Employee.hasMany(WareHouseTicket);
+Employee.hasMany(Input)
+
+//Input
+Input.belongsTo(Employee)
+Input.hasMany(InputDetail)
+
+//InputDetail
+InputDetail.belongsTo(Input)
+InputDetail.belongsTo(ProductUnitType)
 
 //WareHouseTiket
 WareHouseTicket.belongsTo(Employee);
@@ -107,7 +117,7 @@ WareHouseTicket.hasMany(TicketDetail);
 
 //WareHouseProduct
 TicketDetail.belongsTo(WareHouseTicket);
-TicketDetail.belongsTo(Product);
+TicketDetail.belongsTo(ProductUnitType);
 
 // Bill
 Bill.hasMany(BillDetail);
@@ -224,4 +234,6 @@ module.exports = {
   TypeCustomer,
   WareHouseTicket,
   TicketDetail,
+  Input,
+  InputDetail
 };

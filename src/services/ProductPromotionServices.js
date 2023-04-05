@@ -1,9 +1,6 @@
 const {
-  ProductPromotion,
-  PromotionHeader,
+  ProductPromotion,  
   GiftProduct,
-  Product,
-  UnitType,
   ProductUnitType,
 } = require("../config/persist");
 

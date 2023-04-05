@@ -1,9 +1,4 @@
-const {
-  GiftProduct,
-  ProductPromotion,
-  MoneyPromotion,
-  Price,
-} = require("../config/persist");
+const { GiftProduct } = require("../config/persist");
 
 const Services = {
   add: async (data) => {

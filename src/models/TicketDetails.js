@@ -11,7 +11,13 @@ const TicketDetail = sequelize.define("TicketDetail", {
   reportQty: {
     type: DataTypes.INTEGER,
   },
-  realQty: {
+  reportQtyBase:{
+    type: DataTypes.INTEGER
+  },
+  realReportQty: {
+    type: DataTypes.INTEGER,  
+  },
+  realBaseQty: {
     type: DataTypes.INTEGER,  
   },
 },

@@ -1,4 +1,4 @@
-const { MoneyPromotion, PromotionHeader } = require("../config/persist");
+const { MoneyPromotion } = require("../config/persist");
 
 const Services = {
   add: async (data) => {

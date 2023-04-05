@@ -24,6 +24,7 @@ const TypeCustomerRoutes = require('./TypeCutomerRoutes')
 const HomeRoutes = require('./HomeRoutes')
 const WareHouseRoutes = require('./WareHouseRoutes')
 const PromotionResultRoutes = require('./PromotionResultRoutes')
+const InputRoutes = require('./InputRoutes')
 
 const routerHandle = (app) => {
   app.use("/auth", AuthRoutes);
@@ -52,6 +53,7 @@ const routerHandle = (app) => {
   app.use('/home',HomeRoutes)
   app.use('/ticket',WareHouseRoutes)
   app.use('/result',PromotionResultRoutes)
+  app.use('/input',InputRoutes)
 };
 
 module.exports = routerHandle;
