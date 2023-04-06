@@ -1,4 +1,8 @@
-const { StoreTransaction } = require("../config/persist");
+const {
+  StoreTransaction,
+  ProductUnitType,
+  Product,
+} = require("../config/persist");
 const { onlyUpdateProduct } = require("./ProductServices");
 const { getProduct, getUnitType } = require("./ProductUnitTypeServices");
 
@@ -7,7 +11,7 @@ const services = {
     try {
       const { quantity, type, ProductUnitTypeId, employeeId } = data;
       const transaction = await StoreTransaction.create({
-        quantity,        
+        quantity,
         type,
         ProductUnitTypeId,
         EmployeeId: employeeId,
@@ -58,6 +62,7 @@ const services = {
         offset: offset,
         distinct: true,
         order: [["createAt", "DESC"]],
+        include: [{ model: ProductUnitType, include: [{ model: Product }] }],
       });
       return { transactions, isSuccess: true, status: 200 };
     } catch (error) {

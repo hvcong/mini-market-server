@@ -37,7 +37,9 @@ const services = {
       if (customer) {
         await bill.setCustomer(customer);
       } else {
-        let { customer } = await add({ phonenumber: customerPhonenumber });
+        let { customer } = await add({
+          phonenumber: customerPhonenumber,
+        });
         await bill.setCustomer(customer);
       }
       await bill.setBillDetails(billdetails);

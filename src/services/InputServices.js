@@ -3,6 +3,7 @@ const {
   Employee,
   InputDetail,
   ProductUnitType,
+  Product,
 } = require("../config/persist");
 const { createManyDetails } = require("./InputDetailsServices");
 
@@ -30,7 +31,7 @@ const services = {
   },
   update: async (data) => {
     try {
-        const {id,...others} = data
+      const { id, ...others } = data;
       const input = await Input.findByPk(id);
       if (input) {
         await input.update(others);
@@ -49,7 +50,12 @@ const services = {
         where: { id: id },
         include: [
           { model: Employee },
-          { model: InputDetail, include: [{ model: ProductUnitType }] },
+          {
+            model: InputDetail,
+            include: [
+              { model: ProductUnitType, include: [{ model: Product }] },
+            ],
+          },
         ],
       });
 
@@ -92,4 +98,4 @@ const services = {
   },
 };
 
-module.exports = services
+module.exports = services;

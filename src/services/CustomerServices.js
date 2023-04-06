@@ -16,7 +16,7 @@ const services = {
         lastName,
         phonenumber,
         homeAddressId,
-        typeCustomerId,
+        typeCustomerId = "BT",
         email,
       } = data;
       var customer = await Customer.findOne({

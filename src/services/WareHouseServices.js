@@ -3,6 +3,7 @@ const {
   Employee,
   TicketDetail,
   ProductUnitType,
+  Product,
 } = require("../config/persist");
 const { addTickets } = require("./TicketServices");
 const services = {
@@ -42,7 +43,12 @@ const services = {
         where: { id: id },
         include: [
           { model: Employee },
-          { model: TicketDetail, include: [{ model: ProductUnitType }] },
+          {
+            model: TicketDetail,
+            include: [
+              { model: ProductUnitType, include: [{ model: Product }] },
+            ],
+          },
         ],
       });
 
