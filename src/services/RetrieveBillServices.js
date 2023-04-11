@@ -2,12 +2,12 @@ const { RetrieveBill, Bill, Employee, Customer } = require("../config/persist");
 const { getByPriceId } = require("./PriceServices");
 const StoreServices = require("./StoreServices");
 const { getGiftByKmId } = require("./ProductPromotionServices");
-const { getByid, update } = require("./MoneyPromotionServices");
+// const { getByid, update } = require("./MoneyPromotionServices");
 
 const services = {
   add: async (data) => {
     try {
-      const { note, BillId, employeeId } = data;
+      const { BillId, employeeId } = data;
       const check = await RetrieveBill.findOne({ where: { BillId: BillId } });
       if (check) {
         return {
@@ -28,32 +28,31 @@ const services = {
         if (e.ProductPromotionId !== null) {
           const { gift } = await getGiftByKmId(e.ProductPromotionId);
           await StoreServices.add({
-            quantity: gift.quantity,
+            quantity: e.quantityApplied,
             ProductUnitTypeId: gift.ProductUnitTypeId,
             type: "trả hàng khuyến mãi",
             employeeId,
           });
         }
-        if (e.MoneyPromotionId !== null) {
-          const { moneyPromotion } = await getByid(e.MoneyPromotionId);
-          if (moneyPromotion.type == "money") {
-            await update(e.MoneyPromotionId, {
-              availableBudget:
-                moneyPromotion.availableBudget + moneyPromotion.discountMoney,
-            });
-          }
-          if (moneyPromotion.type == "rate") {
-            await update(e.MoneyPromotionId, {
-              availableBudget:
-                moneyPromotion.availableBudget +
-                moneyPromotion.maxMoneyDiscount,
-            });
-          }
-        }
+        // if (e.MoneyPromotionId !== null) {
+        //   const { moneyPromotion } = await getByid(e.MoneyPromotionId);
+        //   if (moneyPromotion.type == "money") {
+        //     await update(e.MoneyPromotionId, {
+        //       availableBudget:
+        //         moneyPromotion.availableBudget + moneyPromotion.discountMoney,
+        //     });
+        //   }
+        //   if (moneyPromotion.type == "rate") {
+        //     await update(e.MoneyPromotionId, {
+        //       availableBudget:
+        //         moneyPromotion.availableBudget +
+        //         moneyPromotion.maxMoneyDiscount,
+        //     });
+        //   }
+        // }
       }
       for (const e of billDetails) {
         const { price } = await getByPriceId(e.PriceId);
-        // const product = await getProduct(price.ProductUnitTypeId);
         await StoreServices.add({
           quantity: e.quantity,
           ProductUnitTypeId: price.ProductUnitTypeId,

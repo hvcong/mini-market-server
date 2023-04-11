@@ -19,7 +19,7 @@ const services = {
       const unitType = await getUnitType(ProductUnitTypeId);
       const product = await getProduct(ProductUnitTypeId);
       const qty = product.quantity;
-      let newQty = qty + quantity * unitType.convertionQuantity;
+      let newQty = qty + quantity * unitType.convertionQuantity;      
       await onlyUpdateProduct(product.id, { quantity: newQty });
       return { transaction, isSuccess: true, status: 200 };
     } catch (error) {
