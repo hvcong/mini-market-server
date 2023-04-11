@@ -19,12 +19,12 @@ const services = {
       await bill.update({ type: "retrieve" });
       const retrieve = await RetrieveBill.create(data);
       const billDetails = await bill.getBillDetails();
-      const result = await bill.getPromotionResults();
+      const result = await bill.getPromotionResults();      
       for (const e of result) {
-        if (e.ProductPromotionId !== null) {
+        if (e.ProductPromotionId !== null) {          
           const { gift } = await getGiftByKmId(e.ProductPromotionId);
           await StoreServices.add({
-            quantity: gift.quantity,
+            quantity: e.quantityApplied,
             ProductUnitTypeId: gift.ProductUnitTypeId,
             type: "trả hàng khuyến mãi",
             employeeId,
@@ -48,8 +48,7 @@ const services = {
         }
       }
       for (const e of billDetails) {
-        const { price } = await getByPriceId(e.PriceId);
-        // const product = await getProduct(price.ProductUnitTypeId);
+        const { price } = await getByPriceId(e.PriceId);        
         await StoreServices.add({
           quantity: e.quantity,
           ProductUnitTypeId: price.ProductUnitTypeId,

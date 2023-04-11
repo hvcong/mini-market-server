@@ -161,8 +161,6 @@ HomeAddress.hasOne(Customer);
 HomeAddress.hasOne(Employee);
 HomeAddress.belongsTo(Ward);
 
-// CartDetail
-// CartDetail.belongsTo(Price);
 
 // PromotionHeader
 PromotionHeader.hasMany(ProductPromotion);
@@ -196,7 +194,7 @@ GiftProduct.belongsTo(ProductPromotion);
 GiftProduct.belongsTo(ProductUnitType);
 
 sequelize
-  .sync()
+  .sync({alter: true})
   .then((result) => {
     console.log("has been done");
   })
@@ -209,8 +207,7 @@ module.exports = {
   Role,
   HomeAddress,
   Bill,
-  BillDetail,
-  // CartDetail,
+  BillDetail,  
   Category,
   MoneyPromotion,
   ProductPromotion,
