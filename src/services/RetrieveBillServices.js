@@ -1,4 +1,4 @@
-const { RetrieveBill, Bill } = require("../config/persist");
+const { RetrieveBill, Bill, Employee, Customer } = require("../config/persist");
 const { getByPriceId } = require("./PriceServices");
 const StoreServices = require("./StoreServices");
 const { getGiftByKmId } = require("./ProductPromotionServices");
@@ -8,9 +8,13 @@ const services = {
   add: async (data) => {
     try {
       const { note, BillId, employeeId } = data;
-      const check = await RetrieveBill.findOne({where: {BillId: BillId}});
-      if(check){
-        return {message: 'this bill already retrieved',isSuccess: false, status: 400}
+      const check = await RetrieveBill.findOne({ where: { BillId: BillId } });
+      if (check) {
+        return {
+          message: "this bill already retrieved",
+          isSuccess: false,
+          status: 400,
+        };
       }
       const bill = await Bill.findByPk(BillId);
       if (!bill) {
@@ -72,6 +76,14 @@ const services = {
         limit: limit,
         offset: offset,
         distinct: true,
+
+        include: [
+          {
+            model: Bill,
+            include: [{ model: Employee }, { model: Customer }],
+          },
+        ],
+
         order: [["updatedAt", "DESC"]],
       });
       return { retrieves, isSuccess: true, status: 200 };
