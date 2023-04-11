@@ -32,8 +32,8 @@ const ProductUnitType = require("../models/ProductUnitype");
 const WareHouseTicket = require("../models/WareHouseTicket");
 const PromotionTypeCustomer = require("../models/PromoHeaderTypeCustomer");
 const TicketDetail = require("../models/TicketDetails");
-const Input = require('../models/Input')
-const InputDetail = require('../models/InputDetail')
+const Input = require("../models/Input");
+const InputDetail = require("../models/InputDetail");
 
 // account
 Account.belongsTo(Customer);
@@ -84,9 +84,9 @@ ProductUnitType.hasMany(Price);
 ProductUnitType.hasOne(GiftProduct);
 ProductUnitType.hasOne(ProductPromotion);
 ProductUnitType.hasOne(DiscountRateProduct);
-ProductUnitType.hasMany(InputDetail)
-ProductUnitType.hasMany(TicketDetail)
-ProductUnitType.hasMany(StoreTransaction)
+ProductUnitType.hasMany(InputDetail);
+ProductUnitType.hasMany(TicketDetail);
+ProductUnitType.hasMany(StoreTransaction);
 
 //storeTransaction
 StoreTransaction.belongsTo(ProductUnitType);
@@ -101,15 +101,15 @@ Employee.hasOne(Account);
 Employee.belongsTo(HomeAddress);
 Employee.hasMany(StoreTransaction);
 Employee.hasMany(WareHouseTicket);
-Employee.hasMany(Input)
+Employee.hasMany(Input);
 
 //Input
-Input.belongsTo(Employee)
-Input.hasMany(InputDetail)
+Input.belongsTo(Employee);
+Input.hasMany(InputDetail);
 
 //InputDetail
-InputDetail.belongsTo(Input)
-InputDetail.belongsTo(ProductUnitType)
+InputDetail.belongsTo(Input);
+InputDetail.belongsTo(ProductUnitType);
 
 //WareHouseTiket
 WareHouseTicket.belongsTo(Employee);
@@ -196,7 +196,7 @@ GiftProduct.belongsTo(ProductPromotion);
 GiftProduct.belongsTo(ProductUnitType);
 
 sequelize
-  .sync({ alter: true })
+  .sync()
   .then((result) => {
     console.log("has been done");
   })
@@ -235,5 +235,5 @@ module.exports = {
   WareHouseTicket,
   TicketDetail,
   Input,
-  InputDetail
+  InputDetail,
 };

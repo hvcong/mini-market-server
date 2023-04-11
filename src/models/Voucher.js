@@ -47,6 +47,10 @@ const Voucher = sequelize.define(
       type: DataTypes.DOUBLE,
       defaultValue: 0,
     },
+    // isUsed: {
+    //   type: DataTypes.BOOLEAN,
+    //   defaultValue: false,
+    // },
   },
   {
     timestamps: true,

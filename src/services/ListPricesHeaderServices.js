@@ -4,6 +4,7 @@ const {
   ProductUnitType,
   Product,
   UnitType,
+  Image,
 } = require("../config/persist");
 const {
   createBulkPrice,
@@ -76,7 +77,7 @@ const services = {
         limit: limit,
         offset: offset,
         distinct: true,
-        order: [["updatedAt", "DESC"]],
+        order: [["createdAt", "DESC"]],
       });
       return { headers, isSuccess: true, status: 200 };
     } catch (error) {
@@ -123,7 +124,10 @@ const services = {
             include: [
               {
                 model: ProductUnitType,
-                include: [{ model: Product }, { model: UnitType }],
+                include: [
+                  { model: Product, include: [{ model: Image, as: "images" }] },
+                  { model: UnitType },
+                ],
               },
             ],
           },

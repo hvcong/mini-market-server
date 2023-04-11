@@ -20,6 +20,18 @@ const PromotionResult = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    quantityApplied: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1,
+    },
+    discountMoneyByVoucher: {
+      type: DataTypes.DOUBLE,
+      defaultValue: 0,
+    },
+    discountMoneyByMoneyPromotion: {
+      type: DataTypes.DOUBLE,
+      defaultValue: 0,
+    },
   },
   {
     timestamps: true,

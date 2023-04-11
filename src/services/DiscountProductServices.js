@@ -76,6 +76,25 @@ const services = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
+  delete: async (id) => {
+    try {
+      const check = await DiscountRateProduct.findOne({ where: { id: id } });
+      if (check) {
+        await check.destroy();
+        return { message: "deleted successful", isSuccess: true, status: 200 };
+      } else {
+        return {
+          message: "discount promotion not found",
+          isSuccess: false,
+
+          status: 404,
+        };
+      }
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
 };
 
 module.exports = services;

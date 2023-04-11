@@ -1,18 +1,13 @@
 const { Op } = require("sequelize");
 const Voucher = require("../models/Voucher");
+const PromotionResult = require("../models/PromotionResult");
+const PromotionHeader = require("../models/PromotionHeader");
+const TypeCustomer = require("../models/TypeCustomer");
 
 const voucherService = {
   create: async (data) => {
     const { code, startDate, endDate } = data;
 
-    // check data
-    if (!code || !startDate || !endDate) {
-      return {
-        isSuccess: false,
-        message: "Missing some data",
-        status: 400,
-      };
-    }
     try {
       let voucher = await Voucher.findOne({ where: { code: code } });
       if (voucher) {
@@ -34,6 +29,25 @@ const voucherService = {
         message: "something went wrong",
         status: 500,
       };
+    }
+  },
+  delete: async (id) => {
+    try {
+      const check = await Voucher.findOne({ where: { id: id } });
+      if (check) {
+        await check.destroy();
+        return { message: "deleted successful", isSuccess: true, status: 200 };
+      } else {
+        return {
+          message: "voucher promotion not found",
+          isSuccess: false,
+
+          status: 404,
+        };
+      }
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
 
@@ -77,8 +91,12 @@ const voucherService = {
     try {
       let voucher = await Voucher.findOne({
         where: {
-          code,
+          code: code,
         },
+        include: [
+          { model: PromotionResult },
+          { model: PromotionHeader, include: [{ model: TypeCustomer }] },
+        ],
       });
       if (!voucher) {
         return {
@@ -99,7 +117,7 @@ const voucherService = {
     }
   },
 
-  updateWhenIsUsed: async (id, data) => {
+  update: async (id, data) => {
     try {
       const voucher = await Voucher.findOne({ where: { id: id } });
       if (!voucher) {

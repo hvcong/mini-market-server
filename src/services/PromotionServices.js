@@ -8,6 +8,7 @@ const {
   ProductUnitType,
   GiftProduct,
   Product,
+  UnitType,
 } = require("../config/persist");
 const { getByIds } = require("../services/TypeCustomerServices");
 
@@ -86,7 +87,7 @@ const PromotionHeaderServices = {
       const promotions = await PromotionHeader.findAndCountAll({
         limit: limit,
         offset: offset,
-        order: [["updatedAt", "DESC"]],
+        order: [["createdAt", "DESC"]],
         include: [
           {
             model: ProductPromotion,
@@ -146,10 +147,16 @@ const PromotionHeaderServices = {
               {
                 model: GiftProduct,
                 include: [
-                  { model: ProductUnitType, include: [{ model: Product }] },
+                  {
+                    model: ProductUnitType,
+                    include: [{ model: Product }, { model: UnitType }],
+                  },
                 ],
               },
-              { model: ProductUnitType, include: [{ model: Product }] },
+              {
+                model: ProductUnitType,
+                include: [{ model: Product }, { model: UnitType }],
+              },
             ],
           },
           {
