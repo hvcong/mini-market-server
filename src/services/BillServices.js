@@ -15,10 +15,12 @@ const {
   GiftProduct,
   Product,
 } = require("../config/persist");
-const { Op } = require("sequelize");
 const { getCustomerByPhonenumber, add } = require("./CustomerServices");
 const { createBillDetais } = require("./BillDetailServices");
 const { getRetrieveIds } = require("./RetrieveBillServices");
+const { getGiftByKmId } = require("./ProductPromotionServices");
+// const { getByid, update } = require("./MoneyPromotionServices");
+const StoreServices = require("./StoreServices");
 
 const services = {
   add: async (data) => {
@@ -224,7 +226,7 @@ const services = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  updateType: async (billId, type) => {
+  updateType: async (billId, type, employeeId) => {
     try {
       const bill = await Bill.findOne({
         where: {
@@ -237,12 +239,34 @@ const services = {
           status: 400,
         };
       }
-
       //update
       bill.update({
         type: type,
       });
-
+      if (type == "cancel") {
+        const billDetails = await bill.getBillDetails();
+        const result = await bill.getPromotionResults();
+        for (const e of result) {
+          if (e.ProductPromotionId !== null) {
+            const { gift } = await getGiftByKmId(e.ProductPromotionId);
+            await StoreServices.add({
+              quantity: e.quantityApplied,
+              ProductUnitTypeId: gift.ProductUnitTypeId,
+              type: "trả hàng khuyến mãi đơn hủy",
+              employeeId,
+            });
+          }          
+        }
+        for (const e of billDetails) {
+          const { price } = await getByPriceId(e.PriceId);
+          await StoreServices.add({
+            quantity: e.quantity,
+            ProductUnitTypeId: price.ProductUnitTypeId,
+            type: "trả hàng đơn hủy",
+            employeeId,
+          });
+        }
+      }
       return {
         isSuccess: true,
         status: 200,

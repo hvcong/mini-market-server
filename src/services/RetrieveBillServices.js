@@ -2,12 +2,12 @@ const { RetrieveBill, Bill } = require("../config/persist");
 const { getByPriceId } = require("./PriceServices");
 const StoreServices = require("./StoreServices");
 const { getGiftByKmId } = require("./ProductPromotionServices");
-const { getByid, update } = require("./MoneyPromotionServices");
+// const { getByid, update } = require("./MoneyPromotionServices");
 
 const services = {
   add: async (data) => {
     try {
-      const { note, BillId, employeeId } = data;
+      const { BillId, employeeId } = data;
       const check = await RetrieveBill.findOne({where: {BillId: BillId}});
       if(check){
         return {message: 'this bill already retrieved',isSuccess: false, status: 400}
@@ -30,22 +30,22 @@ const services = {
             employeeId,
           });
         }
-        if (e.MoneyPromotionId !== null) {
-          const { moneyPromotion } = await getByid(e.MoneyPromotionId);
-          if (moneyPromotion.type == "money") {
-            await update(e.MoneyPromotionId, {
-              availableBudget:
-                moneyPromotion.availableBudget + moneyPromotion.discountMoney,
-            });
-          }
-          if (moneyPromotion.type == "rate") {
-            await update(e.MoneyPromotionId, {
-              availableBudget:
-                moneyPromotion.availableBudget +
-                moneyPromotion.maxMoneyDiscount,
-            });
-          }
-        }
+        // if (e.MoneyPromotionId !== null) {
+        //   const { moneyPromotion } = await getByid(e.MoneyPromotionId);
+        //   if (moneyPromotion.type == "money") {
+        //     await update(e.MoneyPromotionId, {
+        //       availableBudget:
+        //         moneyPromotion.availableBudget + moneyPromotion.discountMoney,
+        //     });
+        //   }
+        //   if (moneyPromotion.type == "rate") {
+        //     await update(e.MoneyPromotionId, {
+        //       availableBudget:
+        //         moneyPromotion.availableBudget +
+        //         moneyPromotion.maxMoneyDiscount,
+        //     });
+        //   }
+        // }
       }
       for (const e of billDetails) {
         const { price } = await getByPriceId(e.PriceId);        
