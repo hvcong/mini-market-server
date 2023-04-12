@@ -21,6 +21,7 @@ const { getRetrieveIds } = require("./RetrieveBillServices");
 const { getGiftByKmId } = require("./ProductPromotionServices");
 // const { getByid, update } = require("./MoneyPromotionServices");
 const StoreServices = require("./StoreServices");
+const { getByPriceId } = require("./PriceServices");
 
 const services = {
   add: async (data) => {
@@ -52,9 +53,11 @@ const services = {
     }
   },
   get: async (query) => {
+    console.log("here");
     const page = (query._page && Number(query._page)) || 1;
     const limit = (query._limit && Number(query._limit)) || 20;
     const offset = (page - 1) * limit;
+    console.log(page);
     try {
       const bills = await Bill.findAndCountAll({
         limit: limit,
@@ -137,6 +140,12 @@ const services = {
               },
               { model: Voucher },
             ],
+          },
+          {
+            model: Employee,
+          },
+          {
+            model: Customer,
           },
         ],
       });
@@ -255,7 +264,7 @@ const services = {
               type: "trả hàng khuyến mãi đơn hủy",
               employeeId,
             });
-          }          
+          }
         }
         for (const e of billDetails) {
           const { price } = await getByPriceId(e.PriceId);

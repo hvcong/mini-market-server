@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 const services = {
   create: async (data) => {
     try {
-      const { phonenumber } = data;
+      const { phonenumber, password } = data;
       var account = await Account.findOne({
         where: { phonenumber: phonenumber },
       });
@@ -16,7 +16,7 @@ const services = {
         };
       } else {
         const salt = await bcrypt.genSalt(10);
-        const hash = await bcrypt.hash("1111", salt);
+        const hash = await bcrypt.hash(password, salt);
         account = await Account.create({ phonenumber, password: hash });
         return { account, isSuccess: true, status: 200 };
       }

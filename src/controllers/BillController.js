@@ -58,7 +58,9 @@ const controller = {
   updateType: async (req, res) => {
     const type = req.params.type;
     const billId = req.params.id;
-    const result = await services.updateType(billId, type);
+    const employeeId = req.body.employeeId;
+    console.log(employeeId);
+    const result = await services.updateType(billId, type, employeeId);
 
     return res.status(result.status).json(result);
   },

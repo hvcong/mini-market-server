@@ -21,6 +21,7 @@ const Account = sequelize.define(
     role: {
       type: DataTypes.STRING,
       allowNull: true,
+      defaultValue: "NV",
     },
     pointAchive: {
       type: DataTypes.DOUBLE,

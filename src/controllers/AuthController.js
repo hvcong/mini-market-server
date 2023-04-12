@@ -51,7 +51,8 @@ const AuthControllers = {
       if (!account) {
         return res.status(404).json("account not found");
       }
-      const validatePassword = bcrypt.compare(
+
+      const validatePassword = bcrypt.compareSync(
         req.body.password,
         account.password
       );
