@@ -21,7 +21,7 @@ const PromotionHeader = sequelize.define(
       allowNull: false,
     },
     description: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
     },
     state: DataTypes.BOOLEAN,
   },

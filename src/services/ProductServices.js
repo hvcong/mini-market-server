@@ -9,7 +9,11 @@ const {
 const { Op } = require("sequelize");
 const { getById } = require("../services/SubCategoryServices");
 const { getPriceByProductId } = require("../services/PriceServices");
-const { create } = require("../services/ImageServices");
+const {
+  create,
+  deleteByProductId,
+  deleteImagesByProductId,
+} = require("../services/ImageServices");
 const { getUnitByIds } = require("../services/UnitTypeServices");
 const ProductServices = {
   getProductById: async (id) => {
@@ -184,7 +188,7 @@ const ProductServices = {
     }
   },
   updateProduct: async (id, data) => {
-    const { unitTypes, ...newData } = data;
+    const { unitTypes, images, ...newData } = data;
     try {
       const product = await Product.findOne({ where: { id: id } });
       if (!product) {
@@ -199,6 +203,11 @@ const ProductServices = {
           await product.addUnitType(unit);
         }
       }
+
+      await deleteImagesByProductId(id);
+      const uris = await create(images);
+      await product.setImages(uris);
+
       await product.save();
       return { message: "updated succesful", isSuccess: true, status: 200 };
     } catch (error) {
@@ -273,6 +282,9 @@ const ProductServices = {
             model: Image,
             as: "images",
             attributes: ["uri"],
+          },
+          {
+            model: ProductUnitType,
           },
         ],
         distinct: true,

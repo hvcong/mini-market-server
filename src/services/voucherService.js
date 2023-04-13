@@ -81,39 +81,20 @@ const voucherService = {
   },
 
   getByCode: async (code) => {
-    console.log(code);
-    if (!code)
-      return {
-        isSuccess: false,
-        message: "Missing vocher id",
-      };
-
+    console.log("code", code);
     try {
-      let voucher = await Voucher.findOne({
+      const voucher = await Voucher.findOne({
         where: {
           code: code,
         },
-        include: [
-          { model: PromotionResult },
-          { model: PromotionHeader, include: [{ model: TypeCustomer }] },
-        ],
       });
       if (!voucher) {
-        return {
-          isSuccess: false,
-          message: "Voucher not found",
-        };
+        return { message: "not found by code", isSuccess: false, status: 404 };
       }
-
-      return {
-        isSuccess: true,
-        voucher,
-      };
+      return { voucher, isSuccess: true, status: 200 };
     } catch (error) {
-      return {
-        isSuccess: false,
-        message: "Internal server error",
-      };
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
 
@@ -160,8 +141,13 @@ const voucherService = {
     }
   },
   getById: async (id) => {
+    console.log("id", id);
     try {
-      const voucher = await Voucher.findByPk(id);
+      const voucher = await Voucher.findOne({
+        where: {
+          id: id,
+        },
+      });
       if (!voucher) {
         return { message: "not found", isSuccess: false, status: 404 };
       }

@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const { config } = require("dotenv");
 const jwt = require("jsonwebtoken");
 const { Account, Employee } = require("../config/persist");
-const { create } = require("../services/AccountServices");
+const { create, update } = require("../services/AccountServices");
 
 var refreshTokens = [];
 
@@ -36,6 +36,15 @@ const AuthControllers = {
   create: async (req, res) => {
     const data = req.body;
     const result = await create(data);
+    const { isSuccess, status, message, account } = result;
+    if (isSuccess) {
+      return res.status(status).json({ isSuccess, account });
+    }
+    return res.status(status).json({ isSuccess, message });
+  },
+  update: async (req, res) => {
+    const data = req.body;
+    const result = await update(data);
     const { isSuccess, status, message, account } = result;
     if (isSuccess) {
       return res.status(status).json({ isSuccess, account });

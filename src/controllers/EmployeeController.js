@@ -61,9 +61,7 @@ const controller = {
   getOneById: async (req, res) => {
     const { query } = req;
     const id = query.id;
-    const { isSuccess, status, employee, message } = await services.getOneById(
-      id
-    );
+    const { isSuccess, status, employee, message } = await services.getById(id);
     if (isSuccess) {
       return res.status(status).json({ isSuccess, employee });
     }

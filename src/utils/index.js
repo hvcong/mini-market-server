@@ -333,17 +333,17 @@ const productUnittypeData = [
   },
 ];
 module.exports = async function generateData() {
-  // await db.City.bulkCreate(lv1);
+  await db.City.bulkCreate(lv1);
   //district
-  // await db.District.bulkCreate(lv2);
+  await db.District.bulkCreate(lv2);
   // //ward
-  // lv3.map(async (item, index) => {
-  //   await services.addWard({
-  //     id: item.id,
-  //     name: item.name,
-  //     districtId: item.DistrictId,
-  //   });
-  // });
+  lv3.map(async (item, index) => {
+    await services.addWard({
+      id: item.id,
+      name: item.name,
+      districtId: item.DistrictId,
+    });
+  });
   //employee
   // await db.Employee.bulkCreate(employeeData);
   //typecustomer

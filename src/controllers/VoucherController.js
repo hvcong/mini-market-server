@@ -24,12 +24,13 @@ const VoucherController = {
     return res.status(status).json({ isSuccess, message });
   },
   getByCode: async (req, res) => {
-    const code = req.query.code;
-    let { isSuccess, message, voucher } = await voucherService.getByCode(code);
-    if (!isSuccess) {
-      return res.status(300).json({ isSuccess, message });
+    const bycode = req.query.bycode;
+    const { isSuccess, status, message, voucher } =
+      await voucherService.getByCode(bycode);
+    if (isSuccess) {
+      return res.status(status).json({ isSuccess, voucher });
     }
-    return res.status(200).json({ isSuccess, voucher });
+    return res.status(status).json({ isSuccess, message });
   },
 
   update: async (req, res) => {

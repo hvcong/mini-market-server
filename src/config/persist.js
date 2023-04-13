@@ -121,7 +121,6 @@ TicketDetail.belongsTo(ProductUnitType);
 
 // Bill
 Bill.hasMany(BillDetail);
-Bill.belongsTo(Voucher);
 Bill.belongsTo(Customer);
 Bill.belongsTo(Employee);
 Bill.hasMany(PromotionResult);
@@ -161,7 +160,6 @@ HomeAddress.hasOne(Customer);
 HomeAddress.hasOne(Employee);
 HomeAddress.belongsTo(Ward);
 
-
 // PromotionHeader
 PromotionHeader.hasMany(ProductPromotion);
 PromotionHeader.hasMany(MoneyPromotion);
@@ -194,7 +192,7 @@ GiftProduct.belongsTo(ProductPromotion);
 GiftProduct.belongsTo(ProductUnitType);
 
 sequelize
-  .sync({alter: true})
+  .sync({ alter: true })
   .then((result) => {
     console.log("has been done");
   })
@@ -207,7 +205,7 @@ module.exports = {
   Role,
   HomeAddress,
   Bill,
-  BillDetail,  
+  BillDetail,
   Category,
   MoneyPromotion,
   ProductPromotion,
