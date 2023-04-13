@@ -81,15 +81,16 @@ const voucherService = {
   },
 
   getByCode: async (code) => {
-    console.log("code", code);
     try {
       const voucher = await Voucher.findOne({
-        where: {
-          code: code,
-        },
+        where: { code: code },
+        include: [
+          { model: PromotionHeader, include: [{ model: TypeCustomer }] },
+          { model: PromotionResult },
+        ],
       });
       if (!voucher) {
-        return { message: "not found by code", isSuccess: false, status: 404 };
+        return { message: "not found vy code", isSuccess: false, status: 404 };
       }
       return { voucher, isSuccess: true, status: 200 };
     } catch (error) {
