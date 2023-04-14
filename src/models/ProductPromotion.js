@@ -6,13 +6,13 @@ const ProductPromotion = sequelize.define(
   {
     id: {
       type: DataTypes.STRING,
-      primaryKey: true,      
+      primaryKey: true,
     },
     title: {
       type: DataTypes.STRING,
     },
     description: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
     },
     startDate: {
       type: DataTypes.DATE,

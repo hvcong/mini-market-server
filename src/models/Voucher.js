@@ -5,9 +5,8 @@ const Voucher = sequelize.define(
   "Voucher",
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       primaryKey: true,
-      autoIncrement: true,
     },
     code: {
       type: DataTypes.STRING,
@@ -21,8 +20,9 @@ const Voucher = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+
     description: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     endDate: {
@@ -47,10 +47,14 @@ const Voucher = sequelize.define(
       type: DataTypes.DOUBLE,
       defaultValue: 0,
     },
-    // isUsed: {
-    //   type: DataTypes.BOOLEAN,
-    //   defaultValue: false,
-    // },
+    isUsed: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    groupVoucher: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   },
   {
     timestamps: true,

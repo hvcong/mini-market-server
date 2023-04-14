@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const { config } = require("dotenv");
 const jwt = require("jsonwebtoken");
 const { Account, Employee } = require("../config/persist");
-const { create } = require("../services/AccountServices");
+const { create, update } = require("../services/AccountServices");
 
 var refreshTokens = [];
 
@@ -42,6 +42,15 @@ const AuthControllers = {
     }
     return res.status(status).json({ isSuccess, message });
   },
+  update: async (req, res) => {
+    const data = req.body;
+    const result = await update(data);
+    const { isSuccess, status, message, account } = result;
+    if (isSuccess) {
+      return res.status(status).json({ isSuccess, account });
+    }
+    return res.status(status).json({ isSuccess, message });
+  },
   logIn: async (req, res) => {
     try {
       const account = await Account.findOne({
@@ -51,7 +60,8 @@ const AuthControllers = {
       if (!account) {
         return res.status(404).json("account not found");
       }
-      const validatePassword = bcrypt.compare(
+
+      const validatePassword = bcrypt.compareSync(
         req.body.password,
         account.password
       );

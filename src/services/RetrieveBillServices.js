@@ -1,4 +1,4 @@
-const { RetrieveBill, Bill } = require("../config/persist");
+const { RetrieveBill, Bill, Employee, Customer } = require("../config/persist");
 const { getByPriceId } = require("./PriceServices");
 const StoreServices = require("./StoreServices");
 const { getGiftByKmId } = require("./ProductPromotionServices");
@@ -8,9 +8,13 @@ const services = {
   add: async (data) => {
     try {
       const { BillId, employeeId } = data;
-      const check = await RetrieveBill.findOne({where: {BillId: BillId}});
-      if(check){
-        return {message: 'this bill already retrieved',isSuccess: false, status: 400}
+      const check = await RetrieveBill.findOne({ where: { BillId: BillId } });
+      if (check) {
+        return {
+          message: "this bill already retrieved",
+          isSuccess: false,
+          status: 400,
+        };
       }
       const bill = await Bill.findByPk(BillId);
       if (!bill) {
@@ -19,9 +23,9 @@ const services = {
       await bill.update({ type: "retrieve" });
       const retrieve = await RetrieveBill.create(data);
       const billDetails = await bill.getBillDetails();
-      const result = await bill.getPromotionResults();      
+      const result = await bill.getPromotionResults();
       for (const e of result) {
-        if (e.ProductPromotionId !== null) {          
+        if (e.ProductPromotionId !== null) {
           const { gift } = await getGiftByKmId(e.ProductPromotionId);
           await StoreServices.add({
             quantity: e.quantityApplied,
@@ -48,7 +52,7 @@ const services = {
         // }
       }
       for (const e of billDetails) {
-        const { price } = await getByPriceId(e.PriceId);        
+        const { price } = await getByPriceId(e.PriceId);
         await StoreServices.add({
           quantity: e.quantity,
           ProductUnitTypeId: price.ProductUnitTypeId,
@@ -71,6 +75,14 @@ const services = {
         limit: limit,
         offset: offset,
         distinct: true,
+
+        include: [
+          {
+            model: Bill,
+            include: [{ model: Employee }, { model: Customer }],
+          },
+        ],
+
         order: [["updatedAt", "DESC"]],
       });
       return { retrieves, isSuccess: true, status: 200 };

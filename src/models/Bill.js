@@ -17,13 +17,14 @@ const Bill = sequelize.define(
       allowNull: false,
       defaultValue: DataTypes.NOW,
     },
+
     cost: {
       type: DataTypes.DOUBLE,
       allowNull: true,
     },
     type: {
       type: DataTypes.STRING,
-    }
+    },
   },
   { timestamps: false }
 );

@@ -5,9 +5,8 @@ const Customer = sequelize.define(
   "Customer",
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       primaryKey: true,
-      autoIncrement: true,
     },
     firstName: {
       type: DataTypes.STRING,
@@ -24,7 +23,7 @@ const Customer = sequelize.define(
     },
     email: {
       type: DataTypes.STRING,
-    }
+    },
   },
   {
     timestamps: false,

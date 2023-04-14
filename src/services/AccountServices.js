@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 const services = {
   create: async (data) => {
     try {
-      const { phonenumber } = data;
+      const { phonenumber, password } = data;
       var account = await Account.findOne({
         where: { phonenumber: phonenumber },
       });
@@ -16,8 +16,9 @@ const services = {
         };
       } else {
         const salt = await bcrypt.genSalt(10);
-        const hash = await bcrypt.hash("1111", salt);
-        account = await Account.create({ phonenumber, password: hash });
+        const hash = await bcrypt.hash(password, salt);
+        data.password = hash;
+        account = await Account.create(data);
         return { account, isSuccess: true, status: 200 };
       }
     } catch (error) {
@@ -27,14 +28,17 @@ const services = {
   },
   update: async (data) => {
     try {
-      const { phonenumber, password, ...newData } = data;
+      const { phonenumber, password } = data;
       const account = await Account.findOne({
         where: { phonenumber: phonenumber },
       });
       if (account) {
-        const salt = await bcrypt.genSalt(10);
-        const hash = await bcrypt.hash(password, salt);
-        await account.update({ ...newData, password });
+        if (password) {
+          const salt = await bcrypt.genSalt(10);
+          const hash = await bcrypt.hash(password, salt);
+          data.password = hash;
+        }
+        await account.update(data);
         return { message: "updated succesful", isSuccess: true, status: 200 };
       }
       return { message: "account not found", isSuccess: false, status: 404 };
