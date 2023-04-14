@@ -184,6 +184,73 @@ const PromotionHeaderServices = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
+  getProductPromotion: async (query) => {
+    const page = (query._page && Number(query._page)) || 1;
+    const limit = (query._limit && Number(query._limit)) || 20;
+    var offset = (page - 1) * limit;
+    try {
+      const promotions = await PromotionHeader.findAll({
+        where: { state: true },
+        limit: limit,
+        include: [
+          {
+            model: ProductPromotion,
+            include: [
+              {
+                model: GiftProduct,
+                include: [
+                  {
+                    model: ProductUnitType,
+                    include: [{ model: Product }, { model: UnitType }],
+                  },
+                ],
+              },
+              {
+                model: ProductUnitType,
+                include: [{ model: Product }, { model: UnitType }],
+              },
+            ],
+          },         
+        ],
+      });
+      if (promotions) {
+        return { promotions, isSuccess: true, status: 200 };
+      }
+      return { message: "promotion not found", isSuccess: false, status: 404 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getRatePromotion: async (query) => {
+    const page = (query._page && Number(query._page)) || 1;
+    const limit = (query._limit && Number(query._limit)) || 20;
+    var offset = (page - 1) * limit;
+    try {
+      const promotions = await PromotionHeader.findAll({
+        where: { state: true },
+        limit: limit,
+        include: [
+          {
+            model: DiscountRateProduct,
+            include: [             
+              {
+                model: ProductUnitType,
+                include: [{ model: Product }, { model: UnitType }],
+              },
+            ],
+          },         
+        ],
+      });
+      if (promotions) {
+        return { promotions, isSuccess: true, status: 200 };
+      }
+      return { message: "promotion not found", isSuccess: false, status: 404 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
 };
 
 module.exports = PromotionHeaderServices;
