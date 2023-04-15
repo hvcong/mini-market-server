@@ -57,12 +57,13 @@ ProductRoutes.post("/add", ProductController.addNewProduct);
  *           description: something goes wrong
  */
 ProductRoutes.put("/update", ProductController.updateProduct);
+ProductRoutes.put("/updateQuantity", ProductController.updateQuantityChange);
 ProductRoutes.delete("/delete", ProductController.deleteProduct);
 ProductRoutes.get("/get", ProductController.getAllProducts);
 ProductRoutes.get("/getId", ProductController.getProductById);
 ProductRoutes.get("/getName", ProductController.getProductByname);
 ProductRoutes.get("/getSub", ProductController.getProductByCate);
-ProductRoutes.get('/getState',ProductController.getProductByState)
-ProductRoutes.get('/likeId',ProductController.getProductLikeId)
+ProductRoutes.get("/getState", ProductController.getProductByState);
+ProductRoutes.get("/likeId", ProductController.getProductLikeId);
 
 module.exports = ProductRoutes;

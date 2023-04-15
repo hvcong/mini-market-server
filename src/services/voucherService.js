@@ -5,6 +5,41 @@ const PromotionHeader = require("../models/PromotionHeader");
 const TypeCustomer = require("../models/TypeCustomer");
 
 const voucherService = {
+  updateByGroup: async (groupVoucher, newData) => {
+    try {
+      await Voucher.update(newData, { where: { groupVoucher } });
+
+      return { message: "udated successful", isSuccess: true, status: 200 };
+    } catch (error) {
+      return {
+        isSuccess: false,
+        message: "Internal server error",
+        status: 500,
+      };
+    }
+  },
+  getAllByGroup: async (groupVoucher) => {
+    try {
+      const vouches = await Voucher.findAll({
+        order: [["updatedAt", "DESC"]],
+        where: {
+          groupVoucher: groupVoucher,
+        },
+        include: [{ model: PromotionResult }, { model: PromotionHeader }],
+      });
+      return {
+        isSuccess: true,
+        vouches,
+        status: 200,
+      };
+    } catch (error) {
+      return {
+        isSuccess: false,
+        message: "Internal server error",
+        status: 500,
+      };
+    }
+  },
   create: async (data) => {
     const { code, startDate, endDate } = data;
 
@@ -50,7 +85,28 @@ const voucherService = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
+  deleteByGroup: async (groupVoucher) => {
+    try {
+      await Voucher.destroy({
+        where: {
+          groupVoucher,
+        },
+      });
 
+      return {
+        isSuccess: true,
+        message: "Delete by group oke",
+        status: 200,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        isSuccess: false,
+        message: "something went wrong",
+        status: 500,
+      };
+    }
+  },
   deleteById: async (id) => {
     if (!id) {
       return {

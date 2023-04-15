@@ -1,5 +1,5 @@
 const {
-  ProductPromotion,  
+  ProductPromotion,
   GiftProduct,
   ProductUnitType,
 } = require("../config/persist");
@@ -70,7 +70,13 @@ const Services = {
     try {
       const check = await ProductPromotion.findOne({ where: { id: id } });
       if (check) {
+        await GiftProduct.destroy({
+          where: {
+            ProductPromotionId: id,
+          },
+        });
         await check.destroy();
+
         return { message: "deleted successful", isSuccess: true, status: 200 };
       } else {
         return {

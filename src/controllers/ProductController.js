@@ -20,6 +20,17 @@ const ProductController = {
     const { message, isSuccess, status } = result;
     return res.status(status).json({ message, isSuccess });
   },
+  updateQuantityChange: async (req, res) => {
+    const { query } = req;
+    const productID = query.id;
+    const quantityChange = req.body.quantityChange || 0;
+    const result = await services.updateQuantityChange(
+      productID,
+      quantityChange
+    );
+    const { message, isSuccess, status } = result;
+    return res.status(status).json({ message, isSuccess });
+  },
   deleteProduct: async (req, res) => {
     const productId = req.query.id;
     const result = await services.deleteProduct(productId);

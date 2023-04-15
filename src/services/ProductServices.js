@@ -215,6 +215,34 @@ const ProductServices = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
+  updateQuantityChange: async (id, quantityChange) => {
+    try {
+      const product = await Product.findOne({ where: { id: id } });
+      if (!product) {
+        return { message: "product not found", isSuccess: false, status: 404 };
+      }
+
+      let quantity = product.dataValues.quantity;
+
+      let newQuantity = quantity + quantityChange;
+      if (newQuantity < 0) {
+        return {
+          message: "Not enough quantity",
+          isSuccess: false,
+          status: 300,
+        };
+      }
+      await product.update({
+        quantity: newQuantity,
+      });
+
+      await product.save();
+      return { message: "updated succesful", isSuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
   onlyUpdateProduct: async (id, data) => {
     const { unitTypes, ...newData } = data;
     try {

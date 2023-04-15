@@ -132,7 +132,19 @@ const services = {
   },
   getCustomerById: async (id) => {
     try {
-      const customer = await Customer.findByPk(id);
+      const customer = await Customer.findByPk(id, {
+        include: [
+          {
+            model: HomeAddress,
+            include: [
+              {
+                model: Ward,
+                include: [{ model: District, include: [{ model: City }] }],
+              },
+            ],
+          },
+        ],
+      });
       if (customer) {
         return { customer, isSuccess: true, status: 200 };
       }
