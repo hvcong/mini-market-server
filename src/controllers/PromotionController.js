@@ -52,6 +52,22 @@ const controller = {
       return res.status(status).json({ message, isSuccess });
     }
   },
+  getProductPromotion: async (req,res) =>{
+    const {query} = req
+    const {isSuccess,status,message,promotions} = await services.getProductPromotion(query)
+    if(isSuccess){
+      return res.status(status).json({isSuccess,promotions})
+    }
+    return res.status(status).json({isSuccess,message})
+  },
+  getRatePromotion: async (req,res) =>{
+    const {query} = req
+    const {isSuccess,status,message,promotions} = await services.getRatePromotion(query)
+    if(isSuccess){
+      return res.status(status).json({isSuccess,promotions})
+    }
+    return res.status(status).json({isSuccess,message})
+  }
 };
 
 module.exports = controller;
