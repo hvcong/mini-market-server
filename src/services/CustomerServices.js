@@ -5,6 +5,7 @@ const {
   District,
   City,
   TypeCustomer,
+  Bill,
 } = require("../config/persist");
 const { Op } = require("sequelize");
 
@@ -121,6 +122,9 @@ const services = {
     try {
       const customer = await Customer.findOne({
         where: { phonenumber },
+        include: {
+          model: Bill
+        }
       });
       if (customer) {
         return { customer, isSuccess: true, status: 200 };
