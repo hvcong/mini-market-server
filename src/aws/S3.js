@@ -40,7 +40,7 @@ const s3Services = {
       return false;
     }
     const url = await getSignedUrl(s3, getCommand, {
-      expiresIn: 3600 * 24,
+      expiresIn: 7 * 24 *60*60,
     });
     return url;
   },

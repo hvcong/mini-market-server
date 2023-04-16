@@ -194,7 +194,7 @@ GiftProduct.belongsTo(ProductUnitType);
 sequelize
   .sync({ alter: true })
   .then((result) => {
-    console.log("has been done");
+    console.log("has been done");    
   })
   .catch((error) => console.log(error));
 
