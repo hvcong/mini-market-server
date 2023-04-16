@@ -43,5 +43,10 @@ const controller = {
 
     return res.status(result.status).json({ ...result });
   },
+  getAllOnActive2: async (req, res) => {
+    const result = await services.getAllOnActive2();
+
+    return res.status(result.status).json({ ...result });
+  },
 };
 module.exports = controller;

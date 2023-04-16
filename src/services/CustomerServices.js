@@ -30,6 +30,7 @@ const services = {
           status: 403,
         };
       }
+
       customer = await Customer.create({
         id,
         firstName,

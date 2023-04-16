@@ -11,7 +11,7 @@ const accountServices = require("../services/AccountServices");
 const services = {
   createEmployee: async (data) => {
     try {
-      const { name, phonenumber } = data;
+      const { name, phonenumber, role = "NV" } = data;
       var employee = await Employee.findOne({
         where: { phonenumber: phonenumber },
       });
@@ -28,6 +28,7 @@ const services = {
         phonenumber,
         password: "11111111",
         EmployeeId: employee.id,
+        role,
       });
 
       return { employee, isSuccess: true, status: 200 };
@@ -91,6 +92,27 @@ const services = {
         limit: limit,
         offset: offset,
         distinct: true,
+        include: [
+          { model: Account },
+          {
+            model: HomeAddress,
+            include: [
+              {
+                model: Ward,
+                include: [
+                  {
+                    model: District,
+                    include: [
+                      {
+                        model: City,
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       });
       return { employees, isSuccess: true, status: 200 };
     } catch (error) {
