@@ -270,13 +270,19 @@ const PromotionHeaderServices = {
         limit: limit,
         include: [
           { model: TypeCustomer, where: { id: type } },
-          { model: MoneyPromotion },
+          { model: MoneyPromotion, where: {state: 1} },
         ],
       });
       if(!promotions){
         return {message: 'promotion not found',isSuccess: false, status: 404}
       }
-      return {promotions,isSuccess: true,status: 200}
+      let mp = []
+      for(const e of promotions){        
+        mp.push(...e.MoneyPromotions)
+      }
+      const moneyPromotions = mp.filter(e => { new Date(e.startDate)> new Date() })
+      console.log(a)
+      return {moneyPromotions,isSuccess: true,status: 200}
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };
