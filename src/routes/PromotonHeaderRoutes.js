@@ -9,5 +9,6 @@ routes.get("/getId", controller.getOne);
 routes.get("/getAll/active", controller.getAllOnActive);
 routes.get("/productPr",controller.getProductPromotion)
 routes.get("/ratePr",controller.getRatePromotion)
+routes.get('/forType',controller.getPromotionFor)
 
 module.exports = routes;

@@ -67,6 +67,14 @@ const controller = {
       return res.status(status).json({isSuccess,promotions})
     }
     return res.status(status).json({isSuccess,message})
+  },
+  getPromotionFor: async(req,res) =>{
+    const {query} = req
+    const {isSuccess,status,message,promotions} = await services.getMoneyPromotionFor(query)
+    if(!isSuccess){
+      return res.status(status).json({isSuccess,message})
+    }
+    return res.status(status).json({isSuccess,promotions})
   }
 };
 

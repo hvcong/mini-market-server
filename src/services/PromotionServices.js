@@ -11,6 +11,7 @@ const {
   UnitType,
 } = require("../config/persist");
 const { getByIds } = require("../services/TypeCustomerServices");
+const { compareDMY } = require("../utils/funcCommon");
 
 const PromotionHeaderServices = {
   add: async (data) => {
@@ -176,7 +177,16 @@ const PromotionHeaderServices = {
         ],
       });
       if (promotions) {
-        return { promotions, isSuccess: true, status: 200 };
+        // lấy những đang áp dụng
+        let newHeaders = promotions.filter((header) => {
+          let start = new Date(header.dataValues.startDate);
+          let end = new Date(header.dataValues.endDate);
+          let now = new Date();
+
+          return compareDMY(start, now) <= 0 && compareDMY(end, now) >= 0;
+        });
+
+        return { promotions: newHeaders, isSuccess: true, status: 200 };
       }
       return { message: "promotion not found", isSuccess: false, status: 404 };
     } catch (error) {
@@ -210,7 +220,7 @@ const PromotionHeaderServices = {
                 include: [{ model: Product }, { model: UnitType }],
               },
             ],
-          },         
+          },
         ],
       });
       if (promotions) {
@@ -233,19 +243,40 @@ const PromotionHeaderServices = {
         include: [
           {
             model: DiscountRateProduct,
-            include: [             
+            include: [
               {
                 model: ProductUnitType,
                 include: [{ model: Product }, { model: UnitType }],
               },
             ],
-          },         
+          },
         ],
       });
       if (promotions) {
         return { promotions, isSuccess: true, status: 200 };
       }
       return { message: "promotion not found", isSuccess: false, status: 404 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getMoneyPromotionFor: async (query) => {
+    try {
+      const type = query.type;
+      const limit = query._limt;
+      const promotions = await PromotionHeader.findAll({
+        where: { state: true },
+        limit: limit,
+        include: [
+          { model: TypeCustomer, where: { id: type } },
+          { model: MoneyPromotion },
+        ],
+      });
+      if(!promotions){
+        return {message: 'promotion not found',isSuccess: false, status: 404}
+      }
+      return {promotions,isSuccess: true,status: 200}
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };

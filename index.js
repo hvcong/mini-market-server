@@ -8,8 +8,6 @@ const bodyParser = require("body-parser");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
 
-// file
-// const sequelize = require("./src/config/database.js");
 require("./src/config/persist");
 const routerHandle = require("./src/routes/index.js");
 

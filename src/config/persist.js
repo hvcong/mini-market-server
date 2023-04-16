@@ -82,7 +82,7 @@ ProductUnitType.belongsTo(Product);
 ProductUnitType.belongsTo(UnitType);
 ProductUnitType.hasMany(Price);
 ProductUnitType.hasOne(GiftProduct);
-ProductUnitType.hasOne(ProductPromotion);
+ProductUnitType.hasMany(ProductPromotion);
 ProductUnitType.hasOne(DiscountRateProduct);
 ProductUnitType.hasMany(InputDetail);
 ProductUnitType.hasMany(TicketDetail);
