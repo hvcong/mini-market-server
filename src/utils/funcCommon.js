@@ -32,6 +32,11 @@ function compareDMY(jsDate1, jsDate2) {
   return 1;
 }
 
+function uidNumber() {
+  return `${Math.random()}`.substr(2, 7);
+}
+
 module.exports = {
   compareDMY,
+  uidNumber,
 };

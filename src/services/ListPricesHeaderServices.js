@@ -180,6 +180,16 @@ const services = {
                           },
                         ],
                       },
+                      {
+                        model: ProductUnitType,
+                        include: [
+                          { model: UnitType },
+                          {
+                            model: Product,
+                            include: [{ model: Image, as: "images" }],
+                          },
+                        ],
+                      },
                     ],
                   },
                   {
