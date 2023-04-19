@@ -61,13 +61,21 @@ const controller = {
     const result = await services.updateType(billId, type, employeeId);
     return res.status(result.status).json(result);
   },
-  getSoldByDate: async(req,res) =>{
-    const {fromDate,toDate,employeeId} = req.body    
-    const {isSuccess,status,bills,message} = await services.getSoldByDate(fromDate,toDate,employeeId)
+  getSoldByDate: async (req, res) => {
+    const { fromDate, toDate, employeeId } = req.body;
+    const { isSuccess, status, bills, message } = await services.getSoldByDate(fromDate,toDate,employeeId);
+    if (isSuccess) {
+      return res.status(status).json({ isSuccess, bills });
+    }
+    return res.status(status).json({ isSuccess, message });
+  },
+  getSoldByCustomer: async (req, res) => {
+    const {fromDate,toDate,customerId} = req.body;
+    const {isSuccess,status,bills,message} = await services.getSoldByCustomer(fromDate,toDate,customerId)
     if(isSuccess){
       return res.status(status).json({isSuccess,bills})
     }
     return res.status(status).json({isSuccess,message})
-  }
+  },
 };
 module.exports = controller;

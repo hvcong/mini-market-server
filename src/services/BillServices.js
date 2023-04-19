@@ -14,6 +14,11 @@ const {
   UnitType,
   GiftProduct,
   Product,
+  HomeAddress,
+  Ward,
+  District,
+  City,
+  TypeCustomer,
 } = require("../config/persist");
 const { Op, Sequelize } = require("sequelize");
 // const sequelize = require("sequelize")
@@ -189,8 +194,7 @@ const services = {
   getSucceedBill: async (query) => {
     const page = (query._page && Number(query._page)) || 1;
     const limit = (query._limit && Number(query._limit)) || 20;
-    const offset = (page - 1) * limit;
-    const { ids } = await getRetrieveIds();
+    const offset = (page - 1) * limit;    
     try {
       const bills = await Bill.findAndCountAll({
         limit: limit,
@@ -207,7 +211,6 @@ const services = {
             model: RetrieveBill,
           },
         ],
-
         distinct: true,
         order: [["orderDate", "DESC"]],
       });
@@ -315,11 +318,7 @@ const services = {
             status: 404,
           };
         }
-        if(employeeId){
-          bills = tmpBills.filter(e => e.EmployeeId == employeeId)          
-        }else{
-          bills = [...tmpBills];
-        }
+        bills = [...tmpBills];
       }
       if (from && to) {
         const fromDate = new Date(from);
@@ -346,13 +345,94 @@ const services = {
             status: 404,
           };
         }
-        if(employeeId){
-          bills = tmpBills.filter(e => e.EmployeeId == employeeId)          
-        }else{
-          bills = [...tmpBills];
-        }
+        bills = [...tmpBills];
       }
-      return {bills, isSuccess: true, status: 200}
+      if (employeeId) {
+        bills = bills.filter((e) => e.EmployeeId == employeeId);
+      }
+      return { bills, isSuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getSoldByCustomer: async (from, to, customerId) => {
+    try {
+      let bills = [];
+      if (!to) {
+        const tmpBills = await Bill.findAll({
+          where: {
+            [Op.and]: Sequelize.where(
+              Sequelize.fn("date", Sequelize.col("orderDate")),
+              from
+            ),
+            type: "success",
+          },
+          include: [
+            {
+              model: Customer,
+              include: [
+                {
+                  model: HomeAddress,
+                  include: [
+                    {
+                      model: Ward,
+                      include: [
+                        { model: District, include: [{ model: City }] },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  model: TypeCustomer
+                }
+              ],
+            },
+            {
+              model: PromotionResult,
+            },
+          ],
+        });
+        if (!tmpBills) {
+          return {
+            message: "bills not found in that date",
+            isSuccess: false,
+            status: 404,
+          };
+        }
+        bills = [...tmpBills];
+      }
+      if (from && to) {
+        const fromDate = new Date(from);
+        const toDate = new Date(to);
+        toDate.setDate(toDate.getDate() + 1);
+        const tmpBills = await Bill.findAll({
+          where: {
+            orderDate: { [Op.between]: [fromDate, toDate] },
+            type: "success",
+          },
+          include: [
+            {
+              model: Employee,
+            },
+            {
+              model: PromotionResult,
+            },
+          ],
+        });
+        if (!tmpBills) {
+          return {
+            message: "something went wrong",
+            isSuccess: false,
+            status: 404,
+          };
+        }
+        bills = [...tmpBills];
+      }
+      if (customerId) {
+        bills = bills.filter((e) => e.CustomerId == customerId);
+      }
+      return { bills, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };
