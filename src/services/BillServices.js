@@ -19,14 +19,12 @@ const {
   District,
   City,
   TypeCustomer,
+  SubCategory,
 } = require("../config/persist");
 const { Op, Sequelize } = require("sequelize");
-// const sequelize = require("sequelize")
 const { getCustomerByPhonenumber, add } = require("./CustomerServices");
 const { createBillDetais } = require("./BillDetailServices");
-const { getRetrieveIds } = require("./RetrieveBillServices");
 const { getGiftByKmId } = require("./ProductPromotionServices");
-// const { getByid, update } = require("./MoneyPromotionServices");
 const StoreServices = require("./StoreServices");
 const { getByPriceId } = require("./PriceServices");
 
@@ -447,6 +445,89 @@ const services = {
       }
       if (customerId) {
         bills = bills.filter((e) => e.CustomerId == customerId);
+      }
+      return { bills, isSuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getRetrieveBill: async (from, to) => {
+    try {
+      if (!to) {
+        const bills = await Bill.findAll({
+          where: {
+            [Op.and]: Sequelize.where(
+              Sequelize.fn("date", Sequelize.col("orderDate")),
+              from
+            ),
+            type: "retrieve",
+          },
+          include: [
+            {
+              model: RetrieveBill,
+            },
+            {
+              model: BillDetail,
+              include: [
+                {
+                  model: Price,
+                  include: [
+                    {
+                      model: ProductUnitType,
+                      include: [
+                        { model: Product, include: [{ model: SubCategory }] },
+                        { model: UnitType },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        });
+        if (!bills) {
+          return {
+            message: "bills not found in that date",
+            isSuccess: false,
+            status: 404,
+          };
+        }
+        return { bills, isSuccess: true, status: 200 };
+      }
+      const fromDate = new Date(from);
+      const toDate = new Date(to);
+      toDate.setDate(toDate.getDate() + 1);
+      const bills = await Bill.findAll({
+        where: {
+          orderDate: { [Op.between]: [fromDate, toDate] },
+          type: "retrieve",
+        },
+        include: [
+          {
+            model: RetrieveBill,
+          },
+          {
+            model: BillDetail,
+            include: [
+              {
+                model: Price,
+                include: [
+                  {
+                    model: ProductUnitType,
+                    include: [
+                      { model: Product, include: [{ model: SubCategory }] },
+                      { model: UnitType },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+      if (!bills) {
+        return { message: "not found", isSuccess: false, status: 404 };
       }
       return { bills, isSuccess: true, status: 200 };
     } catch (error) {

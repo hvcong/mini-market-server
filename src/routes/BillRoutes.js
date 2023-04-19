@@ -10,5 +10,5 @@ routes.get("/fail", controller.getPendingCancelBill);
 routes.put("/:id/update-type/:type", controller.updateType);
 routes.get("/from", controller.getSoldByDate);
 routes.get("/customer",controller.getSoldByCustomer);
-
+routes.get('/retrieve',controller.getRetrieveBill)
 module.exports = routes;

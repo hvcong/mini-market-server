@@ -77,5 +77,13 @@ const controller = {
     }
     return res.status(status).json({isSuccess,message})
   },
+  getRetrieveBill: async (req,res) =>{
+    const {fromDate,toDate} = req.body
+    const {isSuccess,status,bills,message} = await services.getRetrieveBill(fromDate,toDate)
+    if(isSuccess){
+      return res.status(status).json({isSuccess,bills})
+    }
+    return res.status(status).json({isSuccess,message})
+  }
 };
 module.exports = controller;
