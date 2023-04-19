@@ -197,8 +197,7 @@ const voucherService = {
       };
     }
   },
-  getById: async (id) => {
-    console.log("id", id);
+  getById: async (id) => {    
     try {
       const voucher = await Voucher.findOne({
         where: {

@@ -14,7 +14,7 @@ const controller = {
         });
       }
     } catch (error) {
-      // console.log(error);
+      console.log(error);
       return res
         .status(500)
         .json({ isSuccess: false, message: "something went wrong" });

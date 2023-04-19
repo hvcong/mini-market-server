@@ -26,8 +26,7 @@ const VoucherController = {
     return res.status(status).json({ isSuccess, vouches });
   },
   deleteByGroup: async (req, res) => {
-    const groupVoucher = req.query.groupVoucher;
-    console.log(groupVoucher);
+    const groupVoucher = req.query.groupVoucher;    
     let { isSuccess, message, status } = await voucherService.deleteByGroup(
       groupVoucher
     );

@@ -143,16 +143,14 @@ const services = {
         where: { phonenumber: phonenumber },
       });
       if (employee) {
-        await employee.update(data);
-        // console.log(newEmployee);
+        await employee.update(data);        
         await employee.save();
 
         if (data.phonenumber) {
           const account = await Account.findOne({
             where: { phonenumber: phonenumber },
           });
-
-          console.log(account);
+          
           let newAccount = {
             ...account.dataValues,
             phonenumber: data.phonenumber,

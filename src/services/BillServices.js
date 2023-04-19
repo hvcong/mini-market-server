@@ -15,6 +15,8 @@ const {
   GiftProduct,
   Product,
 } = require("../config/persist");
+const { Op, Sequelize } = require("sequelize");
+// const sequelize = require("sequelize")
 const { getCustomerByPhonenumber, add } = require("./CustomerServices");
 const { createBillDetais } = require("./BillDetailServices");
 const { getRetrieveIds } = require("./RetrieveBillServices");
@@ -54,7 +56,6 @@ const services = {
     }
   },
   get: async (query) => {
-    console.log("here");
     const page = (query._page && Number(query._page)) || 1;
     const limit = (query._limit && Number(query._limit)) || 20;
     const offset = (page - 1) * limit;
@@ -281,6 +282,77 @@ const services = {
         isSuccess: true,
         status: 200,
       };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getSoldByDate: async (from, to, employeeId) => {
+    try {
+      let bills = [];
+      if (!to) {
+        const tmpBills = await Bill.findAll({
+          where: {
+            [Op.and]: Sequelize.where(
+              Sequelize.fn("date", Sequelize.col("orderDate")),
+              from
+            ),
+            type: "success",
+          },
+          include: [
+            {
+              model: Employee,
+            },
+            {
+              model: PromotionResult,
+            },
+          ],
+        });
+        if (!tmpBills) {
+          return {
+            message: "bills not found in that date",
+            isSuccess: false,
+            status: 404,
+          };
+        }
+        if(employeeId){
+          bills = tmpBills.filter(e => e.EmployeeId == employeeId)          
+        }else{
+          bills = [...tmpBills];
+        }
+      }
+      if (from && to) {
+        const fromDate = new Date(from);
+        const toDate = new Date(to);
+        toDate.setDate(toDate.getDate() + 1);
+        const tmpBills = await Bill.findAll({
+          where: {
+            orderDate: { [Op.between]: [fromDate, toDate] },
+            type: "success",
+          },
+          include: [
+            {
+              model: Employee,
+            },
+            {
+              model: PromotionResult,
+            },
+          ],
+        });
+        if (!tmpBills) {
+          return {
+            message: "something went wrong",
+            isSuccess: false,
+            status: 404,
+          };
+        }
+        if(employeeId){
+          bills = tmpBills.filter(e => e.EmployeeId == employeeId)          
+        }else{
+          bills = [...tmpBills];
+        }
+      }
+      return {bills, isSuccess: true, status: 200}
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };

@@ -35,7 +35,6 @@ const controller = {
     return res.status(status).json({ isSuccess, message });
   },
   updateFullInfoByPhone: async (req, res) => {
-    console.log("here");
     const phonenumber = req.query.phonenumber;
     const data = req.body;
     const { isSuccess, message, status } = await services.updateFullInfoByPhone(
