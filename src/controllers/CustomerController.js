@@ -41,6 +41,15 @@ const Controller = {
     }
     return res.status(status).json({ isSuccess, message });
   },
+  getOrCreateByPhone: async (req, res) => {
+    const phonenumber = req.query.phonenumber;
+    const result = await services.getOrCreateByPhone(phonenumber);
+    const { isSuccess, status, message, customer } = result;
+    if (isSuccess) {
+      return res.status(status).json({ isSuccess, customer });
+    }
+    return res.status(status).json({ isSuccess, message });
+  },
   getCustomerById: async (req, res) => {
     const id = req.query.id;
     const result = await services.getCustomerById(id);

@@ -19,7 +19,7 @@ const services = {
       const unitType = await getUnitType(ProductUnitTypeId);
       const product = await getProduct(ProductUnitTypeId);
       const qty = product.quantity;
-      let newQty = qty + quantity * unitType.convertionQuantity;      
+      let newQty = qty + quantity * unitType.convertionQuantity;
       await onlyUpdateProduct(product.id, { quantity: newQty });
       return { transaction, isSuccess: true, status: 200 };
     } catch (error) {
@@ -30,6 +30,8 @@ const services = {
   addMany: async (data) => {
     try {
       const transactions = [];
+
+      console.log(data);
       for (const e of data) {
         const { quantity, createAt, type, ProductUnitTypeId, employeeId } = e;
         const transaction = await StoreTransaction.create({
@@ -37,7 +39,7 @@ const services = {
           createAt,
           type,
           ProductUnitTypeId,
-          EmployeeId: employeeId,
+          // EmployeeId: employeeId,
         });
         const unitType = await getUnitType(ProductUnitTypeId);
         const product = await getProduct(ProductUnitTypeId);
