@@ -194,7 +194,7 @@ const services = {
   getSucceedBill: async (query) => {
     const page = (query._page && Number(query._page)) || 1;
     const limit = (query._limit && Number(query._limit)) || 20;
-    const offset = (page - 1) * limit;    
+    const offset = (page - 1) * limit;
     try {
       const bills = await Bill.findAndCountAll({
         limit: limit,
@@ -384,8 +384,8 @@ const services = {
                   ],
                 },
                 {
-                  model: TypeCustomer
-                }
+                  model: TypeCustomer,
+                },
               ],
             },
             {
@@ -413,7 +413,23 @@ const services = {
           },
           include: [
             {
-              model: Employee,
+              model: Customer,
+              include: [
+                {
+                  model: HomeAddress,
+                  include: [
+                    {
+                      model: Ward,
+                      include: [
+                        { model: District, include: [{ model: City }] },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  model: TypeCustomer,
+                },
+              ],
             },
             {
               model: PromotionResult,
