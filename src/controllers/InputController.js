@@ -29,6 +29,14 @@ const controller = {
     const data = req.body
     const {isSuccess,message,status} = await services.update(data)
     return res.status(status).json({isSuccess,message})
+  },
+  stastics: async (req,res)=> {
+    const {fromDate,toDate,productId} = req.body
+    const {isSuccess,status,inputs,message} = await services.stastics(fromDate,toDate,productId);
+    if(isSuccess){
+      return res.status(status).json({isSuccess,inputs})
+    }
+    return res.status(status).json({isSuccess,message})
   }
 };
 

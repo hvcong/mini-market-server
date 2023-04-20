@@ -5,5 +5,6 @@ routes.post("/add", controller.add);
 routes.get("/get", controller.get);
 routes.get("/one", controller.getOne);
 routes.put("/update", controller.update);
+routes.post('/stastics',controller.stastics)
 
 module.exports = routes;

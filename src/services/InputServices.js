@@ -6,6 +6,7 @@ const {
   Product,
 } = require("../config/persist");
 const { createManyDetails } = require("./InputDetailsServices");
+const { stastics } = require("./InputDetailsServices");
 
 const services = {
   add: async (data) => {
@@ -95,6 +96,10 @@ const services = {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
+  },
+  stastics: async (from, to, productId) => {
+    const result = await stastics(from,to,productId);
+    return result;
   },
 };
 
