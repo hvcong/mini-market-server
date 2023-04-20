@@ -1,5 +1,4 @@
 const { DiscountRateProduct, ProductUnitType, PromotionResult } = require("../config/persist");
-const { getById } = require("../services/PromotionServices");
 const {Op} = require('sequelize')
 
 const services = {
