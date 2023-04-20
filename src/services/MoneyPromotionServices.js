@@ -1,4 +1,5 @@
-const { MoneyPromotion } = require("../config/persist");
+const { MoneyPromotion, PromotionResult } = require("../config/persist");
+const { Op } = require("sequelize");
 
 const Services = {
   add: async (data) => {
@@ -86,6 +87,31 @@ const Services = {
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getMoneyPromotionByDate: async (from, to) => {
+    try {
+      if (from && to) {
+        const fromDate = new Date(from);
+        const toDate = new Date(to);
+        toDate.setDate(toDate.getDate() + 1);
+        const moneyPromotions = await MoneyPromotion.findAll({
+          where: {
+            [Op.and]: [
+              { startDate: { [Op.gte]: fromDate } },
+              { endDate: { [Op.lte]: toDate } },
+            ],
+          },
+          include: { model: PromotionResult },
+        });
+        if (!moneyPromotions) {
+          return null;
+        }
+        return moneyPromotions;
+      }
+    } catch (error) {
+      console.log(error);
+      return null;
     }
   },
 };

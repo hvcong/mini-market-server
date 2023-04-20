@@ -213,6 +213,31 @@ const voucherService = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
+  getVoucherPromotionByDate: async (from, to) => {
+    try {
+      if (from && to) {
+        const fromDate = new Date(from);
+        const toDate = new Date(to);
+        toDate.setDate(toDate.getDate() + 1);
+        const vouchers = await Voucher.findAll({
+          where: {
+            [Op.and]: [
+              { startDate: { [Op.gte]: fromDate } },
+              { endDate: { [Op.lte]: toDate } },
+            ],
+          },
+          include: { model: PromotionResult },
+        });
+        if (!vouchers) {
+          return null;
+        }
+        return vouchers;
+      }
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  },
 };
 
 module.exports = voucherService;

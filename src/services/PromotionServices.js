@@ -12,6 +12,10 @@ const {
 } = require("../config/persist");
 const { getByIds } = require("../services/TypeCustomerServices");
 const { compareDMY } = require("../utils/funcCommon");
+const { getMoneyPromotionByDate } = require("./MoneyPromotionServices");
+const { getProductPromotionByDate } = require("./ProductPromotionServices");
+const { getVoucherPromotionByDate } = require("./voucherService");
+const { getDcrPromotionByDate } = require("./DiscountProductServices");
 
 const PromotionHeaderServices = {
   add: async (data) => {
@@ -287,9 +291,26 @@ const PromotionHeaderServices = {
       const moneyPromotions = mp.filter((e) => {
         const x = new Date(e.startDate);
         const y = new Date();
-        return x<=y
+        return x <= y;
       });
       return { moneyPromotions, isSuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  promotionStatistics: async (from, to) => {
+    try {
+      const promotions = [];
+      const productPromotions = await getProductPromotionByDate(from, to);
+      promotions.push(...productPromotions);
+      const moneyPromotions = await getMoneyPromotionByDate(from, to);
+      promotions.push(...moneyPromotions);
+      const vouchers = await getVoucherPromotionByDate(from, to);
+      promotions.push(...vouchers);
+      const discountRates = await getDcrPromotionByDate(from, to);
+      promotions.push(...discountRates);
+      return { promotions, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };

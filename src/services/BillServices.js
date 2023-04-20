@@ -436,7 +436,7 @@ const services = {
         });
         if (!tmpBills) {
           return {
-            message: "something went wrong",
+            message: "not found",
             isSuccess: false,
             status: 404,
           };

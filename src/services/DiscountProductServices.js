@@ -1,5 +1,6 @@
-const { DiscountRateProduct, ProductUnitType } = require("../config/persist");
+const { DiscountRateProduct, ProductUnitType, PromotionResult } = require("../config/persist");
 const { getById } = require("../services/PromotionServices");
+const {Op} = require('sequelize')
 
 const services = {
   add: async (data) => {
@@ -93,6 +94,31 @@ const services = {
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getDcrPromotionByDate: async (from, to) => {
+    try {
+      if (from && to) {
+        const fromDate = new Date(from);
+        const toDate = new Date(to);
+        toDate.setDate(toDate.getDate() + 1);
+        const discountRates = await DiscountRateProduct.findAll({
+          where: {
+            [Op.and]: [
+              { startDate: { [Op.gte]: fromDate } },
+              { endDate: { [Op.lte]: toDate } },
+            ],
+          },
+          include: { model: PromotionResult },
+        });
+        if (!discountRates) {
+          return null;
+        }
+        return discountRates;
+      }
+    } catch (error) {
+      console.log(error);
+      return null;
     }
   },
 };

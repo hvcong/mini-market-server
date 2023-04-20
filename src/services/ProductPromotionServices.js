@@ -2,7 +2,11 @@ const {
   ProductPromotion,
   GiftProduct,
   ProductUnitType,
+  Product,
+  UnitType,
+  PromotionResult,
 } = require("../config/persist");
+const { Op } = require("sequelize");
 
 const Services = {
   add: async (data) => {
@@ -141,6 +145,44 @@ const Services = {
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getProductPromotionByDate: async (from, to) => {
+    try {
+      if (from && to) {
+        const fromDate = new Date(from);
+        const toDate = new Date(to);
+        toDate.setDate(toDate.getDate() + 1);
+        const productPromotions = await ProductPromotion.findAll({
+          where: {
+            [Op.and]: [
+              { startDate: { [Op.gte]: fromDate } },
+              { endDate: { [Op.lte]: toDate } },
+            ],
+          },
+          include: [
+            {
+              model: GiftProduct,
+              include: [
+                {
+                  model: ProductUnitType,
+                  include: [{ model: Product }, { model: UnitType }],
+                },
+              ],
+            },
+            {
+              model: PromotionResult
+            }
+          ],
+        });
+        if (!productPromotions) {
+          return null
+        }        
+        return productPromotions
+      }
+    } catch (error) {
+      console.log(error);
+      return null;
     }
   },
 };
