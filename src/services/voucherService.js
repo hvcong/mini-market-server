@@ -219,7 +219,7 @@ const voucherService = {
         const fromDate = new Date(from);
         const toDate = new Date(to);
         toDate.setDate(toDate.getDate() + 1);
-        const vouchers = await Voucher.findAll({
+        let vouchers = await Voucher.findAll({
           where: {
             [Op.and]: [
               { startDate: { [Op.gte]: fromDate } },

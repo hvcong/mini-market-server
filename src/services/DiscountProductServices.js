@@ -1,5 +1,11 @@
-const { DiscountRateProduct, ProductUnitType, PromotionResult } = require("../config/persist");
-const {Op} = require('sequelize')
+const {
+  DiscountRateProduct,
+  ProductUnitType,
+  PromotionResult,
+  Product,
+  UnitType,
+} = require("../config/persist");
+const { Op } = require("sequelize");
 
 const services = {
   add: async (data) => {
@@ -101,14 +107,20 @@ const services = {
         const fromDate = new Date(from);
         const toDate = new Date(to);
         toDate.setDate(toDate.getDate() + 1);
-        const discountRates = await DiscountRateProduct.findAll({
+        let discountRates = await DiscountRateProduct.findAll({
           where: {
             [Op.and]: [
               { startDate: { [Op.gte]: fromDate } },
               { endDate: { [Op.lte]: toDate } },
             ],
           },
-          include: { model: PromotionResult },
+          include: [
+            {
+              model: ProductUnitType,
+              include: [{ model: Product, attributes: ['id','name'] }, { model: UnitType,attributes: ['id','name'] }],
+            },
+            { model: PromotionResult },
+          ],
         });
         if (!discountRates) {
           return null;

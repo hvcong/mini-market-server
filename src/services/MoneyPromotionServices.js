@@ -95,7 +95,7 @@ const Services = {
         const fromDate = new Date(from);
         const toDate = new Date(to);
         toDate.setDate(toDate.getDate() + 1);
-        const moneyPromotions = await MoneyPromotion.findAll({
+        let moneyPromotions = await MoneyPromotion.findAll({
           where: {
             [Op.and]: [
               { startDate: { [Op.gte]: fromDate } },

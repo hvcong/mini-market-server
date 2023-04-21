@@ -427,19 +427,19 @@ const services = {
             },
             {
               model: BillDetail,
-              attributes: ['id'],
+              attributes: ["id"],
               include: [
                 {
                   model: Price,
-                  attributes: ['id'],
+                  attributes: ["id"],
                   include: [
                     {
                       model: ProductUnitType,
-                      attributes: ['id'],
+                      attributes: ["id"],
                       include: [
                         {
                           model: Product,
-                          attributes: ['id'],
+                          attributes: ["id"],
                           include: [
                             {
                               model: SubCategory,
@@ -513,19 +513,19 @@ const services = {
             },
             {
               model: BillDetail,
-              attributes: ['id'],
+              attributes: ["id"],
               include: [
                 {
                   model: Price,
-                  attributes: ['id'],
+                  attributes: ["id"],
                   include: [
                     {
                       model: ProductUnitType,
-                      attributes: ['id'],
+                      attributes: ["id"],
                       include: [
                         {
                           model: Product,
-                          attributes: ['id'],
+                          attributes: ["id"],
                           include: [
                             {
                               model: SubCategory,
@@ -564,12 +564,16 @@ const services = {
             object.discountMoneyByVoucher
           );
         }, 0);
-        let subCategories = []
-        let categories = []
-         e.BillDetails.forEach(element => {
-          subCategories.push( element.Price.ProductUnitType.Product.SubCategory.name)
-          categories.push(element.Price.ProductUnitType.Product.SubCategory.Category.name)
-         });
+        let subCategories = [];
+        let categories = [];
+        e.BillDetails.forEach((element) => {
+          subCategories.push(
+            element.Price.ProductUnitType.Product.SubCategory.name
+          );
+          categories.push(
+            element.Price.ProductUnitType.Product.SubCategory.Category.name
+          );
+        });
         return {
           cost: e.cost,
           customerId: e.CustomerId,
@@ -591,7 +595,7 @@ const services = {
           discount: discount,
           beforeDiscount: discount + e.cost,
           subCategories: subCategories,
-          categories: categories
+          categories: categories,
         };
       });
       return { bills, isSuccess: true, status: 200 };
@@ -602,70 +606,86 @@ const services = {
   },
   getRetrieveBill: async (from, to) => {
     try {
-      if (!to) {
-        const bills = await Bill.findAll({
-          where: {
-            [Op.and]: Sequelize.where(
-              Sequelize.fn("date", Sequelize.col("orderDate")),
-              from
-            ),
-            type: "retrieve",
-          },
-          include: [
-            {
-              model: RetrieveBill,
-            },
-            {
-              model: BillDetail,
-              include: [
-                {
-                  model: Price,
-                  include: [
-                    {
-                      model: ProductUnitType,
-                      include: [
-                        { model: Product, include: [{ model: SubCategory }] },
-                        { model: UnitType },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        });
-        if (!bills) {
-          return {
-            message: "bills not found in that date",
-            isSuccess: false,
-            status: 404,
-          };
-        }
-        return { bills, isSuccess: true, status: 200 };
-      }
+      // if (!to) {
+      //   const bills = await Bill.findAll({
+      //     where: {
+      //       [Op.and]: Sequelize.where(
+      //         Sequelize.fn("date", Sequelize.col("orderDate")),
+      //         from
+      //       ),
+      //       type: "retrieve",
+      //     },
+      //     include: [
+      //       {
+      //         model: RetrieveBill,
+      //       },
+      //       {
+      //         model: BillDetail,
+      //         include: [
+      //           {
+      //             model: Price,
+      //             include: [
+      //               {
+      //                 model: ProductUnitType,
+      //                 include: [
+      //                   { model: Product, include: [{ model: SubCategory }] },
+      //                   { model: UnitType },
+      //                 ],
+      //               },
+      //             ],
+      //           },
+      //         ],
+      //       },
+      //     ],
+      //   });
+      //   if (!bills) {
+      //     return {
+      //       message: "bills not found in that date",
+      //       isSuccess: false,
+      //       status: 404,
+      //     };
+      //   }
+      //   return { bills, isSuccess: true, status: 200 };
+      // }
       const fromDate = new Date(from);
       const toDate = new Date(to);
       toDate.setDate(toDate.getDate() + 1);
-      const bills = await Bill.findAll({
+      let bills = await Bill.findAll({
         where: {
           orderDate: { [Op.between]: [fromDate, toDate] },
           type: "retrieve",
         },
+        attributes: ["id", "orderDate"],
         include: [
           {
             model: RetrieveBill,
+            attributes: ["id", "createAt"],
           },
           {
             model: BillDetail,
+            attributes: ["quantity"],
             include: [
               {
                 model: Price,
+                attributes: ["id", "price"],
                 include: [
                   {
                     model: ProductUnitType,
                     include: [
-                      { model: Product, include: [{ model: SubCategory }] },
-                      { model: UnitType },
+                      {
+                        model: Product,
+                        attributes: ["id", "name"],
+                        include: [
+                          {
+                            model: SubCategory,
+                            attributes: ["name"],
+                            include: [
+                              { model: Category, attributes: ["name"] },
+                            ],
+                          },
+                        ],
+                      },
+                      { model: UnitType, attributes: ["id", "name"] },
                     ],
                   },
                 ],
@@ -674,9 +694,32 @@ const services = {
           },
         ],
       });
-      if (!bills) {
+      if (!bills.length) {
         return { message: "not found", isSuccess: false, status: 404 };
       }
+      bills = bills.map((e) => {        
+        let sumAllMoney = 0
+        let products = e.BillDetails.map((element) => {
+          let totalMoney = element.quantity * element.Price.price
+          sumAllMoney+= totalMoney
+          return {
+            productId: element.Price.ProductUnitType.ProductId,
+            productName: element.Price.ProductUnitType.Product.name,
+            subCategory: element.Price.ProductUnitType.Product.SubCategory.name,
+            category: element.Price.ProductUnitType.Product.SubCategory.Category.name,
+            unitType: element.Price.ProductUnitType.UnitType.name,
+            totalMoney: totalMoney
+          }
+        });
+        return {
+          billId: e.id,
+          orderDate: e.orderDate,
+          retrieveBillId: e.RetrieveBill.id,
+          retrieveDate: e.RetrieveBill.createAt,          
+          sumAllMoney: sumAllMoney,
+          products: products,
+        };
+      });
       return { bills, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);

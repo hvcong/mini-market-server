@@ -301,15 +301,92 @@ const PromotionHeaderServices = {
   },
   promotionStatistics: async (from, to) => {
     try {
-      const promotions = [];
-      const productPromotions = await getProductPromotionByDate(from, to);
+      let promotions = [];
+      let productPromotions = await getProductPromotionByDate(from, to);
+      let moneyPromotions = await getMoneyPromotionByDate(from, to);
+      let vouchers = await getVoucherPromotionByDate(from, to);
+      let discountRates = await getDcrPromotionByDate(from, to);
+
+      if (productPromotions.length) {
+        productPromotions = productPromotions.map((e) => {
+          let quantityApplied = e.PromotionResults.reduce(
+            (accumulator, object) => {
+              return accumulator + object.quantityApplied;
+            },
+            0
+          );
+          return {
+            promotionId: e.id,
+            name: e.title,
+            startDate: e.startDate,
+            endDate: e.endDate,
+            giftProductId: e.GiftProduct.ProductUnitType.Product.id,
+            productName: e.GiftProduct.ProductUnitType.Product.name,
+            unitType: e.GiftProduct.ProductUnitType.UnitType.name,
+            quantityApplied,
+          };
+        });
+      }
+      if (moneyPromotions.length) {
+        moneyPromotions = moneyPromotions.map((e) => {
+          if (e.type == "discountRate") {            
+            return {
+              promotionId: e.id,
+              name: e.title,
+              startDate: e.startDate,
+              endDate: e.endDate,
+              type: e.type,
+              minCost: e.minCost,
+              discount: e.maxMoneyDiscount,              
+              budget: e.budget,
+              availableBudget: e.availableBudget,
+              used: e.budget - e.availableBudget,
+            };
+          }
+          if (e.type == "discountMoney") {
+            let discounted = 0;
+            if (e.PromotionResults.length) {
+              discounted = e.PromotionResults.reduce((accumulator, object) => {
+                return accumulator + object.discountMoneyByMoneyPromotion;
+              }, 0);
+            }
+
+            return {
+              promotionId: e.id,
+              name: e.title,
+              startDate: e.startDate,
+              endDate: e.endDate,
+              type: e.type,
+              minCost: e.minCost,
+              discount: e.maxMoneyDiscount,
+              discounted: discounted,
+              budget: e.budget,
+              availableBudget: e.availableBudget,
+              used: e.budget - e.availableBudget,
+            };
+          }
+        });
+      }
+      if(discountRates.length){
+        discountRates = discountRates.map((e) => {
+          return {
+            promotionId: e.id,
+            name: e.title,
+            startDate: e.startDate,
+            endDate: e.endDate,
+            discountRate: e.discountRate,
+            productId: e.ProductUnitType.ProductId,
+            productName: e.ProductUnitType.Product.name,
+            unitType: e.ProductUnitType.UnitType.name,            
+          };
+        });
+      }
+
       promotions.push(...productPromotions);
-      const moneyPromotions = await getMoneyPromotionByDate(from, to);
       promotions.push(...moneyPromotions);
-      const vouchers = await getVoucherPromotionByDate(from, to);
-      promotions.push(...vouchers);
-      const discountRates = await getDcrPromotionByDate(from, to);
       promotions.push(...discountRates);
+      promotions.push(...vouchers);
+
       return { promotions, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
