@@ -11,5 +11,12 @@ const services = {
       return { message: "something went wrong", isSuccess: false };
     }
   },
+  getCategoryfromDetails: async() =>{
+    try {
+      
+    } catch (error) {
+      
+    }
+  }
 };
 module.exports = services;

@@ -20,6 +20,7 @@ const {
   City,
   TypeCustomer,
   SubCategory,
+  Category,
 } = require("../config/persist");
 const { Op, Sequelize } = require("sequelize");
 const { getCustomerByPhonenumber, add } = require("./CustomerServices");
@@ -61,7 +62,7 @@ const services = {
   get: async (query) => {
     const page = (query._page && Number(query._page)) || 1;
     const limit = (query._limit && Number(query._limit)) || 20;
-    const offset = (page - 1) * limit;    
+    const offset = (page - 1) * limit;
     try {
       const bills = await Bill.findAndCountAll({
         limit: limit,
@@ -299,6 +300,7 @@ const services = {
             ),
             type: "success",
           },
+          // raw: true,s
           include: [
             {
               model: Employee,
@@ -308,7 +310,7 @@ const services = {
             },
           ],
         });
-        if (!tmpBills) {
+        if (!tmpBills.length) {
           return {
             message: "bills not found in that date",
             isSuccess: false,
@@ -326,16 +328,22 @@ const services = {
             orderDate: { [Op.between]: [fromDate, toDate] },
             type: "success",
           },
+          attributes: ["orderDate", "cost", "EmployeeId"],
           include: [
             {
               model: Employee,
+              attributes: ["name"],
             },
             {
               model: PromotionResult,
+              attributes: [
+                "discountMoneyByMoneyPromotion",
+                "discountMoneyByVoucher",
+              ],
             },
           ],
         });
-        if (!tmpBills) {
+        if (!tmpBills.length) {
           return {
             message: "something went wrong",
             isSuccess: false,
@@ -347,6 +355,23 @@ const services = {
       if (employeeId) {
         bills = bills.filter((e) => e.EmployeeId == employeeId);
       }
+      bills = bills.map((e) => {
+        let discount = e.PromotionResults.reduce((accumulator, object) => {
+          return (
+            accumulator +
+            object.discountMoneyByMoneyPromotion +
+            object.discountMoneyByVoucher
+          );
+        }, 0);
+        return {
+          orderDate: e.orderDate,
+          cost: e.cost,
+          employeeId: e.EmployeeId,
+          employeeName: e.Employee.name,
+          discount: discount,
+          beforeDiscount: discount + e.cost,
+        };
+      });
       return { bills, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
@@ -368,25 +393,68 @@ const services = {
           include: [
             {
               model: Customer,
+              attributes: ["id", "firstName", "lastName"],
               include: [
                 {
                   model: HomeAddress,
+                  attributes: ["homeAddress"],
                   include: [
                     {
                       model: Ward,
+                      attributes: ["name"],
                       include: [
-                        { model: District, include: [{ model: City }] },
+                        {
+                          model: District,
+                          attributes: ["name"],
+                          include: [{ model: City, attributes: ["name"] }],
+                        },
                       ],
                     },
                   ],
                 },
                 {
                   model: TypeCustomer,
+                  attributes: ["name"],
                 },
               ],
             },
             {
               model: PromotionResult,
+              attributes: [
+                "discountMoneyByVoucher",
+                "discountMoneyByMoneyPromotion",
+              ],
+            },
+            {
+              model: BillDetail,
+              attributes: ['id'],
+              include: [
+                {
+                  model: Price,
+                  attributes: ['id'],
+                  include: [
+                    {
+                      model: ProductUnitType,
+                      attributes: ['id'],
+                      include: [
+                        {
+                          model: Product,
+                          attributes: ['id'],
+                          include: [
+                            {
+                              model: SubCategory,
+                              attributes: ["name"],
+                              include: [
+                                { model: Category, attributes: ["name"] },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
             },
           ],
         });
@@ -411,25 +479,68 @@ const services = {
           include: [
             {
               model: Customer,
+              attributes: ["id", "firstName", "lastName"],
               include: [
                 {
                   model: HomeAddress,
+                  attributes: ["homeAddress"],
                   include: [
                     {
                       model: Ward,
+                      attributes: ["name"],
                       include: [
-                        { model: District, include: [{ model: City }] },
+                        {
+                          model: District,
+                          attributes: ["name"],
+                          include: [{ model: City, attributes: ["name"] }],
+                        },
                       ],
                     },
                   ],
                 },
                 {
                   model: TypeCustomer,
+                  attributes: ["name"],
                 },
               ],
             },
             {
               model: PromotionResult,
+              attributes: [
+                "discountMoneyByVoucher",
+                "discountMoneyByMoneyPromotion",
+              ],
+            },
+            {
+              model: BillDetail,
+              attributes: ['id'],
+              include: [
+                {
+                  model: Price,
+                  attributes: ['id'],
+                  include: [
+                    {
+                      model: ProductUnitType,
+                      attributes: ['id'],
+                      include: [
+                        {
+                          model: Product,
+                          attributes: ['id'],
+                          include: [
+                            {
+                              model: SubCategory,
+                              attributes: ["name"],
+                              include: [
+                                { model: Category, attributes: ["name"] },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
             },
           ],
         });
@@ -443,8 +554,46 @@ const services = {
         bills = [...tmpBills];
       }
       if (customerId) {
-        bills = bills.filter((e) => e.CustomerId == customerId);
+        bills = bills.filter((e) => e.CustomerId.startsWith(customerId));
       }
+      bills = bills.map((e) => {
+        let discount = e.PromotionResults.reduce((accumulator, object) => {
+          return (
+            accumulator +
+            object.discountMoneyByMoneyPromotion +
+            object.discountMoneyByVoucher
+          );
+        }, 0);
+        let subCategories = []
+        let categories = []
+         e.BillDetails.forEach(element => {
+          subCategories.push( element.Price.ProductUnitType.Product.SubCategory.name)
+          categories.push(element.Price.ProductUnitType.Product.SubCategory.Category.name)
+         });
+        return {
+          cost: e.cost,
+          customerId: e.CustomerId,
+          customerName:
+            e.Customer.firstName && e.Customer.lastName
+              ? e.Customer.firstName + e.Customer.lastName
+              : "",
+          address: e.Customer.HomeAddress
+            ? e.Customer.HomeAddress.homeAddress
+            : "",
+          ward: e.Customer.HomeAddress ? e.Customer.HomeAddress.Ward.name : "",
+          district: e.Customer.HomeAddress
+            ? e.Customer.HomeAddress.Ward.District.name
+            : "",
+          city: e.Customer.HomeAddress
+            ? e.Customer.HomeAddress.Ward.District.City.name
+            : "",
+          typeCustomer: e.Customer.TypeCustomer.name,
+          discount: discount,
+          beforeDiscount: discount + e.cost,
+          subCategories: subCategories,
+          categories: categories
+        };
+      });
       return { bills, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
