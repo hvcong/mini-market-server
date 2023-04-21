@@ -224,7 +224,7 @@ const services = {
     const page = (query._page && Number(query._page)) || 1;
     const limit = (query._limit && Number(query._limit)) || 20;
     const offset = (page - 1) * limit;
-    const { id, firstName, lastName, phonenumber } = query;    
+    const { id, firstName, phonenumber } = query;
     try {
       let customers = await Customer.findAndCountAll({
         limit: limit,
@@ -254,107 +254,71 @@ const services = {
         ],
         distinct: true,
       });
-      if (id && !firstName && !lastName && !phonenumber) {
+      if (id && !firstName && !phonenumber) {
         customers.rows = customers.rows.filter((e) => {
           if (e.id) {
             return e.id.startsWith(id);
           }
         });
-        customers.count = customers.rows.length
+        customers.count = customers.rows.length;
       }
-      if (!id && firstName && !lastName && !phonenumber) {
+      if (!id && firstName && !phonenumber) {
         customers.rows = customers.rows.filter((e) => {
           if (e.firstName) {
-            return e.id.startsWith(firstName);
+            return e.firstName.startsWith(firstName);
           }
         });
-        customers.count = customers.rows.length
+        customers.count = customers.rows.length;
       }
-      if (!id && firstName && lastName && !phonenumber) {
-        customers.rows = customers.rows.filter((e) => {
-          if (e.firstName&& e.lastName) {
-            return e.firstName.startsWith(firstName)&& e.lastName.startsWith(lastName);
-          }
-        });
-        customers.count = customers.rows.length
-      }
-      if (!id && firstName && !lastName && phonenumber) {
-        customers.rows = customers.rows.filter((e) => {
-          if (e.firstName&& e.phonenumber) {
-            return e.firstName.startsWith(firstName)&& e.phonenumber.startsWith(phonenumber);
-          }
-        });
-        customers.count = customers.rows.length
-      }
-      if (!id && !firstName && lastName && !phonenumber) {
-        customers.rows = customers.rows.filter((e) => {
-          if (e.lastName) {
-            return e.id.startsWith(lastName);
-          }
-        });
-        customers.count = customers.rows.length
-      }
-      if (!id && !firstName && lastName && phonenumber) {
-        customers.rows = customers.rows.filter((e) => {
-          if (e.lastName && e.phonenumber) {
-            return e.id.startsWith(lastName) && e.phonenumber.startsWith(phonenumber);
-          }
-        });
-        customers.count = customers.rows.length
-      }
-      if (!id && !firstName && !lastName && phonenumber) {
+      if (!id && !firstName && phonenumber) {
         customers.rows = customers.rows.filter((e) => {
           if (e.phonenumber) {
-            return e.id.startsWith(phonenumber);
+            return e.phonenumber.startsWith(phonenumber);
           }
         });
-        customers.count = customers.rows.length
+        customers.count = customers.rows.length;
       }
-      if (id && firstName && !lastName && !phonenumber) {
+      if (id && firstName && !phonenumber) {
         customers.rows = customers.rows.filter((e) => {
-          if (e.id && e.firstName)
-            return e.id.startsWith(id) && e.firstName.startsWith(firstName);
-        });
-        customers.count = customers.rows.length
-      }
-      if (id && !firstName && lastName && !phonenumber) {
-        customers.rows = customers.rows.filter((e) => {
-          if (e.id && e.lastName)
-            return e.id.startsWith(id) && e.lastName.startsWith(lastName);
-        });
-        customers.count = customers.rows.length
-      }
-      if (id && !firstName && !lastName && phonenumber) {
-        customers.rows = customers.rows.filter((e) => {
-          if (e.id && e.phonenumber)
-            return e.id.startsWith(id) && e.phonenumber.startsWith(phonenumber);
-        });
-        customers.count = customers.rows.length
-      }
-      if (id && firstName && lastName && !phonenumber) {
-        customers.rows = customers.rows.filter((e) => {
-          if (e.id && e.firstName && e.lastName) {
+          if (e.id && e.firstName) {
             return (
-              e.id.startsWith(id) &&
-              e.firstName.startsWith(firstName) &&
-              e.lastName.startsWith(lastName)
+              e.id.startsWith(id) && e.firstName.startsWith(firstName)
             );
           }
         });
-        customers.count = customers.rows.length
+        customers.count = customers.rows.length;
       }
-      if (id && firstName && lastName && phonenumber) {
-        customers.rows = customers.rows.filter(
-          (e) => {
-            if(e.id && e.firstName && e.lastName && e.phonenumber) {
-              return e.id.startsWith(id) &&
-              e.firstName.startsWith(firstName) &&
-              e.lastName.startsWith(lastName) &&
-              e.phonenumber.startsWith(phonenumber)
-            }
+      if (id && !firstName && phonenumber) {
+        customers.rows = customers.rows.filter((e) => {
+          if (e.id && e.phonenumber) {
+            return (
+              e.id.startsWith(id) && e.phonenumber.startsWith(phonenumber)
+            );
           }
-        );
-        customers.count = customers.rows.length
+        });
+        customers.count = customers.rows.length;
+      }
+      if (!id && firstName && phonenumber) {
+        customers.rows = customers.rows.filter((e) => {
+          if (e.firstName && e.phonenumber) {
+            return (
+              e.firstName.startsWith(firstName) && e.phonenumber.startsWith(phonenumber)
+            );
+          }
+        });
+        customers.count = customers.rows.length;
+      }
+      if (id && firstName && phonenumber) {
+        customers.rows = customers.rows.filter((e) => {
+          if (e.id && e.firstName && e.phonenumber) {
+            return (
+              e.id.startsWith(id) &&
+              e.firstName.startsWith(firstName) &&
+              e.phonenumber.startsWith(phonenumber)
+            );
+          }
+        });
+        customers.count = customers.rows.length;
       }
       return { customers, isSuccess: true, status: 200 };
     } catch (error) {
