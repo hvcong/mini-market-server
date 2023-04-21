@@ -10,5 +10,6 @@ routes.get('/get',controller.getAll)
 routes.get('/getLimit',controller.getLimit)
 routes.get('/base',controller.getBaseUnit)
 routes.get('/others',controller.getOtherUnits)
+routes.get('/filter',controller.filter)
 
 module.exports = routes

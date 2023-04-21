@@ -220,6 +220,110 @@ const services = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
+  filter: async (query) => {
+    const page = (query._page && Number(query._page)) || 1;
+    const limit = (query._limit && Number(query._limit)) || 20;
+    const offset = (page - 1) * limit;
+    const { id, firstName, lastName, phonenumber } = query;    
+    try {
+      let customers = await Customer.findAndCountAll({
+        limit: limit,
+        offset: offset,
+        include: [
+          {
+            model: HomeAddress,
+            include: [
+              {
+                model: Ward,
+                include: [
+                  {
+                    model: District,
+                    include: [
+                      {
+                        model: City,
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            model: TypeCustomer,
+          },
+        ],
+        distinct: true,
+      });
+      if (id && !firstName && !lastName && !phonenumber) {
+        customers.rows = customers.rows.filter((e) => {
+          if (e.id) {
+            return e.id.startsWith(id);
+          }
+        });
+        customers.count = customers.rows.length
+      }
+      if (!id && firstName && !lastName && !phonenumber) {
+        customers.rows = customers.rows.filter((e) => {
+          if (e.firstName) {
+            return e.id.startsWith(firstName);
+          }
+        });
+        customers.count = customers.rows.length
+      }
+      if (!id && !firstName && lastName && !phonenumber) {
+        customers.rows = customers.rows.filter((e) => {
+          if (e.lastName) {
+            return e.id.startsWith(lastName);
+          }
+        });
+        customers.count = customers.rows.length
+      }
+      if (!id && !firstName && !lastName && phonenumber) {
+        customers.rows = customers.rows.filter((e) => {
+          if (e.phonenumber) {
+            return e.id.startsWith(phonenumber);
+          }
+        });
+        customers.count = customers.rows.length
+      }
+      if (id && firstName && !lastName && !phonenumber) {
+        customers.rows = customers.rows.filter((e) => {
+          if (e.id && e.firstName)
+            return e.id.startsWith(id) && e.firstName.startsWith(firstName);
+        });
+        customers.count = customers.rows.length
+      }
+      if (id && firstName && lastName && !phonenumber) {
+        customers.rows = customers.rows.filter((e) => {
+          if (e.id && e.firstName && e.lastName) {
+            return (
+              e.id.startsWith(id) &&
+              e.firstName.startsWith(firstName) &&
+              e.lastName.startsWith(lastName)
+            );
+          }
+        });
+        customers.count = customers.rows.length
+      }
+      if (id && firstName && lastName && phonenumber) {
+        customers.rows = customers.rows.filter(
+          (e) => {
+            if(e.id && e.firstName && e.lastName && e.phonenumber) {
+              return e.id.startsWith(id) &&
+              e.firstName.startsWith(firstName) &&
+              e.lastName.startsWith(lastName) &&
+              e.phonenumber.startsWith(phonenumber)
+            }
+          }
+        );
+        customers.count = customers.rows.length
+      }
+      return { customers, isSuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
 };
 
 module.exports = services;

@@ -61,8 +61,7 @@ const services = {
   get: async (query) => {
     const page = (query._page && Number(query._page)) || 1;
     const limit = (query._limit && Number(query._limit)) || 20;
-    const offset = (page - 1) * limit;
-    console.log(page);
+    const offset = (page - 1) * limit;    
     try {
       const bills = await Bill.findAndCountAll({
         limit: limit,

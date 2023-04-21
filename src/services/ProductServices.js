@@ -122,7 +122,6 @@ const ProductServices = {
       let limit = (query._limit && Number(query._limit)) || 12;
       let offset = (page - 1) * limit;
       const state = query.state;
-      console.log(state);
       const products = await Product.findAndCountAll({
         limit: limit,
         offset: offset,
@@ -321,6 +320,97 @@ const ProductServices = {
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  filter: async (query) => {
+    try {
+      let page = (query._page && Number(query._page)) || 1;
+      let limit = (query._limit && Number(query._limit)) || 12;
+      let offset = (page - 1) * limit;
+      const { id, name } = query;
+      let products = null;
+      if (id && name) {
+        const tmpProducts = await Product.findAndCountAll({
+          limit: limit,
+          offset: offset,
+          distinct: true,
+          order: [["updatedAt", "DESC"]],
+          where: {
+            [Op.and]: [
+              { id: { [Op.like]: `%${id}%` } },
+              { name: { [Op.like]: `%${name}%` } },
+            ],
+          },
+          include: [
+            {
+              model: SubCategory,
+            },
+            {
+              model: Image,
+              as: "images",
+              attributes: ["uri"],
+            },
+            {
+              model: ProductUnitType,
+              include: [
+                {
+                  model: UnitType,
+                },
+                {
+                  model: Price,
+                },
+              ],
+            },
+          ],
+        });
+        if(!tmpProducts.rows.length){
+          return { message: "no products", isSuccess: false, status: 404 };
+        }
+        products = tmpProducts;
+      }
+      if (id || name) {
+        const tmpProducts = await Product.findAndCountAll({
+          limit: limit,
+          offset: offset,
+          distinct: true,
+          order: [["updatedAt", "DESC"]],
+          where: {
+            [Op.or]: [
+              { id: { [Op.like]: `%${id}%` } },
+              { name: { [Op.like]: `%${name}%` } },
+            ],
+          },
+          include: [
+            {
+              model: SubCategory,
+            },
+            {
+              model: Image,
+              as: "images",
+              attributes: ["uri"],
+            },
+            {
+              model: ProductUnitType,
+              include: [
+                {
+                  model: UnitType,
+                },
+                {
+                  model: Price,
+                },
+              ],
+            },
+          ],
+        });
+        if(!tmpProducts.rows.length){
+          return { message: "no products", isSuccess: false, status: 404 };
+        }
+        products = tmpProducts;
+      }
+      return {products,isSuccess: true,status: 200}
+    } catch (error) {
+      console.log(error);
+      return { message: "something goes wrong", isSuccess: false, status: 500 };
     }
   },
 };

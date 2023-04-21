@@ -10,5 +10,6 @@ routes.get("/getOrCreateByPhone", controller.getOrCreateByPhone);
 routes.get("/getName", controller.getUserByName);
 routes.get("/likePhone", controller.getLikePhone);
 routes.get("/id", controller.getCustomerById);
+routes.get("/filter",controller.filter);
 
 module.exports = routes;

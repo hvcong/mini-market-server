@@ -2,9 +2,12 @@ const {
   StoreTransaction,
   ProductUnitType,
   Product,
+  SubCategory,
+  Category,
 } = require("../config/persist");
 const { onlyUpdateProduct } = require("./ProductServices");
 const { getProduct, getUnitType } = require("./ProductUnitTypeServices");
+const { Op, Sequelize } = require("sequelize");
 
 const services = {
   add: async (data) => {
@@ -30,8 +33,6 @@ const services = {
   addMany: async (data) => {
     try {
       const transactions = [];
-
-      console.log(data);
       for (const e of data) {
         const { quantity, createAt, type, ProductUnitTypeId, employeeId } = e;
         const transaction = await StoreTransaction.create({
@@ -70,6 +71,44 @@ const services = {
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  stastics: async (dateInput) => {
+    try {
+      const date = new Date(dateInput);
+      date.setDate(date.getDate() + 1);
+      const transactions = await StoreTransaction.findAll({
+        where: { createAt: { [Op.lt]: date } },
+        // raw: true,
+        include: {
+          model: ProductUnitType,
+          required: true,
+          include: [
+            {
+              model: Product,
+              attributes: ["name"],
+              include: [
+                {
+                  model: SubCategory,
+                  attributes: ["name"],
+                  include: [{ model: Category, attributes: ['name'] }],
+                },
+              ],
+            },
+          ],
+        },
+        attributes: [
+          [
+            Sequelize.fn("sum", Sequelize.col("StoreTransaction.quantity")),
+            "sum",
+          ],
+        ],
+        group: ["ProductUnitType.ProductId"],
+      });
+      return { transactions, issuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", issuccess: false, status: 500 };
     }
   },
 };

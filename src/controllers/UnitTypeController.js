@@ -70,6 +70,14 @@ const UnitTypeController = {
             return res.status(status).json({isSuccess,otherUnits})
         }
         return res.status(status).json({isSuccess,message})
-    }
+    },
+    filter: async(req,res) =>{
+        const {query} = req
+        const {isSuccess,status,unitTypes,message} = await services.filter(query)
+        if(isSuccess){
+          return res.status(status).json({isSuccess,unitTypes})
+        }
+        return res.status(status).json({isSuccess,message})
+      }
 }
 module.exports = UnitTypeController

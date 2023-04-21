@@ -131,6 +131,50 @@ const services = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
+  filter: async (query) => {
+    try {
+      const name = query.name;
+      const id = query.id;
+      const page = (query._page && Number(query._page)) || 1;
+      const limit = (query._limit && Number(query._limit)) || 20;
+      const offset = (page - 1) * limit;
+      if (id && name) {        
+        const categories = await Category.findAndCountAll({
+          where: {
+            [Op.and]: [
+              { id: { [Op.like]: `%${id}%` } },
+              { name: { [Op.like]: `%${name}%` } },
+            ],
+          },
+          limit: limit,
+          offset: offset,
+          include: { model: SubCategory, attributes: ["id", "name", "state"] },
+          distinct: true,
+          order: [["updatedAt", "DESC"]],
+        });
+        return { categories, isSuccess: true, status: 200 };
+      }
+      if (id || name) {
+        const categories = await Category.findAndCountAll({
+          where: {
+            [Op.or]: [
+              { id: { [Op.like]: `%${id}%` } },
+              { name: { [Op.like]: `%${name}%` } },
+            ],
+          },
+          limit: limit,
+          offset: offset,
+          include: { model: SubCategory, attributes: ["id", "name", "state"] },
+          distinct: true,
+          order: [["updatedAt", "DESC"]],
+        });
+        return { categories, isSuccess: true, status: 200 };
+      }     
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
 };
 
 module.exports = services;

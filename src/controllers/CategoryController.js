@@ -51,6 +51,14 @@ const CategoryController = {
       return res.status(status).json({isSuccess,categories})
     }
     return res.status(status).json({isSuccess,message})
+  },
+  filter: async(req,res) =>{
+    const {query} = req
+    const {isSuccess,status,categories,message} = await services.filter(query)
+    if(isSuccess){
+      return res.status(status).json({isSuccess,categories})
+    }
+    return res.status(status).json({isSuccess,message})
   }
 };
 

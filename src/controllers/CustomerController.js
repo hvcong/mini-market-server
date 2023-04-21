@@ -79,5 +79,13 @@ const Controller = {
     }
     return res.status(status).json({ isSuccess, message });
   },
+  filter: async(req,res) =>{
+    const {query} = req
+    const {isSuccess,status,customers,message} = await services.filter(query)
+    if(isSuccess){
+      return res.status(status).json({isSuccess,customers})
+    }
+    return res.status(status).json({isSuccess,message})
+  }
 };
 module.exports = Controller;

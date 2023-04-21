@@ -143,14 +143,14 @@ const services = {
         where: { phonenumber: phonenumber },
       });
       if (employee) {
-        await employee.update(data);        
+        await employee.update(data);
         await employee.save();
 
         if (data.phonenumber) {
           const account = await Account.findOne({
             where: { phonenumber: phonenumber },
           });
-          
+
           let newAccount = {
             ...account.dataValues,
             phonenumber: data.phonenumber,
@@ -192,6 +192,89 @@ const services = {
         return { employee, isSuccess: true, status: 200 };
       }
       return { message: "employee not found", isSuccess: false, status: 404 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  filter: async (query) => {
+    const page = (query._page && Number(query._page)) || 1;
+    const limit = (query._limit && Number(query._limit)) || 20;
+    const offset = (page - 1) * limit;
+    const { id, name , phonenumber } = query;
+    try {
+      let employees = await Employee.findAndCountAll({
+        limit: limit,
+        offset: offset,
+        include: [
+          {
+            model: HomeAddress,
+            include: [
+              {
+                model: Ward,
+                include: [
+                  {
+                    model: District,
+                    include: [
+                      {
+                        model: City,
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            model: Account,
+          },
+        ],
+        distinct: true,
+      });
+      if (id && !name && !phonenumber) {
+        employees.rows = employees.rows.filter((e) => {
+          if (e.id) {
+            return e.id.startsWith(id);
+          }
+        });
+        employees.count = employees.rows.length
+      }
+      if (!id && name && !phonenumber) {
+        employees.rows = employees.rows.filter((e) => {
+          if (e.name) {
+            return e.id.startsWith(name);
+          }
+        });
+        employees.count = employees.rows.length
+      }
+      if (!id && !name && phonenumber) {
+        employees.rows = employees.rows.filter((e) => {
+          if (e.phonenumber) {
+            return e.id.startsWith(phonenumber);
+          }
+        });
+        employees.count = employees.rows.length
+      }
+      if (id && name && !phonenumber) {
+        employees.rows = employees.rows.filter((e) => {
+          if (e.id && e.name)
+            return e.id.startsWith(id) && e.name.startsWith(name);
+        });
+        employees.count = employees.rows.length
+      }
+      if (id && name && phonenumber) {
+        employees.rows = employees.rows.filter((e) => {
+          if (e.id && e.name && e.phonenumber) {
+            return (
+              e.id.startsWith(id) &&
+              e.name.startsWith(name) &&
+              e.phonenumber.startsWith(phonenumber)
+            );
+          }
+        });
+        employees.count = employees.rows.length
+      }     
+      return { employees, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };

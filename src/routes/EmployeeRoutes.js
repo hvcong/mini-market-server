@@ -8,5 +8,6 @@ routes.put("/update/fullinfor", controller.updateFullInfoByPhone);
 routes.put("/update", controller.update);
 routes.get("/one/byId", controller.getOneById);
 routes.get("/one", controller.getOnebyPhone);
+routes.get("/filter",controller.filter);
 
 module.exports = routes;

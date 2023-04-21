@@ -104,6 +104,14 @@ const ProductController = {
     }
     return res.status(status).json({ isSuccess, message });
   },
+  filter: async(req,res) => {
+    const {query} = req
+    const {isSuccess,status,message,products} = await services.filter(query)
+    if(isSuccess){
+      return res.status(status).json({isSuccess,products})
+    }
+    return res.status(status).json({isSuccess,message})
+  }
 };
 
 module.exports = ProductController;
