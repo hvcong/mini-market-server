@@ -3,6 +3,8 @@ const {
   ProductUnitType,
   Product,
   UnitType,
+  Price,
+  ListPricesHeader,
 } = require("../config/persist");
 const { Op, Sequelize } = require("sequelize");
 
@@ -52,7 +54,11 @@ const services = {
           include: [
             {
               model: ProductUnitType,
-              include: [{ model: Product }, { model: UnitType }],
+              include: [
+                { model: Product },
+                { model: UnitType },
+                { model: Price, include: [{ model: ListPricesHeader }] },
+              ],
             },
           ],
         });
@@ -66,8 +72,35 @@ const services = {
         inputs = [...tmpInputs];
       }
       if (productId) {
-        inputs = inputs.filter((e) => e.ProductUnitType.ProductId == productId);
+        inputs = inputs.filter((e) =>
+          e.ProductUnitType.ProductId.startsWith(productId)
+        );
       }
+
+      inputs = inputs.map((e) => {
+        let listprices = e.ProductUnitType.Prices;
+        let price = 0;
+        for (let x of listprices) {
+          const header = x.ListPricesHeader;
+          const endDate = new Date(header.endDate);
+          const now = new Date();
+          const state = header.state;
+          if (state && endDate >= now) {
+            price = x.price;
+          }
+        }
+        let sumPrice = 0;
+        if (price) {
+          sumPrice = price * e.quantity;
+        }
+        return {
+          productId: e.ProductUnitType.ProductId,
+          productName: e.ProductUnitType.Product.name,
+          quantity: e.quantity,
+          unitType: e.ProductUnitType.UnitType.name,
+          sum: price ? sumPrice : "product do not have price ",
+        };
+      });
       return { inputs, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
