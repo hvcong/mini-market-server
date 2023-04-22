@@ -697,29 +697,28 @@ const services = {
       if (!bills.length) {
         return { message: "not found", isSuccess: false, status: 404 };
       }
-      bills = bills.map((e) => {        
-        let sumAllMoney = 0
+      bills = bills.map((e) => {
         let products = e.BillDetails.map((element) => {
-          let totalMoney = element.quantity * element.Price.price
-          sumAllMoney+= totalMoney
+          let totalMoney = element.quantity * element.Price.price;
+
           return {
+            billId: e.id,
+            orderDate: e.orderDate,
+            retrieveBillId: e.RetrieveBill.id,
+            retrieveDate: e.RetrieveBill.createAt,
+            category:
+              element.Price.ProductUnitType.Product.SubCategory.Category.name,
+            subCategory: element.Price.ProductUnitType.Product.SubCategory.name,
             productId: element.Price.ProductUnitType.ProductId,
             productName: element.Price.ProductUnitType.Product.name,
-            subCategory: element.Price.ProductUnitType.Product.SubCategory.name,
-            category: element.Price.ProductUnitType.Product.SubCategory.Category.name,
+            quantity: element.quantity,
             unitType: element.Price.ProductUnitType.UnitType.name,
-            totalMoney: totalMoney
-          }
+            totalMoney: totalMoney,
+          };
         });
-        return {
-          billId: e.id,
-          orderDate: e.orderDate,
-          retrieveBillId: e.RetrieveBill.id,
-          retrieveDate: e.RetrieveBill.createAt,          
-          sumAllMoney: sumAllMoney,
-          products: products,
-        };
+        return products;
       });
+      bills = bills.flat();
       return { bills, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
