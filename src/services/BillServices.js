@@ -543,6 +543,7 @@ const services = {
               ],
             },
           ],
+          group: ['Customer.id'],
         });
         if (!tmpBills) {
           return {
@@ -575,27 +576,27 @@ const services = {
           );
         });
         return {
-          cost: e.cost,
           customerId: e.CustomerId,
           customerName:
-            e.Customer.firstName && e.Customer.lastName
-              ? e.Customer.firstName + e.Customer.lastName
-              : "",
+          e.Customer.firstName && e.Customer.lastName
+          ? e.Customer.firstName + e.Customer.lastName
+          : "",
           address: e.Customer.HomeAddress
-            ? e.Customer.HomeAddress.homeAddress
-            : "",
+          ? e.Customer.HomeAddress.homeAddress
+          : "",
           ward: e.Customer.HomeAddress ? e.Customer.HomeAddress.Ward.name : "",
           district: e.Customer.HomeAddress
-            ? e.Customer.HomeAddress.Ward.District.name
-            : "",
+          ? e.Customer.HomeAddress.Ward.District.name
+          : "",
           city: e.Customer.HomeAddress
-            ? e.Customer.HomeAddress.Ward.District.City.name
-            : "",
+          ? e.Customer.HomeAddress.Ward.District.City.name
+          : "",
           typeCustomer: e.Customer.TypeCustomer.name,
           discount: discount,
-          beforeDiscount: discount + e.cost,
-          subCategories: subCategories,
           categories: categories,
+          subCategories: subCategories,
+          beforeDiscount: discount + e.cost,
+          cost: e.cost,
         };
       });
       return { bills, isSuccess: true, status: 200 };
@@ -700,7 +701,6 @@ const services = {
       bills = bills.map((e) => {
         let products = e.BillDetails.map((element) => {
           let totalMoney = element.quantity * element.Price.price;
-
           return {
             billId: e.id,
             orderDate: e.orderDate,
