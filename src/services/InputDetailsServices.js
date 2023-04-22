@@ -78,15 +78,17 @@ const services = {
       }
 
       inputs = inputs.map((e) => {
-        let listprices = e.ProductUnitType.Prices;
         let price = 0;
-        for (let x of listprices) {
-          const header = x.ListPricesHeader;
-          const endDate = new Date(header.endDate);
-          const now = new Date();
-          const state = header.state;
-          if (state && endDate >= now) {
-            price = x.price;
+        let listprices = e.ProductUnitType.Prices;
+        if(listprices.length){
+          for (let x of listprices) {
+            const header = x.ListPricesHeader;
+            const endDate = new Date(header.endDate);
+            const now = new Date();
+            const state = header.state;
+            if (state && endDate >= now) {
+              price = x.price;
+            }
           }
         }
         let sumPrice = 0;
