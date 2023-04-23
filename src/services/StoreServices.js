@@ -155,7 +155,8 @@ const services = {
           reportUnit: e.reportUnit,
           baseUnit: e.baseUnit,          
           reportQty: Math.floor(sum / maxUnit),
-          reportBaseQty: sum % maxUnit,          
+          reportBaseQty: sum % maxUnit,         
+           
         };
       });
       return { transactions, issuccess: true, status: 200 };
