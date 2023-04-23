@@ -81,10 +81,9 @@ const services = {
       date.setDate(date.getDate() + 1);
       let transactions = await StoreTransaction.findAll({
         where: { createAt: { [Op.lt]: date } },
-        raw: true,
         include: {
           model: ProductUnitType,
-          // required: true,
+          required: true,
           include: [
             {
               model: Product,
@@ -109,31 +108,56 @@ const services = {
             "sum",
           ],
         ],
-        group: ["ProductUnitType.ProductId"],
+        group: ["ProductUnitType.ProductId", "ProductUnitType.UnitTypeId"],
       });
-      for( let e of transactions){
-        // const maxUnit = await getMaxUnit(e.ProductUnitType.ProductId)   
-        // console.log(e.ProductUnitType.ProductId)          
-        // e.setDataValue("maxUnit",maxUnit)
-        
+      for (let e of transactions) {
+        let maxUnit = await getMaxUnit(e.ProductUnitType.ProductId);
+        e.setDataValue("maxUnit", maxUnit);
       }
-      // transactions = transactions.map(e => {
-      //   let maxUnit = e.dataValues.maxUnit.maxUnit
-      //   let numConvert = e.ProductUnitType.UnitType.convertionQuantity
-      //   let sum = e.sum*numConvert        
-      //   console.log(sum,numConvert)
+      transactions = transactions.map((e) => {
+        let maxUnit = e.dataValues.maxUnit.maxUnit;
+        let numConvert = e.ProductUnitType.UnitType.convertionQuantity;
+        let sum = e.dataValues.sum * numConvert;
+        e.setDataValue("sum", sum);
 
-      //   return {
-      //     category: e.ProductUnitType.Product.SubCategory.Category.name,
-      //     subCategory: e.ProductUnitType.Product.SubCategory.name,
-      //     productId: e.ProductUnitType.ProductId,
-      //     productName: e.ProductUnitType.Product.name,
-      //     reportUnit: maxUnit > 1 ? 'thung '+maxUnit : e.dataValues.maxUnit.name,
-      //     baseUnit:e.dataValues.maxUnit.name,
-      //     reportQty: Math.floor(sum / maxUnit),
-      //     reportBaseQty: sum % maxUnit
-      //   }
-      // })
+        return {
+          category: e.ProductUnitType.Product.SubCategory.Category.name,
+          subCategory: e.ProductUnitType.Product.SubCategory.name,
+          productId: e.ProductUnitType.ProductId,
+          productName: e.ProductUnitType.Product.name,
+          reportUnit:
+            maxUnit > 1 ? "thung " + maxUnit : e.dataValues.maxUnit.name,
+          baseUnit: e.dataValues.maxUnit.name,          
+          sum: e.dataValues.sum,
+          maxUnit: maxUnit,
+        };
+      });
+      transactions = transactions.reduce((accumulator, object) => {
+        if (
+          (objectFound = accumulator.find(
+            (item) => item.productId === object.productId
+          ))
+        ) {
+          objectFound.sum += object.sum;
+        } else {
+          accumulator.push(object);
+        }
+        return accumulator;
+      }, []);
+      transactions = transactions.map((e) => {
+        let maxUnit = e.maxUnit;
+        let sum = e.sum;
+        return {
+          category: e.category,
+          subCategory: e.subCategory,
+          productId: e.productId,
+          productName: e.productName,
+          reportUnit: e.reportUnit,
+          baseUnit: e.baseUnit,          
+          reportQty: Math.floor(sum / maxUnit),
+          reportBaseQty: sum % maxUnit,          
+        };
+      });
       return { transactions, issuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
