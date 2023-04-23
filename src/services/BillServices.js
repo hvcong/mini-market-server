@@ -542,8 +542,7 @@ const services = {
                 },
               ],
             },
-          ],
-          group: ['Customer.id'],
+          ],          
         });
         if (!tmpBills) {
           return {

@@ -17,7 +17,10 @@ const Bill = sequelize.define(
       allowNull: false,
       defaultValue: DataTypes.NOW,
     },
-
+    isDDH:{
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
     cost: {
       type: DataTypes.DOUBLE,
       allowNull: true,

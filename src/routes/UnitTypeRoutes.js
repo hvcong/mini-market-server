@@ -11,5 +11,6 @@ routes.get('/getLimit',controller.getLimit)
 routes.get('/base',controller.getBaseUnit)
 routes.get('/others',controller.getOtherUnits)
 routes.get('/filter',controller.filter)
+routes.get('/max',controller.getMaxUnit)
 
 module.exports = routes

@@ -4,10 +4,12 @@ const {
   Product,
   SubCategory,
   Category,
+  UnitType,
 } = require("../config/persist");
 const { onlyUpdateProduct } = require("./ProductServices");
 const { getProduct, getUnitType } = require("./ProductUnitTypeServices");
 const { Op, Sequelize } = require("sequelize");
+const { getMaxUnit } = require("./UnitTypeServices");
 
 const services = {
   add: async (data) => {
@@ -77,12 +79,12 @@ const services = {
     try {
       const date = new Date(dateInput);
       date.setDate(date.getDate() + 1);
-      const transactions = await StoreTransaction.findAll({
+      let transactions = await StoreTransaction.findAll({
         where: { createAt: { [Op.lt]: date } },
-        // raw: true,
+        raw: true,
         include: {
           model: ProductUnitType,
-          required: true,
+          // required: true,
           include: [
             {
               model: Product,
@@ -91,9 +93,13 @@ const services = {
                 {
                   model: SubCategory,
                   attributes: ["name"],
-                  include: [{ model: Category, attributes: ['name'] }],
+                  include: [{ model: Category, attributes: ["name"] }],
                 },
               ],
+            },
+            {
+              model: UnitType,
+              attributes: ["name", "convertionQuantity"],
             },
           ],
         },
@@ -105,6 +111,29 @@ const services = {
         ],
         group: ["ProductUnitType.ProductId"],
       });
+      for( let e of transactions){
+        // const maxUnit = await getMaxUnit(e.ProductUnitType.ProductId)   
+        // console.log(e.ProductUnitType.ProductId)          
+        // e.setDataValue("maxUnit",maxUnit)
+        
+      }
+      // transactions = transactions.map(e => {
+      //   let maxUnit = e.dataValues.maxUnit.maxUnit
+      //   let numConvert = e.ProductUnitType.UnitType.convertionQuantity
+      //   let sum = e.sum*numConvert        
+      //   console.log(sum,numConvert)
+
+      //   return {
+      //     category: e.ProductUnitType.Product.SubCategory.Category.name,
+      //     subCategory: e.ProductUnitType.Product.SubCategory.name,
+      //     productId: e.ProductUnitType.ProductId,
+      //     productName: e.ProductUnitType.Product.name,
+      //     reportUnit: maxUnit > 1 ? 'thung '+maxUnit : e.dataValues.maxUnit.name,
+      //     baseUnit:e.dataValues.maxUnit.name,
+      //     reportQty: Math.floor(sum / maxUnit),
+      //     reportBaseQty: sum % maxUnit
+      //   }
+      // })
       return { transactions, issuccess: true, status: 200 };
     } catch (error) {
       console.log(error);

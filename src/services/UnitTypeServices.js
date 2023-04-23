@@ -1,6 +1,6 @@
 const e = require("express");
-const { UnitType, Product } = require("../config/persist");
-const { Op } = require("sequelize");
+const { UnitType, Product, ProductUnitType } = require("../config/persist");
+const { Op, Sequelize } = require("sequelize");
 
 const UnitTypeServices = {
   addUnit: async (data) => {
@@ -185,47 +185,64 @@ const UnitTypeServices = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  filter: async(query)=>{
+  filter: async (query) => {
     const page = (query._page && Number(query._page)) || 1;
     const limit = (query._limit && Number(query._limit)) || 20;
     const offset = (page - 1) * limit;
-    const { id, name  } = query;
+    const { id, name } = query;
     try {
       let unitTypes = await UnitType.findAndCountAll({
         limit: limit,
-        offset: offset,        
+        offset: offset,
         distinct: true,
       });
-      if (id && !name ) {
+      if (id && !name) {
         unitTypes.rows = unitTypes.rows.filter((e) => {
           if (e.id) {
             return e.id.startsWith(id);
           }
         });
-        unitTypes.count = unitTypes.rows.length
+        unitTypes.count = unitTypes.rows.length;
       }
-      if (!id && name ) {
+      if (!id && name) {
         unitTypes.rows = unitTypes.rows.filter((e) => {
           if (e.name) {
             return e.name.startsWith(name);
           }
         });
-        unitTypes.count = unitTypes.rows.length
+        unitTypes.count = unitTypes.rows.length;
       }
-      if (id && name ) {
+      if (id && name) {
         unitTypes.rows = unitTypes.rows.filter((e) => {
           if (e.id && e.name) {
-            return e.id.startsWith(id) && (e.name.startsWith(name));
+            return e.id.startsWith(id) && e.name.startsWith(name);
           }
         });
-        unitTypes.count = unitTypes.rows.length
-      }    
+        unitTypes.count = unitTypes.rows.length;
+      }
       return { unitTypes, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
-  }
+  },
+  getMaxUnit: async (productId) => {
+    try {
+      let data = await UnitType.findOne({
+        attributes: ['id','name','convertionQuantity', [Sequelize.fn("max", Sequelize.col("convertionQuantity")),'maxUnit']],
+        include: { model: ProductUnitType, where: { ProductId: productId } },
+        raw: true,
+      });
+      if (!data) {
+        return null;
+      }            
+      const {maxUnit,convertionQuantity,name} = data
+      return {maxUnit,convertionQuantity,name};
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  },
 };
 
 module.exports = UnitTypeServices;
