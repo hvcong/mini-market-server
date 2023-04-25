@@ -5,6 +5,10 @@ const {
   SubCategory,
   Category,
   UnitType,
+  Price,
+  BillDetail,
+  Bill,
+  ListPricesHeader,
 } = require("../config/persist");
 const { onlyUpdateProduct } = require("./ProductServices");
 const { getProduct, getUnitType } = require("./ProductUnitTypeServices");
@@ -77,8 +81,9 @@ const services = {
   },
   stastics: async (dateInput) => {
     try {
-      const date = new Date(dateInput);
+      const date = new Date(dateInput);      
       date.setDate(date.getDate() + 1);
+      const dateH = new Date(dateInput)
       let transactions = await StoreTransaction.findAll({
         where: { createAt: { [Op.lt]: date } },
         include: {
@@ -100,6 +105,32 @@ const services = {
               model: UnitType,
               attributes: ["name", "convertionQuantity"],
             },
+            {
+              model: Price,
+              attributes: ["id", "price"],
+              include: [
+                {
+                  model: ListPricesHeader,
+                  where: {
+                    [Op.and]: [
+                      { startDate: { [Op.lte]: date } },
+                      { endDate: { [Op.gte]: dateH } },
+                    ],
+                    state: 1,
+                  },
+                },
+                {
+                  model: BillDetail,
+                  attributes: ["quantity"],
+                  include: [
+                    {
+                      model: Bill,
+                      where: { orderDate: { [Op.lt]: date }, isDDH: 1 },
+                    },
+                  ],
+                },
+              ],
+            },
           ],
         },
         attributes: [
@@ -119,6 +150,14 @@ const services = {
         let numConvert = e.ProductUnitType.UnitType.convertionQuantity;
         let sum = e.dataValues.sum * numConvert;
         e.setDataValue("sum", sum);
+        let price = null;
+        let holdingQty = 0;
+        if (e.ProductUnitType.Prices.length) {
+          price = e.ProductUnitType.Prices[0];
+        }
+        if (price && price.BillDetail) {
+          holdingQty = price.BillDetail.quantity * numConvert;
+        }
 
         return {
           category: e.ProductUnitType.Product.SubCategory.Category.name,
@@ -127,8 +166,10 @@ const services = {
           productName: e.ProductUnitType.Product.name,
           reportUnit:
             maxUnit > 1 ? "thung " + maxUnit : e.dataValues.maxUnit.name,
-          baseUnit: e.dataValues.maxUnit.name,          
+          baseUnit: e.dataValues.maxUnit.name,
           sum: e.dataValues.sum,
+          holdingReport: holdingQty ? Math.floor(holdingQty / maxUnit) : 0,
+          holdingBase: holdingQty ? holdingQty % maxUnit : 0,
           maxUnit: maxUnit,
         };
       });
@@ -147,16 +188,21 @@ const services = {
       transactions = transactions.map((e) => {
         let maxUnit = e.maxUnit;
         let sum = e.sum;
+        let reportQty = Math.floor(sum / maxUnit)
+        let reportBaseQty =sum % maxUnit
         return {
           category: e.category,
           subCategory: e.subCategory,
           productId: e.productId,
           productName: e.productName,
           reportUnit: e.reportUnit,
-          baseUnit: e.baseUnit,          
-          reportQty: Math.floor(sum / maxUnit),
-          reportBaseQty: sum % maxUnit,         
-           
+          baseUnit: e.baseUnit,
+          reportQty: reportQty,
+          reportBaseQty: reportBaseQty,
+          holdingReport: e.holdingReport,
+          holdingBase: e.holdingBase,
+          sellAble: reportQty>e.holdingReport? reportQty - e.holdingReport: reportQty ,
+          baseSellAble: reportBaseQty>e.holdingBase?reportBaseQty-e.holdingBase:reportBaseQty
         };
       });
       return { transactions, issuccess: true, status: 200 };

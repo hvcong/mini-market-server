@@ -542,7 +542,7 @@ const services = {
                 },
               ],
             },
-          ],          
+          ],
         });
         if (!tmpBills) {
           return {
@@ -577,19 +577,19 @@ const services = {
         return {
           customerId: e.CustomerId,
           customerName:
-          e.Customer.firstName && e.Customer.lastName
-          ? e.Customer.firstName + e.Customer.lastName
-          : "",
+            e.Customer.firstName && e.Customer.lastName
+              ? e.Customer.firstName + e.Customer.lastName
+              : "",
           address: e.Customer.HomeAddress
-          ? e.Customer.HomeAddress.homeAddress
-          : "",
+            ? e.Customer.HomeAddress.homeAddress
+            : "",
           ward: e.Customer.HomeAddress ? e.Customer.HomeAddress.Ward.name : "",
           district: e.Customer.HomeAddress
-          ? e.Customer.HomeAddress.Ward.District.name
-          : "",
+            ? e.Customer.HomeAddress.Ward.District.name
+            : "",
           city: e.Customer.HomeAddress
-          ? e.Customer.HomeAddress.Ward.District.City.name
-          : "",
+            ? e.Customer.HomeAddress.Ward.District.City.name
+            : "",
           typeCustomer: e.Customer.TypeCustomer.name,
           discount: discount,
           categories: categories,
@@ -722,6 +722,20 @@ const services = {
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  getPendingBill: async (date) => {
+    try {
+      const bills = await Bill.findAndCountAll({
+        where: { type: "pending", orderDate: { [Op.lt]: date } },
+      });
+      if (bills) {
+        
+      }
+      return null;
+    } catch (error) {
+      console.log(error);
+      return null
     }
   },
 };
