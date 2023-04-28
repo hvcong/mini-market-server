@@ -81,9 +81,9 @@ const services = {
   },
   stastics: async (dateInput) => {
     try {
-      const date = new Date(dateInput);      
+      const date = new Date(dateInput);
       date.setDate(date.getDate() + 1);
-      const dateH = new Date(dateInput)
+      const dateH = new Date(dateInput);
       let transactions = await StoreTransaction.findAll({
         where: { createAt: { [Op.lt]: date } },
         include: {
@@ -188,8 +188,8 @@ const services = {
       transactions = transactions.map((e) => {
         let maxUnit = e.maxUnit;
         let sum = e.sum;
-        let reportQty = Math.floor(sum / maxUnit)
-        let reportBaseQty =sum % maxUnit
+        let reportQty = Math.floor(sum / maxUnit);
+        let reportBaseQty = sum % maxUnit;
         return {
           category: e.category,
           subCategory: e.subCategory,
@@ -201,14 +201,20 @@ const services = {
           reportBaseQty: reportBaseQty,
           holdingReport: e.holdingReport,
           holdingBase: e.holdingBase,
-          sellAble: reportQty>e.holdingReport? reportQty - e.holdingReport: reportQty ,
-          baseSellAble: reportBaseQty>e.holdingBase?reportBaseQty-e.holdingBase:reportBaseQty
+          sellAble:
+            reportQty > e.holdingReport
+              ? reportQty - e.holdingReport
+              : reportQty,
+          baseSellAble:
+            reportBaseQty > e.holdingBase
+              ? reportBaseQty - e.holdingBase
+              : reportBaseQty,
         };
       });
-      return { transactions, issuccess: true, status: 200 };
+      return { transactions, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
-      return { message: "something went wrong", issuccess: false, status: 500 };
+      return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
 };

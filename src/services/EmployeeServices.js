@@ -201,7 +201,7 @@ const services = {
     const page = (query._page && Number(query._page)) || 1;
     const limit = (query._limit && Number(query._limit)) || 20;
     const offset = (page - 1) * limit;
-    const { id, name , phonenumber } = query;
+    const { id, name, phonenumber } = query;
     try {
       let employees = await Employee.findAndCountAll({
         limit: limit,
@@ -231,21 +231,23 @@ const services = {
         ],
         distinct: true,
       });
+
       if (id && !name && !phonenumber) {
         employees.rows = employees.rows.filter((e) => {
           if (e.id) {
             return e.id.startsWith(id);
           }
         });
-        employees.count = employees.rows.length
+        employees.count = employees.rows.length;
       }
+
       if (!id && name && !phonenumber) {
         employees.rows = employees.rows.filter((e) => {
           if (e.name) {
             return e.id.startsWith(name);
           }
         });
-        employees.count = employees.rows.length
+        employees.count = employees.rows.length;
       }
       if (!id && !name && phonenumber) {
         employees.rows = employees.rows.filter((e) => {
@@ -253,14 +255,14 @@ const services = {
             return e.id.startsWith(phonenumber);
           }
         });
-        employees.count = employees.rows.length
+        employees.count = employees.rows.length;
       }
       if (id && name && !phonenumber) {
         employees.rows = employees.rows.filter((e) => {
           if (e.id && e.name)
             return e.id.startsWith(id) && e.name.startsWith(name);
         });
-        employees.count = employees.rows.length
+        employees.count = employees.rows.length;
       }
       if (id && name && phonenumber) {
         employees.rows = employees.rows.filter((e) => {
@@ -272,8 +274,8 @@ const services = {
             );
           }
         });
-        employees.count = employees.rows.length
-      }     
+        employees.count = employees.rows.length;
+      }
       return { employees, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);

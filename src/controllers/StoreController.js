@@ -30,14 +30,15 @@ const controller = {
     }
     return res.status(status).json({ isSuccess, message });
   },
-  stastics: async (req,res) =>{
-    const {date} = req.body
-    const {issuccess,status,message,transactions} = await services.stastics(date);
-    if(issuccess){
-      return res.status(status).json({issuccess,transactions})
+  stastics: async (req, res) => {
+    const { date } = req.body;
+    const { isSuccess, status, message, transactions } =
+      await services.stastics(date);
+    if (isSuccess) {
+      return res.status(status).json({ isSuccess, transactions });
     }
-    return res.status(status).json({issuccess,message})
-  }
+    return res.status(status).json({ isSuccess, message });
+  },
 };
 
 module.exports = controller;

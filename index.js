@@ -38,9 +38,9 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 // handle router
 routerHandle(app);
+app.use(express.static("public"));
 
 // generateData();
-
 
 const port = process.env.PORT || 3000;
 
