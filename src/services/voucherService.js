@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, Sequelize } = require("sequelize");
 const Voucher = require("../models/Voucher");
 const PromotionResult = require("../models/PromotionResult");
 const PromotionHeader = require("../models/PromotionHeader");
@@ -197,7 +197,7 @@ const voucherService = {
       };
     }
   },
-  getById: async (id) => {    
+  getById: async (id) => {
     try {
       const voucher = await Voucher.findOne({
         where: {
@@ -226,7 +226,29 @@ const voucherService = {
               { endDate: { [Op.lte]: toDate } },
             ],
           },
-          include: { model: PromotionResult },
+          attributes: [
+            "PromotionHeaderId",
+            "title",
+            "startDate",
+            "endDate",
+            [
+              Sequelize.fn("count", Sequelize.col("Voucher.id")),
+              "sumAllVoucher",
+            ],
+          ],
+          include: {
+            model: PromotionResult,
+            attributes: [
+              [
+                Sequelize.fn("sum", Sequelize.col("discountMoneyByVoucher")),
+                "sumMoneyVoucher",
+              ],
+              [
+                Sequelize.fn("count", Sequelize.col("VoucherId")),
+                "voucherUsed",
+              ],
+            ],
+          },
         });
         if (!vouchers) {
           return null;

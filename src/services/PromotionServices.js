@@ -306,7 +306,7 @@ const PromotionHeaderServices = {
       let moneyPromotions = await getMoneyPromotionByDate(from, to);
       let vouchers = await getVoucherPromotionByDate(from, to);
       let discountRates = await getDcrPromotionByDate(from, to);
-
+      
       if (productPromotions.length) {
         productPromotions = productPromotions.map((e) => {
           let quantityApplied = e.PromotionResults.reduce(
@@ -381,6 +381,20 @@ const PromotionHeaderServices = {
           };
         });
       }
+      if(vouchers.length){
+        vouchers = vouchers.map(e => {
+          return {
+            promotionId: e.PromotionHeaderId,
+            name: e.title,
+            startDate: e.startDate,
+            endDate: e.endDate,
+            sumAllVoucher: e.dataValues.sumAllVoucher,
+            voucherUsed: e.PromotionResult.dataValues.voucherUsed,
+            remaining: e.dataValues.sumAllVoucher - e.PromotionResult.dataValues.voucherUsed,
+            totalDiscount: e.PromotionResult.dataValues.sumMoneyVoucher,
+          }
+        })
+      }      
 
       promotions.push(...productPromotions);
       promotions.push(...moneyPromotions);
