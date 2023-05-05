@@ -77,8 +77,8 @@ const controller = {
     return res.status(status).json({isSuccess,moneyPromotions})
   },
   promotionStatistics: async (req,res) =>{
-    const {fromDate,toDate} = req.body
-    const {isSuccess,status,message,promotions} = await services.promotionStatistics(fromDate,toDate)
+    const {fromDate} = req.body
+    const {isSuccess,status,message,promotions} = await services.promotionStatistics(fromDate)
     if(isSuccess){
       return res.status(status).json({promotions,isSuccess})
     }

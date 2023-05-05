@@ -213,17 +213,17 @@ const voucherService = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  getVoucherPromotionByDate: async (from, to) => {
+  getVoucherPromotionByDate: async (from) => {
     try {
-      if (from && to) {
+      if (from) {
         const fromDate = new Date(from);
-        const toDate = new Date(to);
-        toDate.setDate(toDate.getDate() + 1);
+        const toDate = new Date(from);
+        fromDate.setDate(fromDate.getDate() + 1);
         let vouchers = await Voucher.findAll({
           where: {
             [Op.and]: [
-              { startDate: { [Op.gte]: fromDate } },
-              { endDate: { [Op.lte]: toDate } },
+              { startDate: { [Op.lte]: fromDate } },
+              { endDate: { [Op.gte]: toDate } },
             ],
           },
           attributes: [
@@ -250,7 +250,7 @@ const voucherService = {
             ],
           },
         });
-        if (!vouchers) {
+        if (!vouchers.length) {
           return null;
         }
         return vouchers;

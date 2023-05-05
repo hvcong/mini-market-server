@@ -8,7 +8,6 @@ const {
   Price,
   BillDetail,
   Bill,
-  ListPricesHeader,
 } = require("../config/persist");
 const { onlyUpdateProduct } = require("./ProductServices");
 const { getProduct, getUnitType } = require("./ProductUnitTypeServices");
@@ -83,7 +82,6 @@ const services = {
     try {
       const date = new Date(dateInput);
       date.setDate(date.getDate() + 1);
-      const dateH = new Date(dateInput);
       let transactions = await StoreTransaction.findAll({
         where: { createAt: { [Op.lt]: date } },
         include: {
@@ -105,32 +103,6 @@ const services = {
               model: UnitType,
               attributes: ["name", "convertionQuantity"],
             },
-            {
-              model: Price,
-              attributes: ["id", "price"],
-              include: [
-                {
-                  model: ListPricesHeader,
-                  where: {
-                    [Op.and]: [
-                      { startDate: { [Op.lte]: date } },
-                      { endDate: { [Op.gte]: dateH } },
-                    ],
-                    state: 1,
-                  },
-                },
-                {
-                  model: BillDetail,
-                  attributes: ["quantity"],
-                  include: [
-                    {
-                      model: Bill,
-                      where: { orderDate: { [Op.lt]: date }, isDDH: 1 },
-                    },
-                  ],
-                },
-              ],
-            },
           ],
         },
         attributes: [
@@ -139,8 +111,51 @@ const services = {
             "sum",
           ],
         ],
-        group: ["ProductUnitType.ProductId", "ProductUnitType.UnitTypeId"],
+        group: ["StoreTransaction.ProductUnitTypeId"],
       });
+      let pendingBills = await Bill.findAll({
+        where: { type: "pending", isDDH: true, orderdate: { [Op.lt]: date } },
+        include: {
+          model: BillDetail,
+          include: [
+            {
+              model: Price,
+              include: [
+                {
+                  model: ProductUnitType,
+                  include: [{ model: UnitType }],
+                },
+              ],
+            },
+          ],
+        },
+      });
+      if (pendingBills.length) {
+        pendingBills = pendingBills.map((e) => {
+          return e.BillDetails.map((x) => {
+            return {
+              productId: x.Price.ProductUnitType.ProductId,
+              holdingQty:
+                x.quantity *
+                x.Price.ProductUnitType.UnitType.convertionQuantity,
+            };
+          });
+        });
+        pendingBills = pendingBills.flat();
+        pendingBills = pendingBills.reduce((accumulator, object) => {
+          if (
+            (objectFound = accumulator.find(
+              (item) => item.productId === object.productId
+            ))
+          ) {
+            objectFound.holdingQty += object.holdingQty;
+          } else {
+            accumulator.push(object);
+          }
+          return accumulator;
+        }, []);
+      }
+
       for (let e of transactions) {
         let maxUnit = await getMaxUnit(e.ProductUnitType.ProductId);
         e.setDataValue("maxUnit", maxUnit);
@@ -150,14 +165,6 @@ const services = {
         let numConvert = e.ProductUnitType.UnitType.convertionQuantity;
         let sum = e.dataValues.sum * numConvert;
         e.setDataValue("sum", sum);
-        let price = null;
-        let holdingQty = 0;
-        if (e.ProductUnitType.Prices.length) {
-          price = e.ProductUnitType.Prices[0];
-        }
-        if (price && price.BillDetail) {
-          holdingQty = price.BillDetail.quantity * numConvert;
-        }
 
         return {
           category: e.ProductUnitType.Product.SubCategory.Category.name,
@@ -168,18 +175,21 @@ const services = {
             maxUnit > 1 ? "thung " + maxUnit : e.dataValues.maxUnit.name,
           baseUnit: e.dataValues.maxUnit.name,
           sum: e.dataValues.sum,
-          holdingReport: holdingQty ? Math.floor(holdingQty / maxUnit) : 0,
-          holdingBase: holdingQty ? holdingQty % maxUnit : 0,
+          holdingQty: 0,
           maxUnit: maxUnit,
         };
       });
+      transactions.push(...pendingBills);
       transactions = transactions.reduce((accumulator, object) => {
         if (
           (objectFound = accumulator.find(
             (item) => item.productId === object.productId
           ))
         ) {
-          objectFound.sum += object.sum;
+          if(object.sum){
+            objectFound.sum += object.sum;
+          }
+          objectFound.holdingQty += object.holdingQty;
         } else {
           accumulator.push(object);
         }
@@ -188,8 +198,10 @@ const services = {
       transactions = transactions.map((e) => {
         let maxUnit = e.maxUnit;
         let sum = e.sum;
-        let reportQty = Math.floor(sum / maxUnit);
-        let reportBaseQty = sum % maxUnit;
+        let holdingReport = e.holdingQty ? Math.floor(e.holdingQty / maxUnit) : 0
+        let holdingBase = e.holdingQty ? e.holdingQty % maxUnit : 0
+        let reportQty = Math.floor(sum / maxUnit)+holdingReport;
+        let reportBaseQty = sum % maxUnit + holdingBase;
         return {
           category: e.category,
           subCategory: e.subCategory,
@@ -199,15 +211,15 @@ const services = {
           baseUnit: e.baseUnit,
           reportQty: reportQty,
           reportBaseQty: reportBaseQty,
-          holdingReport: e.holdingReport,
-          holdingBase: e.holdingBase,
+          holdingReport: holdingReport,
+          holdingBase: holdingBase,
           sellAble:
-            reportQty > e.holdingReport
-              ? reportQty - e.holdingReport
+            reportQty > holdingReport
+              ? reportQty - holdingReport
               : reportQty,
           baseSellAble:
-            reportBaseQty > e.holdingBase
-              ? reportBaseQty - e.holdingBase
+            reportBaseQty >= holdingBase
+              ? reportBaseQty - holdingBase
               : reportBaseQty,
         };
       });

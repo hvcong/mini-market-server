@@ -11,4 +11,5 @@ routes.put("/:id/update-type/:type", controller.updateType);
 routes.post("/from", controller.getSoldByDate);
 routes.post("/customer",controller.getSoldByCustomer);
 routes.post('/retrieve',controller.getRetrieveBill)
+routes.get('/pending',controller.getPendingBills)
 module.exports = routes;

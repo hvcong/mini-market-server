@@ -724,19 +724,55 @@ const services = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  getPendingBill: async (date) => {
+  getPendingBills: async (date) => {
     try {
-      const bills = await Bill.findAndCountAll({
-        where: { type: "pending", orderDate: { [Op.lt]: date } },
+      let bills = await Bill.findAll({
+        where: { type: "pending", isDDH: true, orderdate: { [Op.lt]: date } },
+        include: {
+          model: BillDetail,
+          include: [
+            {
+              model: Price,
+              include: [
+                {
+                  model: ProductUnitType,
+                  include: [{ model: UnitType }],
+                },
+              ],
+            },
+          ],
+        },
       });
-      if (bills) {
-        
+      if (bills.length) {
+        bills = bills.map((e) => {
+          return e.BillDetails.map((x) => {
+            return {
+              productId: x.Price.ProductUnitType.ProductId,
+              holdingQty: x.quantity * x.Price.ProductUnitType.UnitType.convertionQuantity,
+            };
+          });
+        });
+        bills = bills.flat();
+        bills = bills.reduce((accumulator, object) => {
+          if (
+            (objectFound = accumulator.find(
+              (item) => item.productId === object.productId
+            ))
+          ) {
+            objectFound.holdingQty += object.holdingQty;
+          } else {
+            accumulator.push(object);
+          }
+          return accumulator;
+        }, []);
+        return bills;
       }
       return null;
     } catch (error) {
       console.log(error);
-      return null
+      return null;
     }
   },
 };
+
 module.exports = services;
