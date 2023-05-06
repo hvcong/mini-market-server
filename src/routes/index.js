@@ -26,6 +26,7 @@ const WareHouseRoutes = require("./WareHouseRoutes");
 const PromotionResultRoutes = require("./PromotionResultRoutes");
 const InputRoutes = require("./InputRoutes");
 const FileRoutes = require("./FileRoutes");
+const Payment = require("./PaymentRoutes");
 
 const routerHandle = (app) => {
   app.use("/auth", AuthRoutes);
@@ -56,6 +57,7 @@ const routerHandle = (app) => {
   app.use("/result", PromotionResultRoutes);
   app.use("/input", InputRoutes);
   app.use("/file", FileRoutes);
+  app.use("/payment", Payment);
 };
 
 module.exports = routerHandle;
