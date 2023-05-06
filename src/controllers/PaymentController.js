@@ -4,9 +4,9 @@ const moment = require("moment"); // npm install moment
 const qs = require("qs");
 
 const controller = {
-  paymentZalo: async (req,res) => {
+  paymentZalo: async (req, res) => {
     const { totalMoney } = req.body;
-    
+
     try {
       const config = {
         app_id: process.env.ZALO_PAY_APP_ID,
@@ -15,7 +15,7 @@ const controller = {
         endpoint: process.env.ZALO_PAY_ENDPOINT,
       };
       const embed_data = {
-        redirecturl: process.env.REDIRECT_URL,
+        // redirecturl: process.env.REDIRECT_URL,
       };
       const items = [{}];
       const transID = Math.floor(Math.random() * 1000000);
@@ -27,7 +27,9 @@ const controller = {
         item: JSON.stringify(items),
         embed_data: JSON.stringify(embed_data),
         amount: Number(totalMoney),
-        description: `Thanh toan hoa don  ${moment().format("YYMMDD")}_${transID}`,
+        description: `Thanh toan hoa don  ${moment().format(
+          "YYMMDD"
+        )}_${transID}`,
         bank_code: "CC",
         title: "thanh toan hoa don @123",
       };
@@ -61,10 +63,10 @@ const controller = {
       next(error);
     }
   },
-  getStatusPayment: async (req,res) => {
+  getStatusPayment: async (req, res) => {
     const { appTransId } = req.body;
     try {
-    //   console.log(ticket);
+      //   console.log(ticket);
       const config = {
         app_id: process.env.ZALO_PAY_APP_ID,
         key1: process.env.ZALO_PAY_KEY_1,
@@ -86,37 +88,37 @@ const controller = {
         },
         data: qs.stringify(postData),
       };
-    //   const check = setInterval(() => {
-        axios(postConfig)
-          .then(function (response) {
-            // if (response.data.return_code === 1) {
-            //   clearInterval(check);
+      //   const check = setInterval(() => {
+      axios(postConfig)
+        .then(function (response) {
+          // if (response.data.return_code === 1) {
+          //   clearInterval(check);
 
-            //   paymentService
-            //     .bookingTicket(ticket)
-            //     .then((result) => {
-            //       res.json({ data: result, status: true });
-            //     })
-            //     .catch((error) => {
-            //       next(error);
-            //     });
+          //   paymentService
+          //     .bookingTicket(ticket)
+          //     .then((result) => {
+          //       res.json({ data: result, status: true });
+          //     })
+          //     .catch((error) => {
+          //       next(error);
+          //     });
 
-            //   console.log("ok");
-            // } else
-            //  if (
-            //   Date.now() > appTime + 15 * 60 * 1000 ||
-            //   response.data.return_code == 2
-            // ) 
-            {
+          //   console.log("ok");
+          // } else
+          //  if (
+          //   Date.now() > appTime + 15 * 60 * 1000 ||
+          //   response.data.return_code == 2
+          // )
+          {
             //   clearInterval(check);
-              return res.json(response.data);
-            }
-            // console.log(response.data);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-    //   },);
+            return res.json(response.data);
+          }
+          // console.log(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      //   },);
     } catch (error) {
       next(error);
     }

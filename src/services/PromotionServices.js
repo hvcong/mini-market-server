@@ -393,11 +393,11 @@ const PromotionHeaderServices = {
             startDate: e.startDate,
             endDate: e.endDate,
             sumAllVoucher: e.dataValues.sumAllVoucher,
-            voucherUsed: e.PromotionResult.dataValues.voucherUsed,
+            voucherUsed: e.PromotionResult?.dataValues.voucherUsed || 0,
             remaining:
               e.dataValues.sumAllVoucher -
-              e.PromotionResult.dataValues.voucherUsed,
-            totalDiscount: e.PromotionResult.dataValues.sumMoneyVoucher,
+              (e.PromotionResult?.dataValues.voucherUsed || 0),
+            totalDiscount: e.PromotionResult?.dataValues.sumMoneyVoucher || 0,
           };
         });
       }
