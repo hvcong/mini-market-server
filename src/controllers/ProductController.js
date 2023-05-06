@@ -12,6 +12,11 @@ const ProductController = {
       return res.status(status).json({ message, isSuccess });
     }
   },
+  getOneByBarcode: async (req, res) => {
+    const result = await services.getOneByBarcode(req.query.barCode);
+
+    return res.status(result.status).json(result);
+  },
   updateProduct: async (req, res) => {
     const { query } = req;
     const productID = query.id;
@@ -104,14 +109,16 @@ const ProductController = {
     }
     return res.status(status).json({ isSuccess, message });
   },
-  filter: async(req,res) => {
-    const {query} = req
-    const {isSuccess,status,message,products} = await services.filter(query)
-    if(isSuccess){
-      return res.status(status).json({isSuccess,products})
+  filter: async (req, res) => {
+    const { query } = req;
+    const { isSuccess, status, message, products } = await services.filter(
+      query
+    );
+    if (isSuccess) {
+      return res.status(status).json({ isSuccess, products });
     }
-    return res.status(status).json({isSuccess,message})
-  }
+    return res.status(status).json({ isSuccess, message });
+  },
 };
 
 module.exports = ProductController;
