@@ -192,7 +192,7 @@ GiftProduct.belongsTo(ProductPromotion);
 GiftProduct.belongsTo(ProductUnitType);
 
 sequelize
-  .sync({ })
+  .sync({ alter: true })
   .then((result) => {
     console.log("has been done");
   })
