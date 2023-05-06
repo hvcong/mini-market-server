@@ -101,17 +101,17 @@ const services = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  getDcrPromotionByDate: async (from, to) => {
+  getDcrPromotionByDate: async (from) => {
     try {
-      if (from && to) {
+      if (from) {
         const fromDate = new Date(from);
-        const toDate = new Date(to);
-        toDate.setDate(toDate.getDate() + 1);
+        const toDate = new Date(from);
+        fromDate.setDate(fromDate.getDate() + 1);
         let discountRates = await DiscountRateProduct.findAll({
           where: {
             [Op.and]: [
-              { startDate: { [Op.gte]: fromDate } },
-              { endDate: { [Op.lte]: toDate } },
+              { startDate: { [Op.lte]: fromDate } },
+              { endDate: { [Op.gte]: toDate } },
             ],
           },
           include: [

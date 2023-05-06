@@ -84,6 +84,13 @@ const controller = {
       return res.status(status).json({isSuccess,bills})
     }
     return res.status(status).json({isSuccess,message})
+  },
+  getPendingBills: async (req,res) =>{
+    const {date} = req.body
+    const dateValue = new Date(date)
+    dateValue.setDate(dateValue.getDate()+1)
+    const pendingBills = await services.getPendingBills(dateValue)
+    return res.status(200).json(pendingBills)
   }
 };
 module.exports = controller;

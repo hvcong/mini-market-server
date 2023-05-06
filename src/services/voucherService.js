@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, Sequelize } = require("sequelize");
 const Voucher = require("../models/Voucher");
 const PromotionResult = require("../models/PromotionResult");
 const PromotionHeader = require("../models/PromotionHeader");
@@ -197,7 +197,7 @@ const voucherService = {
       };
     }
   },
-  getById: async (id) => {    
+  getById: async (id) => {
     try {
       const voucher = await Voucher.findOne({
         where: {
@@ -213,22 +213,44 @@ const voucherService = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  getVoucherPromotionByDate: async (from, to) => {
+  getVoucherPromotionByDate: async (from) => {
     try {
-      if (from && to) {
+      if (from) {
         const fromDate = new Date(from);
-        const toDate = new Date(to);
-        toDate.setDate(toDate.getDate() + 1);
+        const toDate = new Date(from);
+        fromDate.setDate(fromDate.getDate() + 1);
         let vouchers = await Voucher.findAll({
           where: {
             [Op.and]: [
-              { startDate: { [Op.gte]: fromDate } },
-              { endDate: { [Op.lte]: toDate } },
+              { startDate: { [Op.lte]: fromDate } },
+              { endDate: { [Op.gte]: toDate } },
             ],
           },
-          include: { model: PromotionResult },
+          attributes: [
+            "PromotionHeaderId",
+            "title",
+            "startDate",
+            "endDate",
+            [
+              Sequelize.fn("count", Sequelize.col("Voucher.id")),
+              "sumAllVoucher",
+            ],
+          ],
+          include: {
+            model: PromotionResult,
+            attributes: [
+              [
+                Sequelize.fn("sum", Sequelize.col("discountMoneyByVoucher")),
+                "sumMoneyVoucher",
+              ],
+              [
+                Sequelize.fn("count", Sequelize.col("VoucherId")),
+                "voucherUsed",
+              ],
+            ],
+          },
         });
-        if (!vouchers) {
+        if (!vouchers.length) {
           return null;
         }
         return vouchers;
