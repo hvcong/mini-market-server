@@ -50,7 +50,7 @@ const controller = {
         .post(config.endpoint, null, { params: order })
         .then((result) => {
           console.log(result.data);
-          res.json({
+          return res.json({
             zalo: result.data,
             appTransId: order.app_trans_id,
             appTime: order.app_time,
