@@ -385,8 +385,7 @@ const PromotionHeaderServices = {
         });
       }
       if (vouchers.length) {
-        vouchers = vouchers.map((e) => {
-          console.log(e);
+        vouchers = vouchers.map((e) => {          
           return {
             promotionId: e.PromotionHeaderId,
             name: e.title,
