@@ -281,9 +281,7 @@ const services = {
       if (id && firstName && !phonenumber) {
         customers.rows = customers.rows.filter((e) => {
           if (e.id && e.firstName) {
-            return (
-              e.id.startsWith(id) && e.firstName.startsWith(firstName)
-            );
+            return e.id.startsWith(id) && e.firstName.startsWith(firstName);
           }
         });
         customers.count = customers.rows.length;
@@ -291,9 +289,7 @@ const services = {
       if (id && !firstName && phonenumber) {
         customers.rows = customers.rows.filter((e) => {
           if (e.id && e.phonenumber) {
-            return (
-              e.id.startsWith(id) && e.phonenumber.startsWith(phonenumber)
-            );
+            return e.id.startsWith(id) && e.phonenumber.startsWith(phonenumber);
           }
         });
         customers.count = customers.rows.length;
@@ -302,7 +298,8 @@ const services = {
         customers.rows = customers.rows.filter((e) => {
           if (e.firstName && e.phonenumber) {
             return (
-              e.firstName.startsWith(firstName) && e.phonenumber.startsWith(phonenumber)
+              e.firstName.startsWith(firstName) &&
+              e.phonenumber.startsWith(phonenumber)
             );
           }
         });
