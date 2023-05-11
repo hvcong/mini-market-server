@@ -396,7 +396,7 @@ const PromotionHeaderServices = {
             remaining:
               e.dataValues.sumAllVoucher -
               e.PromotionResult?.dataValues.voucherUsed||0,
-            totalDiscount: e.PromotionResult.dataValues.sumMoneyVoucher,
+            totalDiscount: e.PromotionResult?.dataValues.sumMoneyVoucher || 0,
           };
         });
       }
