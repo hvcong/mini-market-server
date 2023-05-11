@@ -32,7 +32,7 @@ const specs = swaggerJsDoc(options);
 
 const app = express();
 
-app.use(cors());
+app.use(cors({origin: true, credentials: true}));
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
