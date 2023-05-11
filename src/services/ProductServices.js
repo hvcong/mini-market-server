@@ -144,6 +144,23 @@ const ProductServices = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
+  getOneByBarcode: async (barcode) => {
+    try {
+      const product = await Product.findOne({
+        where: {
+          barcode,
+        },
+      });
+      if (product) {
+        return { product, isSuccess: true, status: 200 };
+      } else {
+        return { message: "Not found", isSuccess: false, status: 300 };
+      }
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
   addProduct: async (data) => {
     try {
       const {
@@ -363,7 +380,7 @@ const ProductServices = {
             },
           ],
         });
-        if(!tmpProducts.rows.length){
+        if (!tmpProducts.rows.length) {
           return { message: "no products", isSuccess: false, status: 404 };
         }
         products = tmpProducts;
@@ -402,12 +419,12 @@ const ProductServices = {
             },
           ],
         });
-        if(!tmpProducts.rows.length){
+        if (!tmpProducts.rows.length) {
           return { message: "no products", isSuccess: false, status: 404 };
         }
         products = tmpProducts;
       }
-      return {products,isSuccess: true,status: 200}
+      return { products, isSuccess: true, status: 200 };
     } catch (error) {
       console.log(error);
       return { message: "something goes wrong", isSuccess: false, status: 500 };

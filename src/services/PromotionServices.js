@@ -332,7 +332,7 @@ const PromotionHeaderServices = {
       }
       if (moneyPromotions.length) {
         moneyPromotions = moneyPromotions.map((e) => {
-          if (e.type == "discountRate") {            
+          if (e.type == "discountRate") {
             return {
               promotionId: e.id,
               name: e.title,
@@ -340,7 +340,7 @@ const PromotionHeaderServices = {
               endDate: e.endDate,
               type: e.type,
               minCost: e.minCost,
-              discount: e.maxMoneyDiscount,              
+              discount: e.maxMoneyDiscount,
               budget: e.budget,
               availableBudget: e.availableBudget,
               used: e.budget - e.availableBudget,
@@ -370,7 +370,7 @@ const PromotionHeaderServices = {
           }
         });
       }
-      if(discountRates.length){
+      if (discountRates.length) {
         discountRates = discountRates.map((e) => {
           return {
             promotionId: e.id,
@@ -380,24 +380,27 @@ const PromotionHeaderServices = {
             discountRate: e.discountRate,
             productId: e.ProductUnitType.ProductId,
             productName: e.ProductUnitType.Product.name,
-            unitType: e.ProductUnitType.UnitType.name,            
+            unitType: e.ProductUnitType.UnitType.name,
           };
         });
       }
-      if(vouchers.length){
-        vouchers = vouchers.map(e => {
+      if (vouchers.length) {
+        vouchers = vouchers.map((e) => {
+          console.log(e);
           return {
             promotionId: e.PromotionHeaderId,
             name: e.title,
             startDate: e.startDate,
             endDate: e.endDate,
             sumAllVoucher: e.dataValues.sumAllVoucher,
-            voucherUsed: e.PromotionResult.dataValues.voucherUsed,
-            remaining: e.dataValues.sumAllVoucher - e.PromotionResult.dataValues.voucherUsed,
+            voucherUsed: e.PromotionResult?.dataValues.voucherUsed||0,
+            remaining:
+              e.dataValues.sumAllVoucher -
+              e.PromotionResult?.dataValues.voucherUsed||0,
             totalDiscount: e.PromotionResult.dataValues.sumMoneyVoucher,
-          }
-        })
-      }      
+          };
+        });
+      }
 
       promotions.push(...productPromotions);
       promotions.push(...moneyPromotions);

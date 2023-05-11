@@ -7,6 +7,9 @@ const Product = sequelize.define(
       type: DataTypes.STRING,
       primaryKey: true,
     },
+    barcode: {
+      type: DataTypes.STRING,
+    },
 
     name: {
       type: DataTypes.STRING,
