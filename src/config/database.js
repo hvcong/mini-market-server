@@ -2,7 +2,11 @@ const { Sequelize } = require("sequelize");
 require("dotenv").config();
 const sequelize = new Sequelize(process.env.DBNAME, process.env.USERNAME, process.env.PASSWORD, {
   host: process.env.DBHOST,
+  port: 3306,
   dialect: "mysql",
+  dialectOptions: {
+    ssl: 'Amazon RDS'
+  },
   logging: false,
   pool: {
     max: 5,
