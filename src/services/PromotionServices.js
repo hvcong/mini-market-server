@@ -299,16 +299,16 @@ const PromotionHeaderServices = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  promotionStatistics: async (from) => {
+  promotionStatistics: async (from,to) => {
     try {
       let promotions = [];
-      let productPromotions = await getProductPromotionByDate(from);
-      let moneyPromotions = await getMoneyPromotionByDate(from);
-      let vouchers = await getVoucherPromotionByDate(from);
+      let productPromotions = await getProductPromotionByDate(from,to);
+      let moneyPromotions = await getMoneyPromotionByDate(from,to);
+      let vouchers = await getVoucherPromotionByDate(from,to);
       if(!vouchers[0].PromotionHeaderId){
         vouchers = []
       }
-      let discountRates = await getDcrPromotionByDate(from);
+      let discountRates = await getDcrPromotionByDate(from,to);
       
       if (productPromotions.length) {
         productPromotions = productPromotions.map((e) => {

@@ -49,7 +49,7 @@ const controller = {
       axios
         .post(config.endpoint, null, { params: order })
         .then((result) => {
-          console.log(result.data);
+        //   console.log(result.data);
           return res.json({
             zalo: result.data,
             appTransId: order.app_trans_id,

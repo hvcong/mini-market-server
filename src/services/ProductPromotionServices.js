@@ -147,17 +147,21 @@ const Services = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  getProductPromotionByDate: async (from) => {
+  getProductPromotionByDate: async (from, to) => {
     try {
-      if (from) {
+      if (from && to) {
         const fromDate = new Date(from);
-        const toDate = new Date(from);
-        fromDate.setDate(fromDate.getDate() + 1);
+        const toDate = new Date(to);
+        toDate.setDate(toDate.getDate() + 1);
         let productPromotions = await ProductPromotion.findAll({
           where: {
-            [Op.and]: [
-              { startDate: { [Op.lte]: fromDate } },
-              { endDate: { [Op.gte]: toDate } },
+            [Op.or]: [
+              {
+                startDate: { [Op.between]: [fromDate, toDate] },
+              },
+              {
+                endDate: { [Op.between]: [fromDate, toDate] },
+              },
             ],
           },
           include: [
@@ -171,14 +175,15 @@ const Services = {
               ],
             },
             {
-              model: PromotionResult
-            }
+              model: PromotionResult,
+              where: { createdAt: { [Op.between]: [fromDate, toDate] } },
+            },
           ],
         });
         if (!productPromotions) {
-          return null
-        }        
-        return productPromotions
+          return null;
+        }
+        return productPromotions;
       }
     } catch (error) {
       console.log(error);

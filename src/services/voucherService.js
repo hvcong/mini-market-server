@@ -213,18 +213,22 @@ const voucherService = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  getVoucherPromotionByDate: async (from) => {
+  getVoucherPromotionByDate: async (from, to) => {
     try {
-      if (from) {
+      if (from && to) {
         const fromDate = new Date(from);
-        const toDate = new Date(from);
-        fromDate.setDate(fromDate.getDate() + 1);
+        const toDate = new Date(to);
+        toDate.setDate(toDate.getDate() + 1);
         let vouchers = await Voucher.findAll({
           where: {
-            [Op.and]: [
-              { startDate: { [Op.lte]: fromDate } },
-              { endDate: { [Op.gte]: toDate } },
-            ],
+            [Op.or]: [
+              {
+                startDate: { [Op.between]: [fromDate, toDate] },
+              },
+              {
+                endDate: { [Op.between]: [fromDate, toDate] },
+              },
+            ],            
           },
           attributes: [
             "PromotionHeaderId",
@@ -238,6 +242,7 @@ const voucherService = {
           ],
           include: {
             model: PromotionResult,
+            // where: { createdAt: { [Op.between]: [fromDate, toDate] } },
             attributes: [
               [
                 Sequelize.fn("sum", Sequelize.col("discountMoneyByVoucher")),

@@ -89,20 +89,27 @@ const Services = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  getMoneyPromotionByDate: async (from) => {
+  getMoneyPromotionByDate: async (from,to) => {
     try {
-      if (from) {
+      if (from && to) {
         const fromDate = new Date(from);
-        const toDate = new Date(from);
-        fromDate.setDate(fromDate.getDate() + 1);
+        const toDate = new Date(to);
+        toDate.setDate(toDate.getDate() + 1);
         let moneyPromotions = await MoneyPromotion.findAll({
           where: {
-            [Op.and]: [
-              { startDate: { [Op.lte]: fromDate } },
-              { endDate: { [Op.gte]: toDate } },
-            ],
+            [Op.or]: [
+              {
+                startDate: { [Op.between]: [fromDate, toDate] },
+              },
+              {
+                endDate: { [Op.between]: [fromDate, toDate] },
+              },
+            ],            
           },
-          include: { model: PromotionResult },
+          include: {
+            model: PromotionResult,
+            where: { createdAt: { [Op.between]: [fromDate, toDate] } },        
+          },
         });
         if (!moneyPromotions) {
           return null;
