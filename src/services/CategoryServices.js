@@ -52,6 +52,7 @@ const services = {
     }
   },
   get: async (query) => {
+    console.log("get categories");
     try {
       const page = (query._page && Number(query._page)) || 1;
       const limit = (query._limit && Number(query._limit)) || 20;
