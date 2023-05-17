@@ -58,6 +58,10 @@ const routerHandle = (app) => {
   app.use("/input", InputRoutes);
   app.use("/file", FileRoutes);
   app.use("/payment", Payment);
+  app.use("/do_not_sleep_server", (req, res) => {
+    console.log("server is wake up");
+    return res.status(200).json("");
+  });
 };
 
 module.exports = routerHandle;
