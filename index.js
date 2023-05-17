@@ -41,7 +41,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 routerHandle(app);
 app.use(express.static("public"));
 
-cron.schedule("*/2 * * * *", () => {
+cron.schedule("*/10 * * * *", () => {
   console.log("running a task every two minutes");
 });
 
