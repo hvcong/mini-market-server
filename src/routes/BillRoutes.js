@@ -8,8 +8,9 @@ routes.get("/where", controller.getWhere);
 routes.get("/success", controller.getSucceedBill);
 routes.get("/fail", controller.getPendingCancelBill);
 routes.put("/:id/update-type/:type", controller.updateType);
+routes.put("/:id/update-info", controller.updateInfo);
 routes.post("/from", controller.getSoldByDate);
-routes.post("/customer",controller.getSoldByCustomer);
-routes.post('/retrieve',controller.getRetrieveBill)
-routes.get('/pending',controller.getPendingBills)
+routes.post("/customer", controller.getSoldByCustomer);
+routes.post("/retrieve", controller.getRetrieveBill);
+routes.get("/pending", controller.getPendingBills);
 module.exports = routes;
