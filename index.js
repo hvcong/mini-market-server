@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+var cron = require("node-cron");
 
 const bodyParser = require("body-parser");
 // const generateData  = require('./src/utils/index')
@@ -32,7 +33,7 @@ const specs = swaggerJsDoc(options);
 
 const app = express();
 
-app.use(cors({origin: true, credentials: true}));
+app.use(cors({ origin: true, credentials: true }));
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
@@ -40,7 +41,9 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 routerHandle(app);
 app.use(express.static("public"));
 
-// generateData();
+cron.schedule("*/2 * * * *", () => {
+  console.log("running a task every two minutes");
+});
 
 const port = process.env.PORT || 3000;
 
