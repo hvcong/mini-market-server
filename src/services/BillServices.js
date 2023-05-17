@@ -280,9 +280,17 @@ const services = {
         };
       }
       //update
-      bill.update({
-        type: type,
-      });
+
+      if (type == "cancel" || type == "success") {
+        bill.update({
+          type: type,
+          EmployeeId: employeeId,
+        });
+      } else {
+        bill.update({
+          type: type,
+        });
+      }
       if (type == "cancel") {
         const billDetails = await bill.getBillDetails();
         const result = await bill.getPromotionResults();
