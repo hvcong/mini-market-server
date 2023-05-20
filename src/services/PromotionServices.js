@@ -324,9 +324,9 @@ const PromotionHeaderServices = {
             startDate: e.startDate,
             endDate: e.endDate,
             giftProductId: e.GiftProduct.ProductUnitType.Product.id,
-            productName: e.GiftProduct.ProductUnitType.Product.name,
-            unitType: e.GiftProduct.ProductUnitType.UnitType.name,
-            quantityApplied,
+            giftProductName: e.GiftProduct.ProductUnitType.Product.name,
+            giftUnitType: e.GiftProduct.ProductUnitType.UnitType.name,
+            quantityApplied: quantityApplied || 0,
           };
         });
       }
@@ -339,11 +339,11 @@ const PromotionHeaderServices = {
               startDate: e.startDate,
               endDate: e.endDate,
               type: e.type,
-              minCost: e.minCost,
-              discount: e.maxMoneyDiscount,
-              budget: e.budget,
-              availableBudget: e.availableBudget,
-              used: e.budget - e.availableBudget,
+              minCost: e.minCost || 0,
+              discount: e.maxMoneyDiscount || 0,
+              budget: e.budget || 0,
+              availableBudget: e.availableBudget || 0,
+              used: e.budget - e.availableBudget || 0,
             };
           }
           if (e.type == "discountMoney") {
@@ -360,12 +360,12 @@ const PromotionHeaderServices = {
               startDate: e.startDate,
               endDate: e.endDate,
               type: e.type,
-              minCost: e.minCost,
-              discount: e.maxMoneyDiscount,
-              discounted: discounted,
-              budget: e.budget,
-              availableBudget: e.availableBudget,
-              used: e.budget - e.availableBudget,
+              minCost: e.minCost || 0,
+              discount: e.maxMoneyDiscount || 0,
+              discounted: discounted || 0,
+              budget: e.budget || 0,
+              availableBudget: e.availableBudget || 0,
+              used: e.budget - e.availableBudget || 0,
             };
           }
         });
@@ -391,7 +391,7 @@ const PromotionHeaderServices = {
             name: "Khuyến mãi Voucher",
             startDate: e.startDate,
             endDate: e.endDate,
-            sumAllVoucher: e.dataValues.sumAllVoucher,
+            sumAllVoucher: e.dataValues.sumAllVoucher || 0,
             voucherUsed:
               e.dataValues.PromotionResult?.dataValues.voucherUsed || 0,
             remaining:
