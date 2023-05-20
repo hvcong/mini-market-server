@@ -299,17 +299,17 @@ const PromotionHeaderServices = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  promotionStatistics: async (from,to) => {
+  promotionStatistics: async (from, to) => {
     try {
       let promotions = [];
-      let productPromotions = await getProductPromotionByDate(from,to);
-      let moneyPromotions = await getMoneyPromotionByDate(from,to);
-      let vouchers = await getVoucherPromotionByDate(from,to);
-      if(!vouchers[0].PromotionHeaderId){
-        vouchers = []
+      let productPromotions = await getProductPromotionByDate(from, to);
+      let moneyPromotions = await getMoneyPromotionByDate(from, to);
+      let vouchers = await getVoucherPromotionByDate(from, to);
+      if (!vouchers[0].PromotionHeaderId) {
+        vouchers = [];
       }
-      let discountRates = await getDcrPromotionByDate(from,to);
-      
+      let discountRates = await getDcrPromotionByDate(from, to);
+
       if (productPromotions.length) {
         productPromotions = productPromotions.map((e) => {
           let quantityApplied = e.PromotionResults.reduce(
@@ -385,18 +385,20 @@ const PromotionHeaderServices = {
         });
       }
       if (vouchers.length) {
-        vouchers = vouchers.map((e) => {          
+        vouchers = vouchers.map((e) => {
           return {
             promotionId: e.PromotionHeaderId,
-            name: e.title,
+            name: "Khuyến mãi Voucher",
             startDate: e.startDate,
             endDate: e.endDate,
             sumAllVoucher: e.dataValues.sumAllVoucher,
-            voucherUsed: e.PromotionResult?.dataValues.voucherUsed||0,
+            voucherUsed:
+              e.dataValues.PromotionResult?.dataValues.voucherUsed || 0,
             remaining:
               e.dataValues.sumAllVoucher -
-              e.PromotionResult?.dataValues.voucherUsed||0,
-            totalDiscount: e.PromotionResult?.dataValues.sumMoneyVoucher || 0,
+                e.dataValues.PromotionResult?.dataValues.voucherUsed || 0,
+            totalDiscount:
+              e.dataValues.PromotionResult?.dataValues.sumMoneyVoucher || 0,
           };
         });
       }
