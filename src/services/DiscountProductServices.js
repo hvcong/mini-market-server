@@ -4,6 +4,9 @@ const {
   PromotionResult,
   Product,
   UnitType,
+  Price,
+  Bill,
+  BillDetail,
 } = require("../config/persist");
 const { Op } = require("sequelize");
 
@@ -128,7 +131,23 @@ const services = {
             },
             {
               model: PromotionResult,
+              attributes: ["id"],
               where: { createdAt: { [Op.between]: [fromDate, toDate] } },
+              include: [
+                {
+                  model: Bill,
+                  include: [
+                    {
+                      model: BillDetail,
+                      include: [
+                        {
+                          model: Price,
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
             },
           ],
         });
