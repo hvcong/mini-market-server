@@ -11,6 +11,7 @@ const swaggerJsDoc = require("swagger-jsdoc");
 
 require("./src/config/persist");
 const routerHandle = require("./src/routes/index.js");
+const { socketInit } = require("./src/socket");
 
 const options = {
   definition: {
@@ -41,12 +42,8 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 routerHandle(app);
 app.use(express.static("public"));
 
-cron.schedule("*/10 * * * *", () => {
-  console.log("running a task every two minutes");
-});
-
 const port = process.env.PORT || 3000;
 
-app.listen(port, () => {
+socketInit(app, port).listen(port, () => {
   console.log(`Server is listening on port ${port}`);
 });

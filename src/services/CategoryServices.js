@@ -52,7 +52,6 @@ const services = {
     }
   },
   get: async (query) => {
-    console.log("get categories");
     try {
       const page = (query._page && Number(query._page)) || 1;
       const limit = (query._limit && Number(query._limit)) || 20;
@@ -139,7 +138,7 @@ const services = {
       const page = (query._page && Number(query._page)) || 1;
       const limit = (query._limit && Number(query._limit)) || 20;
       const offset = (page - 1) * limit;
-      if (id && name) {        
+      if (id && name) {
         const categories = await Category.findAndCountAll({
           where: {
             [Op.and]: [
@@ -170,7 +169,7 @@ const services = {
           order: [["updatedAt", "DESC"]],
         });
         return { categories, isSuccess: true, status: 200 };
-      }     
+      }
     } catch (error) {
       console.log(error);
       return { message: "something went wrong", isSuccess: false, status: 500 };
