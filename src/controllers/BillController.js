@@ -25,6 +25,11 @@ const controller = {
     }
     return res.status(status).json({ isSuccess, message });
   },
+  updateInfo: async (req, res) => {
+    const billId = req.params.id;
+    const result = await services.updateInfo(billId, req.body.employeeId);
+    return res.status(result.status).json(result);
+  },
   getWhere: async (req, res) => {
     const { query } = req;
     const { isSuccess, status, bills, message } = await services.getClause(
@@ -63,34 +68,40 @@ const controller = {
   },
   getSoldByDate: async (req, res) => {
     const { fromDate, toDate, employeeId } = req.body;
-    const { isSuccess, status, bills, message } = await services.getSoldByDate(fromDate,toDate,employeeId);
+    const { isSuccess, status, bills, message } = await services.getSoldByDate(
+      fromDate,
+      toDate,
+      employeeId
+    );
     if (isSuccess) {
       return res.status(status).json({ isSuccess, bills });
     }
     return res.status(status).json({ isSuccess, message });
   },
   getSoldByCustomer: async (req, res) => {
-    const {fromDate,toDate,customerId} = req.body;
-    const {isSuccess,status,bills,message} = await services.getSoldByCustomer(fromDate,toDate,customerId)
-    if(isSuccess){
-      return res.status(status).json({isSuccess,bills})
+    const { fromDate, toDate, customerId } = req.body;
+    const { isSuccess, status, bills, message } =
+      await services.getSoldByCustomer(fromDate, toDate, customerId);
+    if (isSuccess) {
+      return res.status(status).json({ isSuccess, bills });
     }
-    return res.status(status).json({isSuccess,message})
+    return res.status(status).json({ isSuccess, message });
   },
-  getRetrieveBill: async (req,res) =>{
-    const {fromDate,toDate} = req.body
-    const {isSuccess,status,bills,message} = await services.getRetrieveBill(fromDate,toDate)
-    if(isSuccess){
-      return res.status(status).json({isSuccess,bills})
+  getRetrieveBill: async (req, res) => {
+    const { fromDate, toDate } = req.body;
+    const { isSuccess, status, bills, message } =
+      await services.getRetrieveBill(fromDate, toDate);
+    if (isSuccess) {
+      return res.status(status).json({ isSuccess, bills });
     }
-    return res.status(status).json({isSuccess,message})
+    return res.status(status).json({ isSuccess, message });
   },
-  getPendingBills: async (req,res) =>{
-    const {date} = req.body
-    const dateValue = new Date(date)
-    dateValue.setDate(dateValue.getDate()+1)
-    const pendingBills = await services.getPendingBills(dateValue)
-    return res.status(200).json(pendingBills)
-  }
+  getPendingBills: async (req, res) => {
+    const { date } = req.body;
+    const dateValue = new Date(date);
+    dateValue.setDate(dateValue.getDate() + 1);
+    const pendingBills = await services.getPendingBills(dateValue);
+    return res.status(200).json(pendingBills);
+  },
 };
 module.exports = controller;

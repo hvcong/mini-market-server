@@ -238,7 +238,8 @@ const services = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
-  updateType: async (billId, type, employeeId) => {
+
+  updateInfo: async (billId, employeeId) => {
     try {
       const bill = await Bill.findOne({
         where: {
@@ -253,8 +254,43 @@ const services = {
       }
       //update
       bill.update({
-        type: type,
+        EmployeeId: employeeId,
       });
+
+      return {
+        isSuccess: true,
+        status: 200,
+      };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
+  updateType: async (billId, type, employeeId) => {
+    try {
+      const bill = await Bill.findOne({
+        where: {
+          id: billId,
+        },
+      });
+      if (!bill) {
+        return {
+          isSuccess: false,
+          status: 400,
+        };
+      }
+      //update
+
+      if (type == "cancel" || type == "success") {
+        bill.update({
+          type: type,
+          EmployeeId: employeeId,
+        });
+      } else {
+        bill.update({
+          type: type,
+        });
+      }
       if (type == "cancel") {
         const billDetails = await bill.getBillDetails();
         const result = await bill.getPromotionResults();
@@ -748,7 +784,9 @@ const services = {
           return e.BillDetails.map((x) => {
             return {
               productId: x.Price.ProductUnitType.ProductId,
-              holdingQty: x.quantity * x.Price.ProductUnitType.UnitType.convertionQuantity,
+              holdingQty:
+                x.quantity *
+                x.Price.ProductUnitType.UnitType.convertionQuantity,
             };
           });
         });
