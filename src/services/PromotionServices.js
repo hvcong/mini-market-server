@@ -372,6 +372,37 @@ const PromotionHeaderServices = {
       }
       if (discountRates.length) {
         discountRates = discountRates.map((e) => {
+          let PromotionResults = e.PromotionResults.map((x) => {
+            let result = x.Bill.BillDetails.find(
+              (item) => item.Price.ProductUnitTypeId == e.ProductUnitTypeId
+            );
+            return {
+              quantity: result.quantity,
+              price: result.Price.price,
+              listPricesHeaderId: result.Price.ListPricesHeaderId,
+            };
+          });
+          PromotionResults = PromotionResults.reduce((accumulator, object) => {
+            if (
+              (objectFound = accumulator.find(
+                (item) => item.listPricesHeaderId === object.listPricesHeaderId
+              ))
+            ) {
+              objectFound.quantity += object.quantity;
+            } else {
+              accumulator.push(object);
+            }
+            return accumulator;
+          }, []);
+          PromotionResults = PromotionResults.map((y) => {
+            return {
+              discountedMoney: (e.discountRate / 100) * y.quantity * y.price,
+            };
+          });
+          let sumAllMoneyDiscounted = PromotionResults.reduce(
+            (accumulator, object) => accumulator + object.discountedMoney,
+            0
+          );
           return {
             promotionId: e.id,
             name: e.title,
@@ -381,6 +412,7 @@ const PromotionHeaderServices = {
             productId: e.ProductUnitType.ProductId,
             productName: e.ProductUnitType.Product.name,
             unitType: e.ProductUnitType.UnitType.name,
+            discountedMoney: sumAllMoneyDiscounted,
           };
         });
       }
