@@ -228,7 +228,7 @@ const voucherService = {
               {
                 endDate: { [Op.between]: [fromDate, toDate] },
               },
-            ],            
+            ],
           },
           attributes: [
             "PromotionHeaderId",
@@ -240,24 +240,21 @@ const voucherService = {
               "sumAllVoucher",
             ],
           ],
-          include: {
-            model: PromotionResult,
-            // where: { createdAt: { [Op.between]: [fromDate, toDate] } },
-            attributes: [
-              [
-                Sequelize.fn("sum", Sequelize.col("discountMoneyByVoucher")),
-                "sumMoneyVoucher",
-              ],
-              [
-                Sequelize.fn("count", Sequelize.col("VoucherId")),
-                "voucherUsed",
-              ],
-            ],
-          },
         });
         if (!vouchers.length) {
           return null;
         }
+        let voucherUsed = await PromotionResult.findAll({
+          where: { createdAt: { [Op.between]: [fromDate, toDate] } },
+          attributes: [
+            [
+              Sequelize.fn("sum", Sequelize.col("discountMoneyByVoucher")),
+              "sumMoneyVoucher",
+            ],
+            [Sequelize.fn("count", Sequelize.col("VoucherId")), "voucherUsed"],
+          ],
+        });
+        vouchers[0].setDataValue("PromotionResult", voucherUsed[0]);
         return vouchers;
       }
     } catch (error) {
