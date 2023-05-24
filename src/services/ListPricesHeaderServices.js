@@ -10,6 +10,7 @@ const {
   GiftProduct,
   DiscountRateProduct,
   PromotionHeader,
+  TypeCustomer,
 } = require("../config/persist");
 const {
   createBulkPrice,
@@ -164,7 +165,10 @@ const services = {
                   {
                     model: ProductPromotion,
                     include: [
-                      { model: PromotionHeader },
+                      {
+                        model: PromotionHeader,
+                        include: [{ model: TypeCustomer }],
+                      },
                       {
                         model: GiftProduct,
                         include: [
@@ -194,7 +198,12 @@ const services = {
                   },
                   {
                     model: DiscountRateProduct,
-                    include: [{ model: PromotionHeader }],
+                    include: [
+                      {
+                        model: PromotionHeader,
+                        include: [{ model: TypeCustomer }],
+                      },
+                    ],
                   },
                 ],
               },
