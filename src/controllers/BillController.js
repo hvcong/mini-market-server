@@ -30,6 +30,12 @@ const controller = {
     const result = await services.updateInfo(billId, req.body.employeeId);
     return res.status(result.status).json(result);
   },
+  deleteById: async (req, res) => {
+    const billId = req.params.id;
+    const result = await services.deleteById(billId);
+    return res.status(result.status).json(result);
+  },
+
   getWhere: async (req, res) => {
     const { query } = req;
     const { isSuccess, status, bills, message } = await services.getClause(

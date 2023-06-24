@@ -59,6 +59,16 @@ const services = {
       return { message: "something went wrong", isSuccess: false, status: 500 };
     }
   },
+  deleteById: async (id) => {
+    try {
+      const check = await Bill.findOne({ where: { id: id } });
+      await check.destroy();
+      return { message: "deleted successful", isSuccess: true, status: 200 };
+    } catch (error) {
+      console.log(error);
+      return { message: "something went wrong", isSuccess: false, status: 500 };
+    }
+  },
   get: async (query) => {
     const page = (query._page && Number(query._page)) || 1;
     const limit = (query._limit && Number(query._limit)) || 20;
